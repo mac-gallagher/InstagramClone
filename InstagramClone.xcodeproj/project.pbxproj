@@ -14,6 +14,9 @@
 		AD2A2CB3205C88DE0023D5C8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2A2CB2205C88DE0023D5C8 /* ViewController.swift */; };
 		AD2A2CB8205C88DE0023D5C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD2A2CB7205C88DE0023D5C8 /* Assets.xcassets */; };
 		AD2A2CBB205C88DE0023D5C8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2A2CB9205C88DE0023D5C8 /* LaunchScreen.storyboard */; };
+		AD4D8CEC2060634600A49BA4 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4D8CEB2060634600A49BA4 /* MainTabBarController.swift */; };
+		AD4D8CEE2060648B00A49BA4 /* UserProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4D8CED2060648B00A49BA4 /* UserProfileController.swift */; };
+		AD4D8CF12060827500A49BA4 /* UserProfileHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4D8CF02060827500A49BA4 /* UserProfileHeader.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +29,9 @@
 		AD2A2CB7205C88DE0023D5C8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AD2A2CBA205C88DE0023D5C8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AD2A2CBC205C88DE0023D5C8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AD4D8CEB2060634600A49BA4 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
+		AD4D8CED2060648B00A49BA4 /* UserProfileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileController.swift; sourceTree = "<group>"; };
+		AD4D8CF02060827500A49BA4 /* UserProfileHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileHeader.swift; sourceTree = "<group>"; };
 		E9B269287FF796F4A8BA3F80 /* Pods-InstagramClone.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InstagramClone.debug.xcconfig"; path = "Pods/Target Support Files/Pods-InstagramClone/Pods-InstagramClone.debug.xcconfig"; sourceTree = "<group>"; };
 		F228D1F0B539C515EB0A6B8F /* Pods_InstagramClone.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_InstagramClone.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -88,8 +94,10 @@
 		AD2A2CAF205C88DE0023D5C8 /* InstagramClone */ = {
 			isa = PBXGroup;
 			children = (
+				AD4D8CEF2060826800A49BA4 /* UserProfile */,
 				AD215F14205DA991000E42AD /* Utilities */,
 				AD2A2CB0205C88DE0023D5C8 /* AppDelegate.swift */,
+				AD4D8CEB2060634600A49BA4 /* MainTabBarController.swift */,
 				AD2A2CB2205C88DE0023D5C8 /* ViewController.swift */,
 				AD2A2CB7205C88DE0023D5C8 /* Assets.xcassets */,
 				AD2A2CB9205C88DE0023D5C8 /* LaunchScreen.storyboard */,
@@ -97,6 +105,15 @@
 				AD215F17205DCC59000E42AD /* GoogleService-Info.plist */,
 			);
 			path = InstagramClone;
+			sourceTree = "<group>";
+		};
+		AD4D8CEF2060826800A49BA4 /* UserProfile */ = {
+			isa = PBXGroup;
+			children = (
+				AD4D8CED2060648B00A49BA4 /* UserProfileController.swift */,
+				AD4D8CF02060827500A49BA4 /* UserProfileHeader.swift */,
+			);
+			path = UserProfile;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -236,6 +253,9 @@
 			files = (
 				AD2A2CB3205C88DE0023D5C8 /* ViewController.swift in Sources */,
 				AD215F16205DA9B6000E42AD /* Extensions.swift in Sources */,
+				AD4D8CEC2060634600A49BA4 /* MainTabBarController.swift in Sources */,
+				AD4D8CF12060827500A49BA4 /* UserProfileHeader.swift in Sources */,
+				AD4D8CEE2060648B00A49BA4 /* UserProfileController.swift in Sources */,
 				AD2A2CB1205C88DE0023D5C8 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

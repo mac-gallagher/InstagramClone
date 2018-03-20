@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow()
         window?.makeKeyAndVisible()
         window?.backgroundColor = .white
-        window?.rootViewController = ViewController()
+        window?.rootViewController = MainTabBarController()
         
         return true
     }
