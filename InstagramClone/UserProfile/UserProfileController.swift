@@ -21,11 +21,10 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
         
         navigationItem.title = Auth.auth().currentUser?.uid
         
-        fetchUser()
-        
         collectionView?.register(UserProfileHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "headerId")
         collectionView?.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellId)
         
+        fetchUser()
         setupLogOutButton()
     }
     
@@ -40,14 +39,9 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
             
             do {
                 try Auth.auth().signOut()
-                
-                
-                
             } catch let signOutErr {
                 print("Failed to sign out:", signOutErr)
             }
-            
-            
             
         }))
         

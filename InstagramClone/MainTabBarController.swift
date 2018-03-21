@@ -23,9 +23,6 @@ class MainTabBarController: UITabBarController {
             return
         }
         
-        let redVC = UIViewController()
-        redVC.view.backgroundColor = .red
-        
         let layout = UICollectionViewFlowLayout()
         let userProfileController = UserProfileController(collectionViewLayout: layout)
         
