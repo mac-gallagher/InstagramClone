@@ -96,11 +96,11 @@
 		AD2A2CAF205C88DE0023D5C8 /* InstagramClone */ = {
 			isa = PBXGroup;
 			children = (
-				AD2A2CB0205C88DE0023D5C8 /* AppDelegate.swift */,
-				AD4D8CEB2060634600A49BA4 /* MainTabBarController.swift */,
 				AD4D8CF22060A70000A49BA4 /* Login */,
 				AD4D8CEF2060826800A49BA4 /* UserProfile */,
 				AD215F14205DA991000E42AD /* Utilities */,
+				AD2A2CB0205C88DE0023D5C8 /* AppDelegate.swift */,
+				AD4D8CEB2060634600A49BA4 /* MainTabBarController.swift */,
 				AD2A2CB7205C88DE0023D5C8 /* Assets.xcassets */,
 				AD2A2CB9205C88DE0023D5C8 /* LaunchScreen.storyboard */,
 				AD2A2CBC205C88DE0023D5C8 /* Info.plist */,
