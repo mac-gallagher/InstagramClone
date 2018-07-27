@@ -10,6 +10,8 @@
 /// be up to 100 characters long. The "firebase_", "google_", and "ga_" prefixes are reserved and
 /// should not be used.
 
+#import <Foundation/Foundation.h>
+
 /// Game achievement ID (NSString).
 /// <pre>
 ///     NSDictionary *params = @{
@@ -483,3 +485,23 @@ static NSString *const kFIRParameterValue NS_SWIFT_NAME(AnalyticsParameterValue)
 /// </pre>
 static NSString *const kFIRParameterVirtualCurrencyName
     NS_SWIFT_NAME(AnalyticsParameterVirtualCurrencyName) = @"virtual_currency_name";
+
+/// The name of a level in a game (NSString).
+/// <pre>
+///     NSDictionary *params = @{
+///       kFIRParameterLevelName : @"room_1",
+///       // ...
+///     };
+/// </pre>
+static NSString *const kFIRParameterLevelName NS_SWIFT_NAME(AnalyticsParameterLevelName) =
+    @"level_name";
+
+/// The result of an operation. Specify 1 to indicate success and 0 to indicate failure (unsigned
+/// integer as NSNumber).
+/// <pre>
+///     NSDictionary *params = @{
+///       kFIRParameterSuccess : @(1),
+///       // ...
+///     };
+/// </pre>
+static NSString *const kFIRParameterSuccess NS_SWIFT_NAME(AnalyticsParameterSuccess) = @"success";

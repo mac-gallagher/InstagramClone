@@ -10,6 +10,8 @@
 /// characters and underscores ("_"), and must start with an alphabetic character. The "firebase_",
 /// "google_", and "ga_" prefixes are reserved and should not be used.
 
+#import <Foundation/Foundation.h>
+
 /// Add Payment Info event. This event signifies that a user has submitted their payment information
 /// to your app.
 static NSString *const kFIREventAddPaymentInfo NS_SWIFT_NAME(AnalyticsEventAddPaymentInfo) =
@@ -55,10 +57,10 @@ static NSString *const kFIREventAddToCart NS_SWIFT_NAME(AnalyticsEventAddToCart)
 static NSString *const kFIREventAddToWishlist NS_SWIFT_NAME(AnalyticsEventAddToWishlist) =
     @"add_to_wishlist";
 
-/// App Open event. By logging this event when an App is moved to the foreground, developers can
-/// understand how often users leave and return during the course of a Session. Although Sessions
-/// are automatically reported, this event can provide further clarification around the continuous
-/// engagement of app-users.
+/// App Open event. By logging this event when an App becomes active, developers can understand how
+/// often users leave and return during the course of a Session. Although Sessions are automatically
+/// reported, this event can provide further clarification around the continuous engagement of
+/// app-users.
 static NSString *const kFIREventAppOpen NS_SWIFT_NAME(AnalyticsEventAppOpen) = @"app_open";
 
 /// E-Commerce Begin Checkout event. This event signifies that a user has begun the process of
@@ -387,3 +389,19 @@ static NSString *const kFIREventViewItemList NS_SWIFT_NAME(AnalyticsEventViewIte
 /// </ul>
 static NSString *const kFIREventViewSearchResults NS_SWIFT_NAME(AnalyticsEventViewSearchResults) =
     @"view_search_results";
+
+/// Level Start event. Log this event when the user starts a new level. Params:
+///
+/// <ul>
+///     <li>@c kFIRParameterLevelName (NSString)</li>
+/// </ul>
+static NSString *const kFIREventLevelStart NS_SWIFT_NAME(AnalyticsEventLevelStart) =
+    @"level_start";
+
+/// Level End event. Log this event when the user finishes a level. Params:
+///
+/// <ul>
+///     <li>@c kFIRParameterLevelName (NSString)</li>
+///     <li>@c kFIRParameterSuccess (NSString)</li>
+/// </ul>
+static NSString *const kFIREventLevelEnd NS_SWIFT_NAME(AnalyticsEventLevelEnd) = @"level_end";

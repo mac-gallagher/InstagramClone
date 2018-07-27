@@ -70,7 +70,6 @@
 		AD215F14205DA991000E42AD /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				AD215F15205DA9B6000E42AD /* Extensions.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -96,24 +95,35 @@
 		AD2A2CAF205C88DE0023D5C8 /* InstagramClone */ = {
 			isa = PBXGroup;
 			children = (
-				AD4D8CF22060A70000A49BA4 /* Login */,
-				AD4D8CEF2060826800A49BA4 /* UserProfile */,
-				AD215F14205DA991000E42AD /* Utilities */,
 				AD2A2CB0205C88DE0023D5C8 /* AppDelegate.swift */,
 				AD4D8CEB2060634600A49BA4 /* MainTabBarController.swift */,
+				AD4D8CF22060A70000A49BA4 /* Login */,
+				AD4D8CF32060A70E00A49BA4 /* LoginController.swift */,
+				AD2A2CB2205C88DE0023D5C8 /* SignUpController.swift */,
+				AD4D8CEF2060826800A49BA4 /* UserProfile */,
+				AD4D8CED2060648B00A49BA4 /* UserProfileController.swift */,
+				AD4D8CF02060827500A49BA4 /* UserProfileHeader.swift */,
+				AD215F14205DA991000E42AD /* Utilities */,
+				AD215F15205DA9B6000E42AD /* Extensions.swift */,
 				AD2A2CB7205C88DE0023D5C8 /* Assets.xcassets */,
 				AD2A2CB9205C88DE0023D5C8 /* LaunchScreen.storyboard */,
+				AD32DEC2210BDB1D002F4973 /* Supporting Files */,
+			);
+			path = InstagramClone;
+			sourceTree = "<group>";
+		};
+		AD32DEC2210BDB1D002F4973 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
 				AD2A2CBC205C88DE0023D5C8 /* Info.plist */,
 				AD215F17205DCC59000E42AD /* GoogleService-Info.plist */,
 			);
-			path = InstagramClone;
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		AD4D8CEF2060826800A49BA4 /* UserProfile */ = {
 			isa = PBXGroup;
 			children = (
-				AD4D8CED2060648B00A49BA4 /* UserProfileController.swift */,
-				AD4D8CF02060827500A49BA4 /* UserProfileHeader.swift */,
 			);
 			path = UserProfile;
 			sourceTree = "<group>";
@@ -121,8 +131,6 @@
 		AD4D8CF22060A70000A49BA4 /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				AD4D8CF32060A70E00A49BA4 /* LoginController.swift */,
-				AD2A2CB2205C88DE0023D5C8 /* SignUpController.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -139,7 +147,6 @@
 				AD2A2CAA205C88DE0023D5C8 /* Frameworks */,
 				AD2A2CAB205C88DE0023D5C8 /* Resources */,
 				4EC4568FA215CC5B0AC33863 /* [CP] Embed Pods Frameworks */,
-				9D73DC0050D34A22A6710726 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -157,7 +164,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = "Mac Gallagher";
 				TargetAttributes = {
 					AD2A2CAC205C88DE0023D5C8 = {
@@ -240,21 +247,6 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-InstagramClone/Pods-InstagramClone-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		9D73DC0050D34A22A6710726 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-InstagramClone/Pods-InstagramClone-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -300,6 +292,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -307,6 +300,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -357,6 +351,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -364,6 +359,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;

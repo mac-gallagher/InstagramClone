@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0700"
+   LastUpgradeVersion = "0930"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -13,11 +13,11 @@
             buildForProfiling = "YES"
             buildForArchiving = "YES">
             <BuildableReference
-               BuildableIdentifier = 'primary'
-               BlueprintIdentifier = 'C052BEBFBD0AB5218CC64BA3450F6547'
-               BlueprintName = 'GTMSessionFetcher'
-               ReferencedContainer = 'container:Pods.xcodeproj'
-               BuildableName = 'GTMSessionFetcher.framework'>
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C71013989C387BAAD69BFE01570495EB"
+               BlueprintName = "GTMSessionFetcher"
+               ReferencedContainer = "container:Pods.xcodeproj"
+               BuildableName = "GTMSessionFetcher.framework">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

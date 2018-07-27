@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0700"
+   LastUpgradeVersion = "0930"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -13,11 +13,11 @@
             buildForProfiling = "YES"
             buildForArchiving = "YES">
             <BuildableReference
-               BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '107A9565F9DF88517DFD3E28C05B2B96'
-               BlueprintName = 'GoogleToolboxForMac'
-               ReferencedContainer = 'container:Pods.xcodeproj'
-               BuildableName = 'GoogleToolboxForMac.framework'>
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "488CA9079247B8F25888405871FCF2F4"
+               BlueprintName = "GoogleToolboxForMac"
+               ReferencedContainer = "container:Pods.xcodeproj"
+               BuildableName = "GoogleToolboxForMac.framework">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
