@@ -26,11 +26,6 @@ class PhotoSelectorController: UICollectionViewController, UICollectionViewDeleg
         fetchPhotos()
     }
     
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let selectedImage = images[indexPath.item]
-        self.selectedImage = selectedImage
-        self.collectionView?.reloadData()
-    }
     
     var selectedImage : UIImage?
     var images = [UIImage]()
@@ -38,7 +33,7 @@ class PhotoSelectorController: UICollectionViewController, UICollectionViewDeleg
     
     private func assetFetchOptions() -> PHFetchOptions {
         let fetchOptions = PHFetchOptions()
-        fetchOptions.fetchLimit = 15
+        fetchOptions.fetchLimit = 30
         let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
         fetchOptions.sortDescriptors = [sortDescriptor]
         return fetchOptions
@@ -75,6 +70,15 @@ class PhotoSelectorController: UICollectionViewController, UICollectionViewDeleg
         }
     }
     
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selectedImage = images[indexPath.item]
+        self.selectedImage = selectedImage
+        self.collectionView?.reloadData()
+        
+        let indexPath = IndexPath(item: 0, section: 0)
+        collectionView.scrollToItem(at: indexPath, at: .bottom, animated: true)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 1, left: 0, bottom: 0, right: 0)
     }
@@ -84,9 +88,13 @@ class PhotoSelectorController: UICollectionViewController, UICollectionViewDeleg
         return CGSize(width: width, height: width)
     }
     
+    var header: PhotoSelectorHeader?
+    
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! PhotoSelectorHeader
         header.photoImageView.image = selectedImage
+        
+        self.header = header
         
         if let selectedImage = selectedImage {
             if let index = self.images.index(of: selectedImage) {
@@ -144,7 +152,9 @@ class PhotoSelectorController: UICollectionViewController, UICollectionViewDeleg
     }
     
     @objc private func handleNext() {
-        
+        let sharePhotoController = SharePhotoController()
+        sharePhotoController.selectedImage = header?.photoImageView.image
+        navigationController?.pushViewController(sharePhotoController, animated: true)
     }
     
 }
