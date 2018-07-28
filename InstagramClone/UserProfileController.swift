@@ -97,8 +97,6 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
         Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
-            print(snapshot.value ?? "")
-            
             guard let dictionary = snapshot.value as? [String: Any] else { return }
             
             self.user = User(dictionary: dictionary)
