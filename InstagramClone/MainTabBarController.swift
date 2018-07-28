@@ -9,10 +9,12 @@
 import UIKit
 import Firebase
 
-class MainTabBarController: UITabBarController {
+class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        delegate = self
         
         if Auth.auth().currentUser == nil {
             DispatchQueue.main.async { // Wait until MainTabBarController is inside UI
@@ -62,6 +64,21 @@ class MainTabBarController: UITabBarController {
         navController.tabBarItem.image = unselectedImage
         navController.tabBarItem.selectedImage = selectedImage
         return navController
+    }
+    
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        
+        let index = viewControllers?.index(of: viewController)
+        if index == 2 {
+            
+            let layout = UICollectionViewFlowLayout()
+            let photoSelectorController = PhotoSelectorController(collectionViewLayout: layout)
+            let nacController = UINavigationController(rootViewController: photoSelectorController)
+            present(nacController, animated: true, completion: nil)
+            
+            return false
+        }
+        return true
     }
     
 }
