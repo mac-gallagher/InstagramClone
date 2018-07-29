@@ -58,13 +58,9 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
         
         let ref = Database.database().reference().child("posts").child(uid)
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
-            //print(snapshot.value)
-            
             guard let dictionaries = snapshot.value as? [String: Any] else { return }
             
             dictionaries.forEach({ (key, value) in
-                //print("Key \(key), Value: \(value)")
-                
                 guard let dictionary = value as? [String: Any] else { return }
                 
                 let post = Post(dictionary: dictionary)
