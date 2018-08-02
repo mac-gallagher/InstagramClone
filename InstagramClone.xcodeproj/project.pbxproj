@@ -24,6 +24,8 @@
 		AD4D8CF42060A70E00A49BA4 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4D8CF32060A70E00A49BA4 /* LoginController.swift */; };
 		ADAC0806210FCB6C00615E62 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC0805210FCB6C00615E62 /* User.swift */; };
 		ADAC0808210FD4C900615E62 /* FirebaseUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC0807210FD4C900615E62 /* FirebaseUtilities.swift */; };
+		ADAC080B21102E8D00615E62 /* UserSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC080A21102E8D00615E62 /* UserSearchController.swift */; };
+		ADAC080D2110318400615E62 /* UserSearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC080C2110318400615E62 /* UserSearchCell.swift */; };
 		ADE95AF5210D1B8E003D9A54 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE95AF4210D1B8E003D9A54 /* Post.swift */; };
 		ADE95AF7210D1D6E003D9A54 /* UserProfilePhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE95AF6210D1D6E003D9A54 /* UserProfilePhotoCell.swift */; };
 		ADE95AF9210D4539003D9A54 /* CustomImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE95AF8210D4539003D9A54 /* CustomImageView.swift */; };
@@ -51,6 +53,8 @@
 		AD4D8CF32060A70E00A49BA4 /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		ADAC0805210FCB6C00615E62 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		ADAC0807210FD4C900615E62 /* FirebaseUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseUtilities.swift; sourceTree = "<group>"; };
+		ADAC080A21102E8D00615E62 /* UserSearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSearchController.swift; sourceTree = "<group>"; };
+		ADAC080C2110318400615E62 /* UserSearchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSearchCell.swift; sourceTree = "<group>"; };
 		ADE95AF4210D1B8E003D9A54 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		ADE95AF6210D1D6E003D9A54 /* UserProfilePhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfilePhotoCell.swift; sourceTree = "<group>"; };
 		ADE95AF8210D4539003D9A54 /* CustomImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomImageView.swift; sourceTree = "<group>"; };
@@ -122,6 +126,7 @@
 			children = (
 				AD2A2CB0205C88DE0023D5C8 /* AppDelegate.swift */,
 				AD4D8CEB2060634600A49BA4 /* MainTabBarController.swift */,
+				ADAC080921102E7E00615E62 /* Search */,
 				ADE95AFA210D6DF0003D9A54 /* Home */,
 				ADE95AF3210D1B83003D9A54 /* Models */,
 				AD32DEC3210BEF59002F4973 /* AddPhoto */,
@@ -172,6 +177,15 @@
 				AD2A2CB2205C88DE0023D5C8 /* SignUpController.swift */,
 			);
 			path = Login;
+			sourceTree = "<group>";
+		};
+		ADAC080921102E7E00615E62 /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				ADAC080A21102E8D00615E62 /* UserSearchController.swift */,
+				ADAC080C2110318400615E62 /* UserSearchCell.swift */,
+			);
+			path = Search;
 			sourceTree = "<group>";
 		};
 		ADE95AF3210D1B83003D9A54 /* Models */ = {
@@ -311,12 +325,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ADAC080D2110318400615E62 /* UserSearchCell.swift in Sources */,
 				AD32DECB210C18E6002F4973 /* SharePhotoController.swift in Sources */,
 				AD2A2CB3205C88DE0023D5C8 /* SignUpController.swift in Sources */,
 				AD32DEC7210C0995002F4973 /* PhotoSelectorCell.swift in Sources */,
 				ADE95AF9210D4539003D9A54 /* CustomImageView.swift in Sources */,
 				ADE95AF5210D1B8E003D9A54 /* Post.swift in Sources */,
 				AD215F16205DA9B6000E42AD /* Extensions.swift in Sources */,
+				ADAC080B21102E8D00615E62 /* UserSearchController.swift in Sources */,
 				ADE95AF7210D1D6E003D9A54 /* UserProfilePhotoCell.swift in Sources */,
 				ADAC0808210FD4C900615E62 /* FirebaseUtilities.swift in Sources */,
 				ADAC0806210FCB6C00615E62 /* User.swift in Sources */,
