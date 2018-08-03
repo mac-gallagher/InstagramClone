@@ -58,7 +58,11 @@ extension Date {
         } else if secondsAgo < day {
             return "\(secondsAgo / hour) hours ago"
         } else if secondsAgo < week {
-            return "\(secondsAgo / day) days ago"
+            if secondsAgo / day == 1 {
+                return "\(secondsAgo / day) day ago"
+            } else {
+                return "\(secondsAgo / day) days ago"
+            }
         }
         
         return "\(secondsAgo / week) weeks ago"

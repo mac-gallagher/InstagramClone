@@ -1,5 +1,5 @@
 CONFIGURATION_BUILD_DIR = ${PODS_CONFIGURATION_BUILD_DIR}/FirebaseDatabase
-FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCore" "${PODS_CONFIGURATION_BUILD_DIR}/GoogleToolboxForMac" "${PODS_CONFIGURATION_BUILD_DIR}/leveldb-library"
+FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCore" "${PODS_CONFIGURATION_BUILD_DIR}/GoogleUtilities" "${PODS_CONFIGURATION_BUILD_DIR}/leveldb-library"
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1 FIRDatabase_VERSION=5.0.2
 OTHER_LDFLAGS = -l"c++" -l"icucore" -framework "CFNetwork" -framework "Security" -framework "SystemConfiguration"
 PODS_BUILD_DIR = ${BUILD_DIR}
