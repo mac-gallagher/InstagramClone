@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLayout, HomePostCellDelegate {
     
     let cellId = "cellId"
     
@@ -84,7 +84,9 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
             dictionaries.forEach({ (key, value) in
                 guard let dictionary = value as? [String: Any] else { return }
                 
-                let post = Post(user: user, dictionary: dictionary)
+                var post = Post(user: user, dictionary: dictionary)
+                post.id = key
+                
                 self.posts.append(post)
             })
             
@@ -128,10 +130,47 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         if indexPath.item < posts.count {
             cell.post = posts[indexPath.item]
         }
+        cell.delegate = self
         return cell
     }
     
+    func didTapComment(post: Post) {
+        let commentsController = CommentsController(collectionViewLayout: UICollectionViewFlowLayout())
+        commentsController.post = post
+        navigationController?.pushViewController(commentsController, animated: true)
+    }
+    
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
