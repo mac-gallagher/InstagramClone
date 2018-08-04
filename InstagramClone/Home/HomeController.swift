@@ -163,11 +163,11 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         Database.database().reference().child("likes").child(postId).updateChildValues(values) { (err, _) in
             
             if let err = err {
-                print("Failed to like post:", err)
+                print("Failed to liked/unlike post:", err)
                 return
             }
             
-            print("Successfully liked post")
+            print("Successfully liked/unliked post")
             
             post.hasLiked = !post.hasLiked
             
