@@ -114,7 +114,7 @@ class UserProfileHeader: UICollectionViewCell {
     }()
     
     @objc func handleChangeToGridView() {
-        gridButton.tintColor = UIColor.mainBlue()
+        gridButton.tintColor = UIColor.mainBlue
         listButton.tintColor = UIColor(white: 0, alpha: 0.2)
         delegate?.didChangeToGridView()
     }
@@ -128,7 +128,7 @@ class UserProfileHeader: UICollectionViewCell {
     }()
     
     @objc func handleChangeToListView() {
-        listButton.tintColor = UIColor.mainBlue()
+        listButton.tintColor = UIColor.mainBlue
         gridButton.tintColor = UIColor(white: 0, alpha: 0.2)
         delegate?.didChangeToListView()
     }
