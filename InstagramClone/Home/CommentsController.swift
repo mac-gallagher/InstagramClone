@@ -11,7 +11,6 @@ import Firebase
 
 class CommentsController: UICollectionViewController, UICollectionViewDelegateFlowLayout, CommentInputAccessoryViewDelegate {
     
-    
     var post: Post?
     
     let cellId = "cellId"
@@ -23,10 +22,8 @@ class CommentsController: UICollectionViewController, UICollectionViewDelegateFl
         
         collectionView?.alwaysBounceVertical = true
         collectionView?.keyboardDismissMode = .interactive
-        
         collectionView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        
         collectionView?.register(CommentCell.self, forCellWithReuseIdentifier: cellId)
         
         fetchComments()

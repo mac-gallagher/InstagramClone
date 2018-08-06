@@ -52,12 +52,27 @@ extension Date {
         let day = 24 * hour
         let week = 7 * day
         
+        if secondsAgo == 0 {
+            return "Just now"
+        }
         if secondsAgo < minute {
-            return "\(secondsAgo) seconds ago"
+            if secondsAgo == 1 {
+                return "\(secondsAgo) second ago"
+            } else {
+                return "\(secondsAgo) seconds ago"
+            }
         } else if secondsAgo < hour {
-            return "\(secondsAgo / minute) minutes ago"
+            if secondsAgo / minute == 1 {
+                return "\(secondsAgo / minute) minute ago"
+            } else {
+                return "\(secondsAgo / minute) minutes ago"
+            }
         } else if secondsAgo < day {
-            return "\(secondsAgo / hour) hours ago"
+            if secondsAgo / hour == 1 {
+                return "\(secondsAgo / hour) hour ago"
+            } else {
+                return "\(secondsAgo / hour) hours ago"
+            }
         } else if secondsAgo < week {
             if secondsAgo / day == 1 {
                 return "\(secondsAgo / day) day ago"
@@ -66,6 +81,10 @@ extension Date {
             }
         }
         
-        return "\(secondsAgo / week) weeks ago"
+        if secondsAgo / week == 1 {
+            return "\(secondsAgo / week) week ago"
+        } else {
+            return "\(secondsAgo / week) weeks ago"
+        }
     }
 }

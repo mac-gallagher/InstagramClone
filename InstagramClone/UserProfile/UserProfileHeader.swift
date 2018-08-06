@@ -20,12 +20,11 @@ class UserProfileHeader: UICollectionViewCell {
     
     var user: User? {
         didSet {
+            usernameLabel.text = user?.username
+            setupEditFollowButton()
             guard let profileImageUrl = user?.profileImageUrl else { return }
             profileImageView.loadImage(urlString: profileImageUrl)
             
-            usernameLabel.text = user?.username
-            
-            setupEditFollowButton()
         }
     }
     
@@ -103,6 +102,8 @@ class UserProfileHeader: UICollectionViewCell {
         let iv = CustomImageView()
         iv.layer.cornerRadius = 80 / 2
         iv.clipsToBounds = true
+        iv.contentMode = .scaleAspectFill
+        iv.image = #imageLiteral(resourceName: "user")
         return iv
     }()
     

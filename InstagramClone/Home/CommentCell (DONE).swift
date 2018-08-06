@@ -12,28 +12,22 @@ class CommentCell: UICollectionViewCell {
     
     var comment: Comment? {
         didSet {
-            guard let comment = comment else { return }
-            
-            let attributedText = NSMutableAttributedString(string: comment.user.username, attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)])
-            attributedText.append(NSAttributedString(string: " " + comment.text, attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14)]))
-            
-            textView.attributedText = attributedText
-            profileImageView.loadImage(urlString: comment.user.profileImageUrl)
+            configureComment()
         }
     }
     
-    let textView: UITextView = {
+    private let textView: UITextView = {
         let textView = UITextView()
         textView.font = UIFont.systemFont(ofSize: 14)
         textView.isScrollEnabled = false
         return textView
     }()
     
-    let profileImageView: CustomImageView = {
+    private let profileImageView: CustomImageView = {
         let iv = CustomImageView()
         iv.clipsToBounds = true
         iv.contentMode = .scaleAspectFill
-        iv.backgroundColor = .blue
+        iv.image = #imageLiteral(resourceName: "user")
         return iv
     }()
     
@@ -54,6 +48,20 @@ class CommentCell: UICollectionViewCell {
         
         addSubview(textView)
         textView.anchor(top: topAnchor, left: profileImageView.rightAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 4, paddingLeft: 4, paddingBottom: 04, paddingRight: 4, width: 0, height: 0)
+    }
+    
+    private func configureComment() {
+        guard let comment = comment else { return }
+        
+        let attributedText = NSMutableAttributedString(string: comment.user.username, attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)])
+        attributedText.append(NSAttributedString(string: " " + comment.text, attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14)]))
+        textView.attributedText = attributedText
+        
+        if let profileImageUrl = comment.user.profileImageUrl {
+            profileImageView.loadImage(urlString: profileImageUrl)
+        } else {
+            profileImageView.image = #imageLiteral(resourceName: "user")
+        }
     }
     
 }
