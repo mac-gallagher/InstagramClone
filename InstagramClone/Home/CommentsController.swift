@@ -11,74 +11,35 @@ import Firebase
 
 class CommentsController: UICollectionViewController, UICollectionViewDelegateFlowLayout, CommentInputAccessoryViewDelegate {
     
-    var post: Post?
+    var post: Post? {
+        didSet {
+            fetchComments()
+        }
+    }
     
-    let cellId = "cellId"
+    private var comments = [Comment]()
+    
+    private lazy var containerView: CommentInputAccessoryView = {
+        let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50)
+        let commentInputAccessoryView = CommentInputAccessoryView(frame: frame)
+        commentInputAccessoryView.delegate = self
+        return commentInputAccessoryView
+    }()
+    
+    override var canBecomeFirstResponder: Bool { return true }
+    
+    override var inputAccessoryView: UIView? { return containerView }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        collectionView?.backgroundColor = .white
         navigationItem.title = "Comments"
         
+        collectionView?.backgroundColor = .white
         collectionView?.alwaysBounceVertical = true
         collectionView?.keyboardDismissMode = .interactive
         collectionView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        collectionView?.register(CommentCell.self, forCellWithReuseIdentifier: cellId)
-        
-        fetchComments()
-    }
-    
-    var comments = [Comment]()
-    
-    private func fetchComments() {
-        guard let postId = post?.id else { return }
-        let ref = Database.database().reference().child("comments").child(postId)
-        ref.observe(.childAdded, with: { (snapshot) in
-            
-            guard let dictionary = snapshot.value as? [String: Any] else { return }
-            
-            guard let uid = dictionary["uid"] as? String else { return }
-            
-            Database.fetchUserWithUID(uid: uid, completion: { (user) in
-                
-                
-                let comment = Comment(user: user, dictionary: dictionary)
-                self.comments.append(comment)
-                self.collectionView?.reloadData()
-            })
-            
-        }) { (err) in
-            print("Failed to observe comments")
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return comments.count
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! CommentCell
-        cell.comment = comments[indexPath.item]
-        return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50)
-        let dummyCell = CommentCell(frame: frame)
-        dummyCell.comment = comments[indexPath.item]
-        dummyCell.layoutIfNeeded()
-        
-        let targetSize = CGSize(width: view.frame.width, height: 1000)
-        let estimatedSize = dummyCell.systemLayoutSizeFitting(targetSize)
-        
-        let height = max(40 + 8 + 8, estimatedSize.height)
-        return CGSize(width: view.frame.width, height: height)
+        collectionView?.register(CommentCell.self, forCellWithReuseIdentifier: CommentCell.cellId)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -91,12 +52,56 @@ class CommentsController: UICollectionViewController, UICollectionViewDelegateFl
         tabBarController?.tabBar.isHidden = false
     }
     
-    lazy var containerView: CommentInputAccessoryView = {
-        let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50)
-        let commentInputAccessoryView = CommentInputAccessoryView(frame: frame)
-        commentInputAccessoryView.delegate = self
-        return commentInputAccessoryView
-    }()
+    private func fetchComments() {
+        guard let postId = post?.id else { return }
+        let ref = Database.database().reference().child("comments").child(postId)
+        
+        ref.observe(.childAdded, with: { (snapshot) in
+            guard let dictionary = snapshot.value as? [String: Any] else { return }
+            guard let uid = dictionary["uid"] as? String else { return }
+            
+            Database.database().fetchUser(withUID: uid, completion: { (user) in
+                let comment = Comment(user: user, dictionary: dictionary)
+                self.comments.append(comment)
+                self.collectionView?.reloadData()
+            }) { (err) in
+                print("Failed to fetch user")
+            }
+            
+        }) { (err) in
+            print("Failed to fetch comments:", err)
+        }
+    }
+        
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return comments.count
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CommentCell.cellId, for: indexPath) as! CommentCell
+        cell.comment = comments[indexPath.item]
+        return cell
+    }
+    
+    //MARK: - UICollectionViewDelegateFlowLayout
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let dummyCell = CommentCell(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 50))
+        dummyCell.comment = comments[indexPath.item]
+        dummyCell.layoutIfNeeded()
+        
+        let targetSize = CGSize(width: view.frame.width, height: 1000)
+        let estimatedSize = dummyCell.systemLayoutSizeFitting(targetSize)
+        let height = max(40 + 8 + 8, estimatedSize.height)
+        
+        return CGSize(width: view.frame.width, height: height)
+    }
+    
+    //MARK: - CommentInputAccessoryViewDelegate
     
     func didSubmit(for comment: String) {
         guard let uid = Auth.auth().currentUser?.uid else { return }
@@ -104,26 +109,14 @@ class CommentsController: UICollectionViewController, UICollectionViewDelegateFl
         let postId = post?.id ?? ""
         let values = ["text": comment, "creationDate": Date().timeIntervalSince1970, "uid": uid] as [String: Any]
         
-        Database.database().reference().child("comments").child(postId).childByAutoId().updateChildValues(values) { (err, ref) in
-            
+        Database.database().reference().child("comments").child(postId).childByAutoId().updateChildValues(values) { (err, _) in
             if let err = err {
                 print("Failed to insert comment:", err)
                 return
             }
-            
             print("Successfully inserted comment")
             self.containerView.clearCommentTextField()
         }
-    }
-    
-    override var inputAccessoryView: UIView? {
-        get {
-            return containerView
-        }
-    }
-    
-    override var canBecomeFirstResponder: Bool {
-        return true
     }
     
 }

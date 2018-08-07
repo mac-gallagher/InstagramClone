@@ -35,18 +35,19 @@ class UserSearchController: UICollectionViewController, UICollectionViewDelegate
         
         searchBar.delegate = self
         
-        Database.database().fetchAllUsers(includeCurrentUser: false) { (users) in
+        Database.database().fetchAllUsers(includeCurrentUser: false, completion: { (users) in
             self.users = users
             self.filteredUsers = users
             self.collectionView?.reloadData()
+        }) { (err) in
+            print("Failed to fetch users for search:", err)
         }
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         searchBar.resignFirstResponder()
-        let user = filteredUsers[indexPath.item]
         let userProfileController = UserProfileController(collectionViewLayout: UICollectionViewFlowLayout())
-        userProfileController.userId = user.uid
+        userProfileController.user = filteredUsers[indexPath.item]
         navigationController?.pushViewController(userProfileController, animated: true)
     }
     

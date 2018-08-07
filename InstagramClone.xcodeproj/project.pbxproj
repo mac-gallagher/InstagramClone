@@ -15,7 +15,7 @@
 		AD2A2CB8205C88DE0023D5C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD2A2CB7205C88DE0023D5C8 /* Assets.xcassets */; };
 		AD2A2CBB205C88DE0023D5C8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2A2CB9205C88DE0023D5C8 /* LaunchScreen.storyboard */; };
 		AD3164D02114F0A1001F5DA7 /* CommentsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3164CF2114F0A1001F5DA7 /* CommentsController.swift */; };
-		AD3164D221152935001F5DA7 /* CommentCell (DONE).swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3164D121152935001F5DA7 /* CommentCell (DONE).swift */; };
+		AD3164D221152935001F5DA7 /* CommentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3164D121152935001F5DA7 /* CommentCell.swift */; };
 		AD3164D421152D00001F5DA7 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3164D321152D00001F5DA7 /* Comment.swift */; };
 		AD3164D621167401001F5DA7 /* CommentInputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3164D521167401001F5DA7 /* CommentInputAccessoryView.swift */; };
 		AD3164D821167E4E001F5DA7 /* CommentInputTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3164D721167E4E001F5DA7 /* CommentInputTextView.swift */; };
@@ -36,7 +36,7 @@
 		ADAC080B21102E8D00615E62 /* UserSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC080A21102E8D00615E62 /* UserSearchController.swift */; };
 		ADAC080D2110318400615E62 /* UserSearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC080C2110318400615E62 /* UserSearchCell.swift */; };
 		ADE95AF5210D1B8E003D9A54 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE95AF4210D1B8E003D9A54 /* Post.swift */; };
-		ADE95AF7210D1D6E003D9A54 /* UserProfilePhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE95AF6210D1D6E003D9A54 /* UserProfilePhotoCell.swift */; };
+		ADE95AF7210D1D6E003D9A54 /* UserProfilePhotoGridCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE95AF6210D1D6E003D9A54 /* UserProfilePhotoGridCell.swift */; };
 		ADE95AF9210D4539003D9A54 /* CustomImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE95AF8210D4539003D9A54 /* CustomImageView.swift */; };
 		ADE95AFC210D6DFF003D9A54 /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE95AFB210D6DFF003D9A54 /* HomeController.swift */; };
 		ADE95AFE210D6F34003D9A54 /* HomePostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE95AFD210D6F34003D9A54 /* HomePostCell.swift */; };
@@ -53,7 +53,7 @@
 		AD2A2CBA205C88DE0023D5C8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AD2A2CBC205C88DE0023D5C8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AD3164CF2114F0A1001F5DA7 /* CommentsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsController.swift; sourceTree = "<group>"; };
-		AD3164D121152935001F5DA7 /* CommentCell (DONE).swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CommentCell (DONE).swift"; sourceTree = "<group>"; };
+		AD3164D121152935001F5DA7 /* CommentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCell.swift; sourceTree = "<group>"; };
 		AD3164D321152D00001F5DA7 /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		AD3164D521167401001F5DA7 /* CommentInputAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentInputAccessoryView.swift; sourceTree = "<group>"; };
 		AD3164D721167E4E001F5DA7 /* CommentInputTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentInputTextView.swift; sourceTree = "<group>"; };
@@ -74,7 +74,7 @@
 		ADAC080A21102E8D00615E62 /* UserSearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSearchController.swift; sourceTree = "<group>"; };
 		ADAC080C2110318400615E62 /* UserSearchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSearchCell.swift; sourceTree = "<group>"; };
 		ADE95AF4210D1B8E003D9A54 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
-		ADE95AF6210D1D6E003D9A54 /* UserProfilePhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfilePhotoCell.swift; sourceTree = "<group>"; };
+		ADE95AF6210D1D6E003D9A54 /* UserProfilePhotoGridCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfilePhotoGridCell.swift; sourceTree = "<group>"; };
 		ADE95AF8210D4539003D9A54 /* CustomImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomImageView.swift; sourceTree = "<group>"; };
 		ADE95AFB210D6DFF003D9A54 /* HomeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
 		ADE95AFD210D6F34003D9A54 /* HomePostCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePostCell.swift; sourceTree = "<group>"; };
@@ -194,7 +194,7 @@
 			isa = PBXGroup;
 			children = (
 				AD4D8CED2060648B00A49BA4 /* UserProfileController.swift */,
-				ADE95AF6210D1D6E003D9A54 /* UserProfilePhotoCell.swift */,
+				ADE95AF6210D1D6E003D9A54 /* UserProfilePhotoGridCell.swift */,
 				AD4D8CF02060827500A49BA4 /* UserProfileHeader.swift */,
 			);
 			path = UserProfile;
@@ -234,7 +234,7 @@
 				ADE95AFB210D6DFF003D9A54 /* HomeController.swift */,
 				ADE95AFD210D6F34003D9A54 /* HomePostCell.swift */,
 				AD3164CF2114F0A1001F5DA7 /* CommentsController.swift */,
-				AD3164D121152935001F5DA7 /* CommentCell (DONE).swift */,
+				AD3164D121152935001F5DA7 /* CommentCell.swift */,
 				AD3164D521167401001F5DA7 /* CommentInputAccessoryView.swift */,
 				AD3164D721167E4E001F5DA7 /* CommentInputTextView.swift */,
 			);
@@ -369,11 +369,11 @@
 				ADE95AF5210D1B8E003D9A54 /* Post.swift in Sources */,
 				AD215F16205DA9B6000E42AD /* Extensions.swift in Sources */,
 				ADAC080B21102E8D00615E62 /* UserSearchController.swift in Sources */,
-				ADE95AF7210D1D6E003D9A54 /* UserProfilePhotoCell.swift in Sources */,
+				ADE95AF7210D1D6E003D9A54 /* UserProfilePhotoGridCell.swift in Sources */,
 				AD32EF772114E21900BB7B56 /* CustomAnimationPresentor.swift in Sources */,
 				AD32EF732114189400BB7B56 /* CameraController.swift in Sources */,
 				ADAC0808210FD4C900615E62 /* FirebaseUtilities.swift in Sources */,
-				AD3164D221152935001F5DA7 /* CommentCell (DONE).swift in Sources */,
+				AD3164D221152935001F5DA7 /* CommentCell.swift in Sources */,
 				ADAC0806210FCB6C00615E62 /* User.swift in Sources */,
 				AD4D8CEC2060634600A49BA4 /* MainTabBarController.swift in Sources */,
 				AD3164D821167E4E001F5DA7 /* CommentInputTextView.swift in Sources */,

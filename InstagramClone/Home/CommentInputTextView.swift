@@ -10,16 +10,12 @@ import UIKit
 
 class CommentInputTextView: UITextView {
     
-    fileprivate let placeholderLabel: UILabel = {
+    private let placeholderLabel: UILabel = {
         let label = UILabel()
         label.text = "Enter Comment"
         label.textColor = UIColor.lightGray
         return label
     }()
-    
-    func showPlaceHolderLabel() {
-        placeholderLabel.isHidden = false
-    }
     
     override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
@@ -37,7 +33,11 @@ class CommentInputTextView: UITextView {
         placeholderLabel.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 8, paddingLeft: 8, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
     }
     
-    @objc func handleTextChange() {
+    func showPlaceholderLabel() {
+        placeholderLabel.isHidden = false
+    }
+    
+    @objc private func handleTextChange() {
         placeholderLabel.isHidden = !self.text.isEmpty
     }
     

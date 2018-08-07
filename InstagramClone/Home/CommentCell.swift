@@ -31,6 +31,8 @@ class CommentCell: UICollectionViewCell {
         return iv
     }()
     
+    static var cellId = "commentCellId"
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         sharedInit()

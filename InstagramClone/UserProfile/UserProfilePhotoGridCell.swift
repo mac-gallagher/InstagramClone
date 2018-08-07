@@ -8,7 +8,7 @@
 
 import UIKit
 
-class UserProfilePhotoCell: UICollectionViewCell {
+class UserProfilePhotoGridCell: UICollectionViewCell {
     
     var post: Post? {
         didSet {
@@ -17,12 +17,14 @@ class UserProfilePhotoCell: UICollectionViewCell {
         }
     }
     
-    let photoImageView: CustomImageView = {
+    private let photoImageView: CustomImageView = {
         let iv = CustomImageView()
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
         return iv
     }()
+    
+    static var cellId = "userProfilePhotoGridCellId"
     
     override init(frame: CGRect) {
         super.init(frame: frame)

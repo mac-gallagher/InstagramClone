@@ -50,10 +50,13 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
             
             guard let userIdsDictionary = snapshot.value as? [String: Any] else { return }
             
-            userIdsDictionary.forEach({ (key, value) in
-                Database.fetchUserWithUID(uid: key, completion: { (user) in
+            userIdsDictionary.forEach({ (arg) in
+                let (key, _) = arg
+                Database.database().fetchUser(withUID: key, completion: { (user) in
                     self.fetchPostsWithUser(user: user)
-                })
+                }) { (err) in
+                    print("Failed to fetch user:", err)
+                }
             })
             
         }) { (err) in
@@ -66,8 +69,10 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     fileprivate func fetchPosts() {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
-        Database.fetchUserWithUID(uid: uid) { (user) in
+        Database.database().fetchUser(withUID: uid, completion: { (user) in
             self.fetchPostsWithUser(user: user)
+        }) { (err) in
+            print("Failed to fetch user:", err)
         }
     }
     

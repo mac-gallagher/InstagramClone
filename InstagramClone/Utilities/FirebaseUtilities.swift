@@ -50,25 +50,36 @@ extension Storage {
 
 extension Database {
 
-    static func fetchUserWithUID(uid: String, completion: @escaping (User) -> ()) {
+    func fetchUser(withUID uid: String, completion: @escaping (User) -> (), withCancel cancel: ((Error) -> ())? = nil) {
         Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
             guard let userDictionary = snapshot.value as? [String: Any] else { return }
             let user = User(uid: uid, dictionary: userDictionary)
             completion(user)
         }) { (err) in
-            print("Failed to fetch user: ", err)
+            cancel?(err)
         }
     }
     
-    func fetchAllUsers(includeCurrentUser: Bool = true, completion: @escaping ([User]) -> ()) {
-        var users = [User]()
-        
+    func followingCountForUser(withUID uid: String) -> Int {
+        return 0
+    }
+    
+    func followerCountForUser(withUID uid: String) -> Int {
+        return 0
+    }
+    
+    func postCountForUser(withUID uid: String) -> Int {
+        return 0
+    }
+    
+    func fetchAllUsers(includeCurrentUser: Bool = true, completion: @escaping ([User]) -> (), withCancel cancel: ((Error) -> ())? = nil) {
         let ref = Database.database().reference().child("users")
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
-            
             guard let dictionaries = snapshot.value as? [String: Any] else { return }
+            
+            var users = [User]()
+            
             dictionaries.forEach({ (key, value) in
-                
                 if !includeCurrentUser, key == Auth.auth().currentUser?.uid { return }
                 
                 guard let userDictionary = value as? [String: Any] else { return }
@@ -79,14 +90,14 @@ extension Database {
             users.sort(by: { (user1, user2) -> Bool in
                 return user1.username.compare(user2.username) == .orderedAscending
             })
-            
             completion(users)
+            
         }) { (err) in
-            print("Failed to fetch users for search:", err)
+            cancel?(err)
         }
     }
     
-    fileprivate func uploadUser(withUID uid: String, username: String, profileImageUrl: String? = nil, completion: @escaping (Error?) -> ()) {
+    fileprivate func uploadUser(withUID uid: String, username: String, profileImageUrl: String? = nil, completion: ((Error?) -> ())? = nil) {
         var dictionaryValues = ["username": username]
         if profileImageUrl != nil {
             dictionaryValues["profileImageUrl"] = profileImageUrl
@@ -94,8 +105,8 @@ extension Database {
         
         let values = [uid: dictionaryValues]
         Database.database().reference().child("users").updateChildValues(values, withCompletionBlock: { (err, ref) in
-            if let err = err { completion(err); return }
-            completion(nil)
+            if let err = err { completion?(err); return }
+            completion?(nil)
         })
     }
     
