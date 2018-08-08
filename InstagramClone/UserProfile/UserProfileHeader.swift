@@ -62,47 +62,25 @@ class UserProfileHeader: UICollectionViewCell {
         return label
     }()
     
-    private let postsLabel: UILabel = {
-        let label = UILabel()
-        let attributedText = NSMutableAttributedString(string: "-\n", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)])
-        attributedText.append(NSAttributedString(string: "posts", attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray, NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14)]))
-        label.attributedText = attributedText
-        label.numberOfLines = 0
-        label.textAlignment = .center
-        return label
-    }()
+    private let postsLabel = UserProfileStatsLabel(value: 0, title: "posts")
     
-    private let followersLabel: UILabel = {
-        let label = UILabel()
-        let attributedText = NSMutableAttributedString(string: "-\n", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)])
-        attributedText.append(NSAttributedString(string: "followers", attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray, NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14)]))
-        label.attributedText = attributedText
-        label.numberOfLines = 0
-        label.textAlignment = .center
-        return label
-    }()
+    private let followersLabel = UserProfileStatsLabel(value: 0, title: "followers")
     
-    private let followingLabel: UILabel = {
-        let label = UILabel()
-        let attributedText = NSMutableAttributedString(string: "-\n", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)])
-        attributedText.append(NSAttributedString(string: "following", attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray, NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14)]))
-        label.attributedText = attributedText
-        label.numberOfLines = 0
-        label.textAlignment = .center
-        return label
-    }()
+    private let followingLabel = UserProfileStatsLabel(value: 0, title: "following")
     
     private lazy var editProfileFollowButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Edit Profile", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
-        button.layer.borderColor = UIColor.lightGray.cgColor
+        button.layer.borderColor = UIColor(white: 0, alpha: 0.2).cgColor
         button.layer.borderWidth = 1
         button.layer.cornerRadius = 3
         button.addTarget(self, action: #selector(handleEditProfileOrFollow), for: .touchUpInside)
         return button
     }()
+    
+    static var headerId = "userProfileHeaderId"
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -129,13 +107,6 @@ class UserProfileHeader: UICollectionViewCell {
         editProfileFollowButton.anchor(top: postsLabel.bottomAnchor, left: postsLabel.leftAnchor, bottom: nil, right: followingLabel.rightAnchor, paddingTop: 2, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 34)
     }
     
-    private func setupFollowStyle() {
-        editProfileFollowButton.setTitle(("Follow"), for: .normal)
-        editProfileFollowButton.backgroundColor = UIColor.rgb(red: 17, green: 154, blue: 237)
-        editProfileFollowButton.setTitleColor(.white, for: .normal)
-        editProfileFollowButton.layer.borderColor = UIColor(white: 0, alpha: 0.2).cgColor
-    }
-    
     private func setupUserStatsView() {
         let stackView = UIStackView(arrangedSubviews: [postsLabel, followersLabel, followingLabel])
         stackView.distribution = .fillEqually
@@ -143,12 +114,19 @@ class UserProfileHeader: UICollectionViewCell {
         stackView.anchor(top: topAnchor, left: profileImageView.rightAnchor, bottom: nil, right: rightAnchor, paddingTop: 12, paddingLeft: 12, paddingBottom: 0, paddingRight: 12, width: 0, height: 50)
     }
     
+    private func setupFollowStyle() {
+        editProfileFollowButton.setTitle(("Follow"), for: .normal)
+        editProfileFollowButton.backgroundColor = UIColor.rgb(red: 17, green: 154, blue: 237)
+        editProfileFollowButton.setTitleColor(.white, for: .normal)
+        editProfileFollowButton.layer.borderColor = UIColor(white: 0, alpha: 0.2).cgColor
+    }
+    
     private func setupBottomToolbar() {
         let topDividerView = UIView()
-        topDividerView.backgroundColor = .lightGray
+        topDividerView.backgroundColor = UIColor(white: 0, alpha: 0.2)
         
         let bottomDividerView = UIView()
-        bottomDividerView.backgroundColor = .lightGray
+        bottomDividerView.backgroundColor = UIColor(white: 0, alpha: 0.2)
         
         let stackView = UIStackView(arrangedSubviews: [gridButton, listButton, bookmarkButton])
         stackView.distribution = .fillEqually
@@ -159,7 +137,7 @@ class UserProfileHeader: UICollectionViewCell {
         
         topDividerView.anchor(top: stackView.topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0.5)
         bottomDividerView.anchor(top: stackView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0.5)
-        stackView.anchor(top: nil, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 50)
+        stackView.anchor(top: nil, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 44)
     }
     
     private func configureUser() {
@@ -168,7 +146,26 @@ class UserProfileHeader: UICollectionViewCell {
         if let profileImageUrl = user?.profileImageUrl {
             profileImageView.loadImage(urlString: profileImageUrl)
         }
-        //update stats
+        configureUserStats()
+    }
+    
+    private func configureUserStats() {
+        guard let uid = user?.uid else { return }
+        
+        Database.database().reference().child("posts").child(uid).observe(.value, with: { (snapshot) in
+            guard let dictionaries = snapshot.value as? [String: Any] else { return }
+            self.postsLabel.setValue(value: dictionaries.count)
+        })
+        
+        Database.database().reference().child("following").child(uid).observe(.value, with: { (snapshot) in
+            guard let dictionaries = snapshot.value as? [String: Int] else { return }
+            self.followingLabel.setValue(value: dictionaries.count)
+        })
+        
+        Database.database().reference().child("followers").child(uid).observe(.value) { (snapshot) in
+            guard let dictionaries = snapshot.value as? [String: Int] else { return }
+            self.followersLabel.setValue(value: dictionaries.count)
+        }
     }
     
     private func setupEditFollowButton() {
@@ -207,6 +204,7 @@ class UserProfileHeader: UICollectionViewCell {
         delegate?.didChangeToListView()
     }
     
+    //Move this code to UserProfileController
     @objc private func handleEditProfileOrFollow() {
         guard let currentLoggedInUserId = Auth.auth().currentUser?.uid else { return }
         
@@ -215,33 +213,52 @@ class UserProfileHeader: UICollectionViewCell {
         if editProfileFollowButton.titleLabel?.text == "Unfollow" {
             //unfollow
             
-            Database.database().reference().child("following").child(currentLoggedInUserId).child(userId).removeValue { (err, ref) in
+            Database.database().reference().child("following").child(currentLoggedInUserId).child(userId).removeValue { (err, _) in
                 if let err = err {
                     print("Failed to unfollow user:", err)
                     return
                 }
                 
-                print("Sucessfully unfollowed user:", self.user?.username ?? "")
-                
-                self.setupFollowStyle()
+                Database.database().reference().child("followers").child(userId).removeValue(completionBlock: { (err, _) in
+                    if let err = err {
+                        print("Failed to unfollow user:", err)
+                        return
+                    }
+                    
+                    print("Sucessfully unfollowed user:", self.user?.username ?? "")
+                    
+                    self.setupFollowStyle()
+                })
             }
             
         } else {
             //follow
-            let ref = Database.database().reference().child("following").child(currentLoggedInUserId)
+            let followingRef = Database.database().reference().child("following").child(currentLoggedInUserId)
             
             let values = [userId: 1]
-            ref.updateChildValues(values) { (err, ref) in
+            followingRef.updateChildValues(values) { (err, ref) in
                 if let err = err {
                     print("Failed to follow user:", err)
                     return
                 }
                 
-                print("Sucessfully followed user: ", self.user?.username ?? "")
+                let followersRef = Database.database().reference().child("followers").child(userId)
                 
-                self.editProfileFollowButton.setTitle("Unfollow", for: .normal)
-                self.editProfileFollowButton.backgroundColor = .white
-                self.editProfileFollowButton.setTitleColor(.black, for: .normal)
+                let values = [currentLoggedInUserId: 1]
+                followersRef.updateChildValues(values) { (err, ref) in
+                    
+                    if let err = err {
+                        print("Failed to follow user:", err)
+                        return
+                    }
+                    
+                    print("Sucessfully followed user: ", self.user?.username ?? "")
+                    
+                    self.editProfileFollowButton.setTitle("Unfollow", for: .normal)
+                    self.editProfileFollowButton.backgroundColor = .white
+                    self.editProfileFollowButton.setTitleColor(.black, for: .normal)
+                }
+                
             }
         }
     }

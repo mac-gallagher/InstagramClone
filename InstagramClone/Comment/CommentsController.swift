@@ -60,12 +60,10 @@ class CommentsController: UICollectionViewController, UICollectionViewDelegateFl
             guard let dictionary = snapshot.value as? [String: Any] else { return }
             guard let uid = dictionary["uid"] as? String else { return }
             
-            Database.database().fetchUser(withUID: uid, completion: { (user) in
+            Database.database().fetchUser(withUID: uid) { (user) in
                 let comment = Comment(user: user, dictionary: dictionary)
                 self.comments.append(comment)
                 self.collectionView?.reloadData()
-            }) { (err) in
-                print("Failed to fetch user")
             }
             
         }) { (err) in

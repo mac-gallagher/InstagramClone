@@ -11,10 +11,14 @@ import Firebase
 
 class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLayout, HomePostCellDelegate {
     
+    private var posts = [Post]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.titleView = UIImageView(image: #imageLiteral(resourceName: "logo").withRenderingMode(.alwaysOriginal))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "camera3").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleCamera))
         
-        NotificationCenter.default.addObserver(self, selector: #selector(handleUpdateFeed), name: SharePhotoController.updateFeedNotificationName, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleRefresh), name: SharePhotoController.updateFeedNotificationName, object: nil)
         
         collectionView?.backgroundColor = .white
         collectionView?.register(HomePostCell.self, forCellWithReuseIdentifier: HomePostCell.cellId)
@@ -23,28 +27,15 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         collectionView?.refreshControl = refreshControl
         
-        setupNavigationItems()
-        fetchAllPosts()
-    }
-    
-    @objc func handleUpdateFeed() {
-        handleRefresh()
-    }
-    
-    @objc func handleRefresh() {
-        print("Handling refresh...")
-        posts.removeAll()
-        fetchAllPosts()
-    }
-    
-    fileprivate func fetchAllPosts() {
         fetchPosts()
-        fetchFollowingUserIds()
     }
     
-    fileprivate func fetchFollowingUserIds() {
-        
+    private func fetchPosts() {
         guard let uid = Auth.auth().currentUser?.uid else { return }
+        
+        Database.database().fetchUser(withUID: uid) { (user) in
+            self.fetchPostsWithUser(user: user)
+        }
         
         Database.database().reference().child("following").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
             
@@ -52,31 +43,17 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
             
             userIdsDictionary.forEach({ (arg) in
                 let (key, _) = arg
-                Database.database().fetchUser(withUID: key, completion: { (user) in
+                Database.database().fetchUser(withUID: key) { (user) in
                     self.fetchPostsWithUser(user: user)
-                }) { (err) in
-                    print("Failed to fetch user:", err)
                 }
             })
             
         }) { (err) in
-            print("Failed to fetch followung user ids:", err)
+            print("Failed to fetch following user ids:", err)
         }
     }
     
-    var posts = [Post]()
-    
-    fileprivate func fetchPosts() {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        
-        Database.database().fetchUser(withUID: uid, completion: { (user) in
-            self.fetchPostsWithUser(user: user)
-        }) { (err) in
-            print("Failed to fetch user:", err)
-        }
-    }
-    
-    fileprivate func fetchPostsWithUser(user: User) {
+    private func fetchPostsWithUser(user: User) {
         let ref = Database.database().reference().child("posts").child(user.uid)
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
             
@@ -90,6 +67,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 var post = Post(user: user, dictionary: dictionary)
                 post.id = key
                 
+                //check likes
                 guard let uid = Auth.auth().currentUser?.uid else { return }
                 Database.database().reference().child("likes").child(key).child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
                     
@@ -113,25 +91,14 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
     }
     
-    func setupNavigationItems() {
-        navigationItem.titleView = UIImageView(image: #imageLiteral(resourceName: "logo2"))
-        
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "camera3").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleCamera))
+    @objc private func handleRefresh() {
+        posts.removeAll()
+        fetchPosts()
     }
     
-    @objc func handleCamera() {
-        print("Showing camera")
-        
+    @objc private func handleCamera() {
         let cameraController = CameraController()
         present(cameraController, animated: true, completion: nil)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        var height: CGFloat = 40 + 8 + 8 //username and userProfileImageView
-        height += view.frame.width
-        height += 50
-        height += 60
-        return CGSize(width: view.frame.width, height: height)
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -147,6 +114,18 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return cell
     }
     
+    //MARK: - UICollectionViewDelegateFlowLayout
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        var height: CGFloat = 40 + 8 + 8 //username and userProfileImageView
+        height += view.frame.width
+        height += 50
+        height += 60
+        return CGSize(width: view.frame.width, height: height)
+    }
+    
+    //MARK: - HomePostCellDelegate
+    
     func didTapComment(post: Post) {
         let commentsController = CommentsController(collectionViewLayout: UICollectionViewFlowLayout())
         commentsController.post = post
@@ -161,21 +140,14 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         guard let postId = post.id else { return }
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
-        
         let values = [uid: post.hasLiked ? 0 : 1]
         Database.database().reference().child("likes").child(postId).updateChildValues(values) { (err, _) in
-            
             if let err = err {
                 print("Failed to liked/unlike post:", err)
                 return
             }
-            
-            print("Successfully liked/unliked post")
-            
             post.hasLiked = !post.hasLiked
-            
             self.posts[indexPath.item] = post
-            
             self.collectionView?.reloadItems(at: [indexPath])
         }
     }

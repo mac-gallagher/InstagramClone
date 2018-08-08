@@ -15,7 +15,6 @@ class CustomAnimationDismissor: NSObject, UIViewControllerAnimatedTransitioning 
     }
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-        
         let containerView = transitionContext.containerView
         
         guard let fromView = transitionContext.view(forKey: .from) else { return }

@@ -23,7 +23,7 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "gear").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleLogOut))
         
         collectionView?.backgroundColor = .white
-        collectionView?.register(UserProfileHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "headerId")
+        collectionView?.register(UserProfileHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: UserProfileHeader.headerId)
         collectionView?.register(UserProfilePhotoGridCell.self, forCellWithReuseIdentifier: UserProfilePhotoGridCell.cellId)
         collectionView?.register(HomePostCell.self, forCellWithReuseIdentifier: HomePostCell.cellId)
         
@@ -32,13 +32,11 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
     
     private func configureUser() {
         let uid = user?.uid ?? (Auth.auth().currentUser?.uid ?? "")
-        Database.database().fetchUser(withUID: uid, completion: { (user) in
+        Database.database().fetchUser(withUID: uid) { (user) in
             self.user = user
             self.navigationItem.title = self.user?.username
             self.collectionView?.reloadData()
             self.paginatePosts()
-        }) { (err) in
-            print("Failed to fetch user: ", err)
         }
     }
     
@@ -111,9 +109,7 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
     
     @objc private func handleLogOut() {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        
-        alertController.addAction(UIAlertAction(title: "Log Out", style: .destructive, handler: { (_) in
-            
+        alertController.addAction(UIAlertAction(title: "Log Out", style: .destructive) { (_) in
             do {
                 try Auth.auth().signOut()
                 let loginController = LoginController()
@@ -123,9 +119,7 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
             } catch let signOutErr {
                 print("Failed to sign out:", signOutErr)
             }
-            
-        }))
-        
+        })
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         present(alertController, animated: true, completion: nil)
     }
@@ -151,7 +145,7 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
     }
     
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "headerId", for: indexPath) as! UserProfileHeader
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: UserProfileHeader.headerId, for: indexPath) as! UserProfileHeader
         header.user = self.user
         header.delegate = self
         return header

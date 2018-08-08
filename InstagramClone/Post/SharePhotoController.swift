@@ -17,9 +17,7 @@ class SharePhotoController: UIViewController {
         }
     }
     
-    override var prefersStatusBarHidden: Bool {
-        return true
-    }
+    override var prefersStatusBarHidden: Bool { return true }
     
     override func viewDidLoad() {
         super.viewDidLoad()

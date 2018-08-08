@@ -131,7 +131,7 @@ class SignUpController: UIViewController, UIImagePickerControllerDelegate, UINav
         guard let username = usernameTextField.text, !username.isEmpty else { return }
         guard let password = passwordTextField.text, !password.isEmpty else { return }
         
-        Auth.auth().createUser(withEmail: email, username: username, password: password, image: profileImage) { (err) in
+        Auth.auth().createUser(withEmail: email, username: username, password: password, image: profileImage) { (user, err) in
             if let err = err {
                 print("Failed to sign up user:", err)
                 self.emailTextField.text = ""
@@ -139,7 +139,7 @@ class SignUpController: UIViewController, UIImagePickerControllerDelegate, UINav
                 self.passwordTextField.text = ""
                 return
             }
-            print("Sucessfully signed up user")
+            print("Sucessfully signed up user with uid:", user?.uid ?? "")
             guard let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController else { return }
             mainTabBarController.setupViewControllers()
             self.dismiss(animated: true, completion: nil)

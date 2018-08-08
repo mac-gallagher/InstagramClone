@@ -1,5 +1,5 @@
 //
-//  PhotoSelectorCell.swift
+//  PhotoSelectorHeader.swift
 //  InstagramClone
 //
 //  Created by Mac Gallagher on 7/27/18.
@@ -8,15 +8,17 @@
 
 import UIKit
 
-class PhotoSelectorCell: UICollectionViewCell {
+class PhotoSelectorHeader: UICollectionViewCell {
     
-    let photoImageView: UIImageView = {
+    internal let photoImageView: UIImageView = {
         let iv = UIImageView()
-        iv.backgroundColor = .lightGray
+        iv.backgroundColor = .darkGray
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
         return iv
     }()
+    
+    static var headerId = "photoSelectorHeaderId"
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -27,7 +29,7 @@ class PhotoSelectorCell: UICollectionViewCell {
         super.init(coder: aDecoder)
         sharedInit()
     }
- 
+    
     private func sharedInit() {
         addSubview(photoImageView)
         photoImageView.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)

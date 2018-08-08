@@ -14,6 +14,7 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         tabBar.tintColor = .black
+        tabBar.isTranslucent = false
         delegate = self
         
         if Auth.auth().currentUser == nil {
@@ -43,6 +44,7 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
     private func templateNavController(unselectedImage: UIImage, selectedImage: UIImage, rootViewController: UIViewController = UIViewController()) -> UINavigationController {
         let viewController = rootViewController
         let navController = UINavigationController(rootViewController: viewController)
+        navController.navigationBar.isTranslucent = false
         navController.tabBarItem.image = unselectedImage
         navController.tabBarItem.selectedImage = selectedImage
         navController.tabBarItem.imageInsets = UIEdgeInsets(top: 4, left: 0, bottom: -4, right: 0)
@@ -61,6 +63,14 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
             return false
         }
         return true
+    }
+    
+    //implement double-tap scroll to top feature
+    private var previousViewController: UIViewController?
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+//        let currentIndex = tabBarController.selectedIndex
+//        let collectionViewController = navController?.viewControllers[currentIndex] as? UICollectionViewController
+//        collectionViewController?.collectionView?.scrollToItem(at: indexPath, at: .bottom, animated: true)
     }
     
 }

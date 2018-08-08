@@ -35,12 +35,10 @@ class UserSearchController: UICollectionViewController, UICollectionViewDelegate
         
         searchBar.delegate = self
         
-        Database.database().fetchAllUsers(includeCurrentUser: false, completion: { (users) in
+        Database.database().fetchAllUsers(includeCurrentUser: false) { (users) in
             self.users = users
             self.filteredUsers = users
             self.collectionView?.reloadData()
-        }) { (err) in
-            print("Failed to fetch users for search:", err)
         }
     }
     

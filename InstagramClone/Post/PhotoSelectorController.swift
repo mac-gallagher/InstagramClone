@@ -11,25 +11,27 @@ import Photos
 
 class PhotoSelectorController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
-    let cellId = "cellId"
-    let headerId = "headerId"
+    private var selectedImage : UIImage?
+    private var images = [UIImage]()
+    private var assets = [PHAsset]()
+    
+    private var header: PhotoSelectorHeader?
+    
+    override var prefersStatusBarHidden: Bool { return true }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView?.backgroundColor = .white
-        setupNavigationButtons()
+        navigationController?.navigationBar.tintColor = .black
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Next", style: .plain, target: self, action: #selector(handleNext))
         
-        collectionView?.register(PhotoSelectorCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView?.register(PhotoSelectorCell.self, forCellWithReuseIdentifier: PhotoSelectorCell.cellId)
         
-        collectionView?.register(PhotoSelectorHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: headerId)
+        collectionView?.register(PhotoSelectorHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: PhotoSelectorHeader.headerId)
     
         fetchPhotos()
     }
-    
-    
-    var selectedImage : UIImage?
-    var images = [UIImage]()
-    var assets = [PHAsset]()
     
     private func assetFetchOptions() -> PHFetchOptions {
         let fetchOptions = PHFetchOptions()
@@ -70,6 +72,16 @@ class PhotoSelectorController: UICollectionViewController, UICollectionViewDeleg
         }
     }
     
+    @objc private func handleCancel() {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    @objc private func handleNext() {
+        let sharePhotoController = SharePhotoController()
+        sharePhotoController.selectedImage = header?.photoImageView.image
+        navigationController?.pushViewController(sharePhotoController, animated: true)
+    }
+    
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedImage = images[indexPath.item]
         self.selectedImage = selectedImage
@@ -79,19 +91,8 @@ class PhotoSelectorController: UICollectionViewController, UICollectionViewDeleg
         collectionView.scrollToItem(at: indexPath, at: .bottom, animated: true)
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 1, left: 0, bottom: 0, right: 0)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        let width = view.frame.width
-        return CGSize(width: width, height: width)
-    }
-    
-    var header: PhotoSelectorHeader?
-    
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! PhotoSelectorHeader
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: PhotoSelectorHeader.headerId, for: indexPath) as! PhotoSelectorHeader
         header.photoImageView.image = selectedImage
         
         self.header = header
@@ -113,6 +114,27 @@ class PhotoSelectorController: UICollectionViewController, UICollectionViewDeleg
         return header
     }
     
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return images.count
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoSelectorCell.cellId, for: indexPath) as! PhotoSelectorCell
+        cell.photoImageView.image = images[indexPath.item]
+        return cell
+    }
+    
+    //MARK: - UICollectionViewDelegateFlowLayout
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 1, left: 0, bottom: 0, right: 0)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        let width = view.frame.width
+        return CGSize(width: width, height: width)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 1
     }
@@ -124,37 +146,6 @@ class PhotoSelectorController: UICollectionViewController, UICollectionViewDeleg
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 1
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return images.count
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! PhotoSelectorCell
-        cell.photoImageView.image = images[indexPath.item]
-        return cell
-    }
-    
-    override var prefersStatusBarHidden: Bool {
-        return true
-    }
-    
-    private func setupNavigationButtons() {
-        navigationController?.navigationBar.tintColor = .black
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
-    
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Next", style: .plain, target: self, action: #selector(handleNext))
-    }
-    
-    @objc private func handleCancel() {
-        dismiss(animated: true, completion: nil)
-    }
-    
-    @objc private func handleNext() {
-        let sharePhotoController = SharePhotoController()
-        sharePhotoController.selectedImage = header?.photoImageView.image
-        navigationController?.pushViewController(sharePhotoController, animated: true)
     }
     
 }
