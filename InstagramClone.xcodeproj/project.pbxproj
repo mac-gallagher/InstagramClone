@@ -37,7 +37,6 @@
 		ADAC0808210FD4C900615E62 /* FirebaseUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC0807210FD4C900615E62 /* FirebaseUtilities.swift */; };
 		ADAC080B21102E8D00615E62 /* UserSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC080A21102E8D00615E62 /* UserSearchController.swift */; };
 		ADAC080D2110318400615E62 /* UserSearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC080C2110318400615E62 /* UserSearchCell.swift */; };
-		ADB047D22119716700218182 /* UserProfileHeaderLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB047D12119716700218182 /* UserProfileHeaderLabel.swift */; };
 		ADE95AF5210D1B8E003D9A54 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE95AF4210D1B8E003D9A54 /* Post.swift */; };
 		ADE95AF7210D1D6E003D9A54 /* UserProfilePhotoGridCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE95AF6210D1D6E003D9A54 /* UserProfilePhotoGridCell.swift */; };
 		ADE95AF9210D4539003D9A54 /* CustomImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE95AF8210D4539003D9A54 /* CustomImageView.swift */; };
@@ -78,7 +77,6 @@
 		ADAC0807210FD4C900615E62 /* FirebaseUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseUtilities.swift; sourceTree = "<group>"; };
 		ADAC080A21102E8D00615E62 /* UserSearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSearchController.swift; sourceTree = "<group>"; };
 		ADAC080C2110318400615E62 /* UserSearchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSearchCell.swift; sourceTree = "<group>"; };
-		ADB047D12119716700218182 /* UserProfileHeaderLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileHeaderLabel.swift; sourceTree = "<group>"; };
 		ADE95AF4210D1B8E003D9A54 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		ADE95AF6210D1D6E003D9A54 /* UserProfilePhotoGridCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfilePhotoGridCell.swift; sourceTree = "<group>"; };
 		ADE95AF8210D4539003D9A54 /* CustomImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomImageView.swift; sourceTree = "<group>"; };
@@ -214,7 +212,6 @@
 				AD4D8CED2060648B00A49BA4 /* UserProfileController.swift */,
 				ADE95AF6210D1D6E003D9A54 /* UserProfilePhotoGridCell.swift */,
 				AD4D8CF02060827500A49BA4 /* UserProfileHeader.swift */,
-				ADB047D12119716700218182 /* UserProfileHeaderLabel.swift */,
 				AD1F315A211BA2A500262BF1 /* UserProfileStatsLabel.swift */,
 			);
 			path = UserProfile;
@@ -381,7 +378,6 @@
 				AD32EF792114E4B200BB7B56 /* CustomAnimationDismissor.swift in Sources */,
 				AD32DECB210C18E6002F4973 /* SharePhotoController.swift in Sources */,
 				AD2A2CB3205C88DE0023D5C8 /* SignUpController.swift in Sources */,
-				ADB047D22119716700218182 /* UserProfileHeaderLabel.swift in Sources */,
 				AD32DEC7210C0995002F4973 /* PhotoSelectorCell.swift in Sources */,
 				ADE95AF9210D4539003D9A54 /* CustomImageView.swift in Sources */,
 				ADE95AF5210D1B8E003D9A54 /* Post.swift in Sources */,

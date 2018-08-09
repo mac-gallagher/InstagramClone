@@ -78,4 +78,8 @@ class UserSearchController: UICollectionViewController, UICollectionViewDelegate
         self.collectionView?.reloadData()
     }
     
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+    
 }
