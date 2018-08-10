@@ -22,6 +22,9 @@ class HomePostHeader: UIView {
     
     var delegate: HomePostHeaderDelegate?
     
+    //insets
+    //height
+    
     private let userProfileImageView: CustomImageView = {
         let iv = CustomImageView()
         iv.contentMode = .scaleAspectFill

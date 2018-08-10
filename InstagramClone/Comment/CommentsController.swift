@@ -42,6 +42,10 @@ class CommentsController: UICollectionViewController, UICollectionViewDelegateFl
         collectionView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         collectionView?.register(CommentCell.self, forCellWithReuseIdentifier: CommentCell.cellId)
+        
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        collectionView?.refreshControl = refreshControl
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -54,9 +58,12 @@ class CommentsController: UICollectionViewController, UICollectionViewDelegateFl
         tabBarController?.tabBar.isHidden = false
     }
     
-    private func fetchComments() {
+    @objc private func fetchComments() {
         guard let postId = post?.id else { return }
+        
         let ref = Database.database().reference().child("comments").child(postId)
+        
+        collectionView?.refreshControl?.endRefreshing()
         
         ref.observe(.childAdded, with: { (snapshot) in
             guard let dictionary = snapshot.value as? [String: Any] else { return }
@@ -71,6 +78,12 @@ class CommentsController: UICollectionViewController, UICollectionViewDelegateFl
         }) { (err) in
             print("Failed to fetch comments:", err)
         }
+    }
+    
+    @objc private func handleRefresh() {
+        comments.removeAll()
+        collectionView?.refreshControl?.beginRefreshing()
+        fetchComments()
     }
         
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

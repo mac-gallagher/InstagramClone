@@ -15,10 +15,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.titleView = UIImageView(image: #imageLiteral(resourceName: "logo").withRenderingMode(.alwaysOriginal))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "camera3").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleCamera))
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        navigationItem.backBarButtonItem?.tintColor = .black
+        configureNavigationBar()
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleRefresh), name: SharePhotoController.updateFeedNotificationName, object: nil)
         
@@ -28,11 +25,19 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         collectionView?.refreshControl = refreshControl
-        
         fetchPosts()
     }
     
+    private func configureNavigationBar() {
+        navigationItem.titleView = UIImageView(image: #imageLiteral(resourceName: "logo").withRenderingMode(.alwaysOriginal))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "camera3").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleCamera))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "inbox").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: nil)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem?.tintColor = .black
+    }
+    
     private func fetchPosts() {
+        collectionView?.refreshControl?.beginRefreshing()
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
         Database.database().fetchUser(withUID: uid) { (user) in
@@ -124,6 +129,16 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         height += 50 //action buttons
         height += 60
         return CGSize(width: view.frame.width, height: height)
+        
+//        let dummyCell = HomePostCell(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 1000))
+//        dummyCell.post = posts[indexPath.item]
+//        dummyCell.layoutIfNeeded()
+//
+//        let targetSize = CGSize(width: view.frame.width, height: 1000)
+//        let estimatedSize = dummyCell.systemLayoutSizeFitting(targetSize)
+//        let height = max(40 + 8 + 8, estimatedSize.height)
+//
+//        return CGSize(width: view.frame.width, height: height)
     }
     
     //MARK: - HomePostCellDelegate
