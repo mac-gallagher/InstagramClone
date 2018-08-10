@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class CommentsController: UICollectionViewController, UICollectionViewDelegateFlowLayout, CommentInputAccessoryViewDelegate {
+class CommentsController: UICollectionViewController, UICollectionViewDelegateFlowLayout, CommentInputAccessoryViewDelegate, CommentCellDelegate {
     
     var post: Post? {
         didSet {
@@ -33,6 +33,8 @@ class CommentsController: UICollectionViewController, UICollectionViewDelegateFl
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Comments"
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem?.tintColor = .black
         
         collectionView?.backgroundColor = .white
         collectionView?.alwaysBounceVertical = true
@@ -78,6 +80,7 @@ class CommentsController: UICollectionViewController, UICollectionViewDelegateFl
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CommentCell.cellId, for: indexPath) as! CommentCell
         cell.comment = comments[indexPath.item]
+        cell.delegate = self
         return cell
     }
     
@@ -115,6 +118,14 @@ class CommentsController: UICollectionViewController, UICollectionViewDelegateFl
             print("Successfully inserted comment")
             self.containerView.clearCommentTextField()
         }
+    }
+    
+    //MARK: - CommentCellDelegate
+    
+    func didTapUsername(comment: Comment) {
+        let userProfileController = UserProfileController(collectionViewLayout: UICollectionViewFlowLayout())
+        userProfileController.user = comment.user
+        navigationController?.pushViewController(userProfileController, animated: true)
     }
     
 }

@@ -102,7 +102,7 @@ class CameraController: UIViewController, AVCapturePhotoCaptureDelegate, UIViewC
         let containerView = PreviewPhotoContainerView()
         containerView.previewImageView.image = previewImage
         view.addSubview(containerView)
-        containerView.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
+        containerView.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.safeAreaLayoutGuide.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.safeAreaLayoutGuide.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
     }
     
     //MARK: - UIViewControllerTransitioningDelegate

@@ -21,6 +21,7 @@ class UserProfilePhotoGridCell: UICollectionViewCell {
         let iv = CustomImageView()
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
+        iv.backgroundColor = UIColor(white: 0.95, alpha: 1)
         return iv
     }()
     

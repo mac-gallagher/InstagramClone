@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol HomePostHeaderDelegate {
+    func didTapUsername()
+}
+
 class HomePostHeader: UIView {
     
     var user: User? {
@@ -16,18 +20,23 @@ class HomePostHeader: UIView {
         }
     }
     
+    var delegate: HomePostHeaderDelegate?
+    
     private let userProfileImageView: CustomImageView = {
         let iv = CustomImageView()
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
         iv.image = #imageLiteral(resourceName: "user")
+        iv.isUserInteractionEnabled  = true
         return iv
     }()
     
-    private let usernameLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Username"
-        label.font = UIFont.boldSystemFont(ofSize: 14)
+    private let usernameButton: UIButton = {
+        let label = UIButton(type: .system)
+        label.setTitleColor(.black, for: .normal)
+        label.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+        label.contentHorizontalAlignment = .left
+        label.addTarget(self, action: #selector(handleTap), for: .touchUpInside)
         return label
     }()
     
@@ -53,22 +62,27 @@ class HomePostHeader: UIView {
         addSubview(userProfileImageView)
         userProfileImageView.anchor(top: topAnchor, left: leftAnchor, paddingTop: 8, paddingLeft: 8, width: 40, height: 40)
         userProfileImageView.layer.cornerRadius = 40 / 2
+        userProfileImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap)))
         
         addSubview(optionsButton)
         optionsButton.anchor(top: topAnchor, bottom: bottomAnchor, right: rightAnchor, paddingRight: 8, width: 44)
         
-        addSubview(usernameLabel)
-        usernameLabel.anchor(top: topAnchor, left: userProfileImageView.rightAnchor, bottom: bottomAnchor, right: optionsButton.leftAnchor, paddingLeft: 8)
+        addSubview(usernameButton)
+        usernameButton.anchor(top: topAnchor, left: userProfileImageView.rightAnchor, bottom: bottomAnchor, right: optionsButton.leftAnchor, paddingLeft: 8)
     }
     
     private func configureUser() {
         guard let user = user else { return }
-        usernameLabel.text = user.username
+        usernameButton.setTitle(user.username, for: .normal)
         if let profileImageUrl = user.profileImageUrl {
             userProfileImageView.loadImage(urlString: profileImageUrl)
         } else {
             userProfileImageView.image = #imageLiteral(resourceName: "user")
         }
+    }
+    
+    @objc private func handleTap() {
+        delegate?.didTapUsername()
     }
     
 }

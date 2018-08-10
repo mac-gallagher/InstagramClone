@@ -10,13 +10,15 @@ import UIKit
 import Firebase
 
 class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLayout, HomePostCellDelegate {
-    
+   
     private var posts = [Post]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.titleView = UIImageView(image: #imageLiteral(resourceName: "logo").withRenderingMode(.alwaysOriginal))
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "camera3").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleCamera))
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem?.tintColor = .black
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleRefresh), name: SharePhotoController.updateFeedNotificationName, object: nil)
         
@@ -117,9 +119,9 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     //MARK: - UICollectionViewDelegateFlowLayout
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        var height: CGFloat = 40 + 8 + 8 //username and userProfileImageView
+        var height: CGFloat = 40 + 8 + 8 //header
         height += view.frame.width
-        height += 50
+        height += 50 //action buttons
         height += 60
         return CGSize(width: view.frame.width, height: height)
     }
@@ -150,6 +152,12 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
             self.posts[indexPath.item] = post
             self.collectionView?.reloadItems(at: [indexPath])
         }
+    }
+    
+    func didTapUsername(post: Post) {
+        let userProfileController = UserProfileController(collectionViewLayout: UICollectionViewFlowLayout())
+        userProfileController.user = post.user
+        navigationController?.pushViewController(userProfileController, animated: true)
     }
     
 }

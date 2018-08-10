@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol CommentCellDelegate {
+    func didTapUsername(comment: Comment)
+}
+
 class CommentCell: UICollectionViewCell {
     
     var comment: Comment? {
@@ -16,10 +20,13 @@ class CommentCell: UICollectionViewCell {
         }
     }
     
+    var delegate: CommentCellDelegate?
+    
     private let textView: UITextView = {
         let textView = UITextView()
         textView.font = UIFont.systemFont(ofSize: 14)
         textView.isScrollEnabled = false
+        textView.isUserInteractionEnabled = false
         return textView
     }()
     
@@ -27,6 +34,7 @@ class CommentCell: UICollectionViewCell {
         let iv = CustomImageView()
         iv.clipsToBounds = true
         iv.contentMode = .scaleAspectFill
+        iv.isUserInteractionEnabled = true
         iv.image = #imageLiteral(resourceName: "user")
         return iv
     }()
@@ -47,6 +55,7 @@ class CommentCell: UICollectionViewCell {
         addSubview(profileImageView)
         profileImageView.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 8, paddingLeft: 8, paddingBottom: 0, paddingRight: 0, width: 40, height: 40)
         profileImageView.layer.cornerRadius = 40 / 2
+        profileImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap)))
         
         addSubview(textView)
         textView.anchor(top: topAnchor, left: profileImageView.rightAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 4, paddingLeft: 4, paddingBottom: 04, paddingRight: 4, width: 0, height: 0)
@@ -69,6 +78,11 @@ class CommentCell: UICollectionViewCell {
         } else {
             profileImageView.image = #imageLiteral(resourceName: "user")
         }
+    }
+    
+    @objc private func handleTap() {
+        guard let comment = comment else { return }
+        delegate?.didTapUsername(comment: comment)
     }
     
 }

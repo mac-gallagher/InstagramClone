@@ -27,6 +27,8 @@ class UserSearchController: UICollectionViewController, UICollectionViewDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.titleView = searchBar
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem?.tintColor = .black
         
         collectionView?.backgroundColor = .white
         collectionView?.alwaysBounceVertical = true

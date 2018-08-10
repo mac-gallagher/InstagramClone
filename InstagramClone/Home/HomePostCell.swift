@@ -10,10 +10,11 @@ import UIKit
 
 protocol HomePostCellDelegate {
     func didTapComment(post: Post)
+    func didTapUsername(post: Post)
     func didLike(for cell: HomePostCell)
 }
 
-class HomePostCell: UICollectionViewCell {
+class HomePostCell: UICollectionViewCell, HomePostHeaderDelegate {
     
     var delegate: HomePostCellDelegate?
     
@@ -29,6 +30,7 @@ class HomePostCell: UICollectionViewCell {
         let iv = CustomImageView()
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
+        iv.backgroundColor = UIColor(white: 0.95, alpha: 1)
         return iv
     }()
     
@@ -58,7 +60,7 @@ class HomePostCell: UICollectionViewCell {
         return button
     }()
     
-    private let captionLabel: UILabel = {
+    internal let captionLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         return label
@@ -79,6 +81,7 @@ class HomePostCell: UICollectionViewCell {
     private func sharedInit() {
         addSubview(header)
         header.anchor(top: topAnchor, left: leftAnchor, right: rightAnchor, height: 56)
+        header.delegate = self
         
         addSubview(photoImageView)
         photoImageView.anchor(top: header.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor)
@@ -129,6 +132,13 @@ class HomePostCell: UICollectionViewCell {
     @objc private func handleComment() {
         guard let post = post else { return }
         delegate?.didTapComment(post: post)
+    }
+    
+    //MARK: - HomePostHeaderDelegate
+    
+    func didTapUsername() {
+        guard let post = post else { return }
+        delegate?.didTapUsername(post: post)
     }
     
 }
