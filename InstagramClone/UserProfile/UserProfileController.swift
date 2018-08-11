@@ -31,6 +31,7 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
         collectionView?.register(UserProfileHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: UserProfileHeader.headerId)
         collectionView?.register(UserProfilePhotoGridCell.self, forCellWithReuseIdentifier: UserProfilePhotoGridCell.cellId)
         collectionView?.register(HomePostCell.self, forCellWithReuseIdentifier: HomePostCell.cellId)
+        collectionView?.register(UserProfileEmptyStateCell.self, forCellWithReuseIdentifier: UserProfileEmptyStateCell.cellId)
         
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
@@ -111,10 +112,19 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if posts.count == 0 {
+            return 1
+        }
         return posts.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        if posts.count == 0 {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UserProfileEmptyStateCell.cellId, for: indexPath)
+            return cell
+        }
+        
         if indexPath.item == posts.count - 1, !isFinishedPaging {
             paginatePosts()
         }
@@ -159,6 +169,11 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if posts.count == 0 {
+            let emptyStateCellHeight = (view.safeAreaLayoutGuide.layoutFrame.height - 200)
+            return CGSize(width: view.frame.width, height: emptyStateCellHeight)
+        }
+        
         if isGridView {
             let width = (view.frame.width - 2) / 3
             return CGSize(width: width, height: width)
