@@ -17,6 +17,8 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
         }
     }
     
+    private var header: UserProfileHeader?
+    
     private var isFinishedPaging = false
     private var pagingCount: Int = 4
     private var posts = [Post]()
@@ -84,7 +86,6 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
                 self.posts.append(post)
             })
             
-            //TODO: Make it so header is not reloaded
             self.collectionView?.reloadData()
             
         }) { (err) in
@@ -129,17 +130,22 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
     }
     
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: UserProfileHeader.headerId, for: indexPath) as! UserProfileHeader
-        header.delegate = self
-        header.user = user
-        return header
+        if header == nil {
+            header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: UserProfileHeader.headerId, for: indexPath) as? UserProfileHeader
+            header?.user = user
+            header?.delegate = self
+        }
+        return header!
     }
     
     @objc private func handleRefresh() {
         posts.removeAll()
         isFinishedPaging = false
         paginatePosts()
-        collectionView?.reloadData()
+        if !isGridView {
+            collectionView?.refreshControl?.endRefreshing()
+        }
+        header?.reloadData()
     }
     
     //MARK: - UICollectionViewDelegateFlowLayout
@@ -177,15 +183,11 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
     
     func didChangeToGridView() {
         isGridView = true
-        
-        //TODO: Make it so header is not reloaded
         collectionView?.reloadData()
     }
     
     func didChangeToListView() {
         isGridView = false
-        
-        //TODO: Make it so header is not reloaded
         collectionView?.reloadData()
     }
     
