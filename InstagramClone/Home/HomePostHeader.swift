@@ -22,8 +22,7 @@ class HomePostHeader: UIView {
     
     var delegate: HomePostHeaderDelegate?
     
-    //insets
-    //height
+    private var padding: CGFloat = 8
     
     private let userProfileImageView: CustomImageView = {
         let iv = CustomImageView()
@@ -63,15 +62,15 @@ class HomePostHeader: UIView {
     
     private func sharedInit() {
         addSubview(userProfileImageView)
-        userProfileImageView.anchor(top: topAnchor, left: leftAnchor, paddingTop: 8, paddingLeft: 8, width: 40, height: 40)
+        userProfileImageView.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, paddingTop: padding, paddingLeft: padding, paddingBottom: padding, width: 40, height: 40)
         userProfileImageView.layer.cornerRadius = 40 / 2
         userProfileImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap)))
         
         addSubview(optionsButton)
-        optionsButton.anchor(top: topAnchor, bottom: bottomAnchor, right: rightAnchor, paddingRight: 8, width: 44)
+        optionsButton.anchor(top: topAnchor, bottom: bottomAnchor, right: rightAnchor, paddingRight: padding, width: 44)
         
         addSubview(usernameButton)
-        usernameButton.anchor(top: topAnchor, left: userProfileImageView.rightAnchor, bottom: bottomAnchor, right: optionsButton.leftAnchor, paddingLeft: 8)
+        usernameButton.anchor(top: topAnchor, left: userProfileImageView.rightAnchor, bottom: bottomAnchor, paddingLeft: 8)
     }
     
     private func configureUser() {

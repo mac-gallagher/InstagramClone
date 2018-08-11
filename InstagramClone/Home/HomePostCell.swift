@@ -24,7 +24,13 @@ class HomePostCell: UICollectionViewCell, HomePostHeaderDelegate {
         }
     }
     
-    private let header = HomePostHeader()
+    internal let header = HomePostHeader()
+    
+    internal let captionLabel: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        return label
+    }()
     
     private let photoImageView: CustomImageView = {
         let iv = CustomImageView()
@@ -60,12 +66,6 @@ class HomePostCell: UICollectionViewCell, HomePostHeaderDelegate {
         return button
     }()
     
-    internal let captionLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 0
-        return label
-    }()
-    
     static var cellId = "homePostCellId"
     
     override init(frame: CGRect) {
@@ -80,7 +80,7 @@ class HomePostCell: UICollectionViewCell, HomePostHeaderDelegate {
     
     private func sharedInit() {
         addSubview(header)
-        header.anchor(top: topAnchor, left: leftAnchor, right: rightAnchor, height: 56)
+        header.anchor(top: topAnchor, left: leftAnchor, right: rightAnchor)
         header.delegate = self
         
         addSubview(photoImageView)
@@ -90,18 +90,19 @@ class HomePostCell: UICollectionViewCell, HomePostHeaderDelegate {
         setupActionButtons()
 
         addSubview(captionLabel)
-        captionLabel.anchor(top: likeButton.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingLeft: 8, paddingRight: 8)
+        captionLabel.anchor(top: bookmarkButton.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 4, paddingLeft: 8, paddingRight: 8)
     }
     
     private func setupActionButtons() {
         let stackView = UIStackView(arrangedSubviews: [likeButton, commentButton, sendMessageButton])
         stackView.distribution = .fillEqually
-        stackView.alignment = .center
+        stackView.alignment = .top
+        stackView.spacing = 16
         addSubview(stackView)
-        stackView.anchor(top: photoImageView.bottomAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 8, paddingBottom: 0, paddingRight: 0, width: 120, height: 50)
+        stackView.anchor(top: photoImageView.bottomAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 8, paddingLeft: 8, paddingBottom: 0, paddingRight: 0)
         
         addSubview(bookmarkButton)
-        bookmarkButton.anchor(top: photoImageView.bottomAnchor, left: nil, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 40, height: 50)
+        bookmarkButton.anchor(top: photoImageView.bottomAnchor, left: nil, bottom: nil, right: rightAnchor, paddingTop: 8, paddingLeft: 0, paddingBottom: 0, paddingRight: 8)
     }
     
     private func configurePost() {
@@ -121,7 +122,6 @@ class HomePostCell: UICollectionViewCell, HomePostHeaderDelegate {
         
         let timeAgoDisplay = post.creationDate.timeAgoDisplay()
         attributedText.append(NSAttributedString(string: timeAgoDisplay, attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14), NSAttributedStringKey.foregroundColor: UIColor.gray]))
-        
         captionLabel.attributedText = attributedText
     }
     

@@ -124,21 +124,15 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     //MARK: - UICollectionViewDelegateFlowLayout
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        var height: CGFloat = 40 + 8 + 8 //header
-        height += view.frame.width
-        height += 50 //action buttons
-        height += 60
-        return CGSize(width: view.frame.width, height: height)
+        let dummyCell = HomePostCell(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 1000))
+        dummyCell.post = posts[indexPath.item]
+        dummyCell.layoutIfNeeded()
         
-//        let dummyCell = HomePostCell(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 1000))
-//        dummyCell.post = posts[indexPath.item]
-//        dummyCell.layoutIfNeeded()
-//
-//        let targetSize = CGSize(width: view.frame.width, height: 1000)
-//        let estimatedSize = dummyCell.systemLayoutSizeFitting(targetSize)
-//        let height = max(40 + 8 + 8, estimatedSize.height)
-//
-//        return CGSize(width: view.frame.width, height: height)
+        var height: CGFloat = dummyCell.header.bounds.height
+        height += view.frame.width
+        height += 24 + 8 + 8 //bookmark button + padding
+        height += dummyCell.captionLabel.intrinsicContentSize.height
+        return CGSize(width: view.frame.width, height: height)
     }
     
     //MARK: - HomePostCellDelegate
@@ -176,40 +170,3 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
