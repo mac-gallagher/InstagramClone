@@ -110,4 +110,56 @@ extension Database {
         })
     }
     
+    func followUser(withUID uid: String, completion: @escaping (Error?) -> ()) {
+        guard let currentLoggedInUserId = Auth.auth().currentUser?.uid else { return }
+        
+        let values = [uid: 1]
+        Database.database().reference().child("following").child(currentLoggedInUserId).updateChildValues(values) { (err, ref) in
+            if let err = err {
+                completion(err)
+                return
+            }
+            
+            let values = [currentLoggedInUserId: 1]
+            Database.database().reference().child("followers").child(uid).updateChildValues(values) { (err, ref) in
+                if let err = err {
+                    completion(err)
+                    return
+                }
+                completion(nil)
+            }
+            
+        }
+    }
+    
+    func unfollowUser(withUID uid: String, completion: @escaping (Error?) -> ()) {
+        guard let currentLoggedInUserId = Auth.auth().currentUser?.uid else { return }
+        
+        Database.database().reference().child("following").child(currentLoggedInUserId).child(uid).removeValue { (err, _) in
+            if let err = err {
+                print("Failed to remove user from following:", err)
+                completion(err)
+                return
+            }
+            
+            Database.database().reference().child("followers").child(uid).child(currentLoggedInUserId).removeValue(completionBlock: { (err, _) in
+                if let err = err {
+                    print("Failed to remove user from followers:", err)
+                    completion(err)
+                    return
+                }
+                completion(nil)
+            })
+        }
+    }
+    
+    
+    
+    
 }
+
+
+
+
+
+

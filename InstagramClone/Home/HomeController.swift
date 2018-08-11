@@ -131,7 +131,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         var height: CGFloat = dummyCell.header.bounds.height
         height += view.frame.width
         height += 24 + 8 + 8 //bookmark button + padding
-        height += dummyCell.captionLabel.intrinsicContentSize.height
+        height += dummyCell.captionLabel.intrinsicContentSize.height + 8
         return CGSize(width: view.frame.width, height: height)
     }
     

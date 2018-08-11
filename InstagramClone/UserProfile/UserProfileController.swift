@@ -11,56 +11,63 @@ import Firebase
 
 class UserProfileController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UserProfileHeaderDelegate {
     
-    var user: User?
+    var user: User? {
+        didSet {
+            configureUser()
+        }
+    }
     
     private var isFinishedPaging = false
+    private var pagingCount: Int = 4
     private var posts = [Post]()
     
     private var isGridView: Bool = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "gear").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleLogOut))
-        
         collectionView?.backgroundColor = .white
         collectionView?.register(UserProfileHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: UserProfileHeader.headerId)
         collectionView?.register(UserProfilePhotoGridCell.self, forCellWithReuseIdentifier: UserProfilePhotoGridCell.cellId)
         collectionView?.register(HomePostCell.self, forCellWithReuseIdentifier: HomePostCell.cellId)
         
-        configureUser()
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        collectionView?.refreshControl = refreshControl
     }
     
     private func configureUser() {
-        let uid = user?.uid ?? (Auth.auth().currentUser?.uid ?? "")
-        Database.database().fetchUser(withUID: uid) { (user) in
-            self.user = user
-            self.navigationItem.title = self.user?.username
-            self.collectionView?.reloadData()
-            self.paginatePosts()
+        guard let user = user else { return }
+        
+        if user.uid == Auth.auth().currentUser?.uid {
+            navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "gear").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleLogOut))
+        } else {
+            let optionsButton = UIBarButtonItem(title: "•••", style: .plain, target: nil, action: nil)
+            optionsButton.tintColor = .black
+            navigationItem.rightBarButtonItem = optionsButton
         }
+        
+        navigationItem.title = user.username
+        paginatePosts()
     }
     
     private func paginatePosts() {
-        print("Starting paging for more posts")
-        
         guard let uid = self.user?.uid else { return }
-        let ref = Database.database().reference().child("posts").child(uid)
-        
-        var query = ref.queryOrdered(byChild: "creationDate")
+
+        var query = Database.database().reference().child("posts").child(uid).queryOrdered(byChild: "creationDate")
         
         if posts.count > 0 {
             let value = posts.last?.creationDate.timeIntervalSince1970
             query = query.queryEnding(atValue: value)
         }
         
-        query.queryLimited(toLast: 4).observeSingleEvent(of: .value, with: { (snapshot) in
-            
+        query.queryLimited(toLast: UInt(pagingCount)).observeSingleEvent(of: .value, with: { (snapshot) in
             guard var allObjects = snapshot.children.allObjects as? [DataSnapshot] else { return }
             
             allObjects.reverse()
             
-            if allObjects.count < 4 {
+            if allObjects.count < self.pagingCount {
                 self.isFinishedPaging = true
+                self.collectionView?.refreshControl?.endRefreshing()
             }
             
             if self.posts.count > 0 && allObjects.count > 0 {
@@ -70,40 +77,18 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
             guard let user = self.user else { return }
             
             allObjects.forEach({ (snapshot) in
-                
                 guard let dictionary = snapshot.value as? [String: Any] else { return }
+                
                 var post = Post(user: user, dictionary: dictionary)
-                
                 post.id = snapshot.key
-                
                 self.posts.append(post)
-                
             })
             
+            //TODO: Make it so header is not reloaded
             self.collectionView?.reloadData()
             
         }) { (err) in
             print("Failed to paginate posts:", err)
-        }
-        
-    }
-    
-    private func fetchOrderedPosts() {
-        guard let uid = user?.uid else { return }
-        let ref = Database.database().reference().child("posts").child(uid)
-        
-        ref.queryOrdered(byChild: "creationDate").observe(.childAdded, with: { (snapshot) in
-            guard let dictionary = snapshot.value as? [String: Any] else { return }
-            
-            guard let user = self.user else { return }
-            
-            let post = Post(user: user, dictionary: dictionary)
-            self.posts.insert(post, at: 0)
-            
-            self.collectionView?.reloadData()
-            
-        }) { (err) in
-            print("Failed to fetch ordered posts:", err)
         }
     }
     
@@ -130,7 +115,6 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.item == posts.count - 1, !isFinishedPaging {
-            print("Paginating for posts")
             paginatePosts()
         }
         
@@ -146,9 +130,16 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
     
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: UserProfileHeader.headerId, for: indexPath) as! UserProfileHeader
-        header.user = self.user
         header.delegate = self
+        header.user = user
         return header
+    }
+    
+    @objc private func handleRefresh() {
+        posts.removeAll()
+        isFinishedPaging = false
+        paginatePosts()
+        collectionView?.reloadData()
     }
     
     //MARK: - UICollectionViewDelegateFlowLayout
@@ -166,10 +157,14 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
             let width = (view.frame.width - 2) / 3
             return CGSize(width: width, height: width)
         } else {
-            var height: CGFloat = 40 + 8 + 8 //username and userProfileImageView
+            let dummyCell = HomePostCell(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 1000))
+            dummyCell.post = posts[indexPath.item]
+            dummyCell.layoutIfNeeded()
+            
+            var height: CGFloat = dummyCell.header.bounds.height
             height += view.frame.width
-            height += 50
-            height += 60
+            height += 24 + 8 + 8 //bookmark button + padding
+            height += dummyCell.captionLabel.intrinsicContentSize.height + 8
             return CGSize(width: view.frame.width, height: height)
         }
     }
@@ -182,20 +177,19 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
     
     func didChangeToGridView() {
         isGridView = true
+        
+        //TODO: Make it so header is not reloaded
         collectionView?.reloadData()
     }
     
     func didChangeToListView() {
         isGridView = false
+        
+        //TODO: Make it so header is not reloaded
         collectionView?.reloadData()
     }
     
-    
 }
-
-
-
-
 
 
 

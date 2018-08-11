@@ -90,7 +90,7 @@ class HomePostCell: UICollectionViewCell, HomePostHeaderDelegate {
         setupActionButtons()
 
         addSubview(captionLabel)
-        captionLabel.anchor(top: bookmarkButton.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 4, paddingLeft: 8, paddingRight: 8)
+        captionLabel.anchor(top: bookmarkButton.bottomAnchor, left: leftAnchor, right: rightAnchor, paddingTop: 4, paddingLeft: 8, paddingRight: 8)
     }
     
     private func setupActionButtons() {
