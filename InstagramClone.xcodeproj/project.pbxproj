@@ -11,13 +11,14 @@
 		AD1F3158211B98D100262BF1 /* HomePostHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1F3157211B98D100262BF1 /* HomePostHeader.swift */; };
 		AD1F315B211BA2A500262BF1 /* UserProfileStatsLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1F315A211BA2A500262BF1 /* UserProfileStatsLabel.swift */; };
 		AD215F16205DA9B6000E42AD /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD215F15205DA9B6000E42AD /* Extensions.swift */; };
-		AD215F18205DCC59000E42AD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AD215F17205DCC59000E42AD /* GoogleService-Info.plist */; };
 		AD2A2CB1205C88DE0023D5C8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2A2CB0205C88DE0023D5C8 /* AppDelegate.swift */; };
 		AD2A2CB3205C88DE0023D5C8 /* SignUpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2A2CB2205C88DE0023D5C8 /* SignUpController.swift */; };
 		AD2A2CB8205C88DE0023D5C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD2A2CB7205C88DE0023D5C8 /* Assets.xcassets */; };
 		AD2A2CBB205C88DE0023D5C8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2A2CB9205C88DE0023D5C8 /* LaunchScreen.storyboard */; };
 		AD2CC6D4211F577E0091E7D9 /* UserProfileFollowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2CC6D3211F577E0091E7D9 /* UserProfileFollowButton.swift */; };
 		AD2CC6D6211FA0C40091E7D9 /* UserProfileEmptyStateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2CC6D5211FA0C40091E7D9 /* UserProfileEmptyStateCell.swift */; };
+		AD2CC6D8211FEF2B0091E7D9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AD2CC6D7211FEF2B0091E7D9 /* GoogleService-Info.plist */; };
+		AD2CC6DA21215B220091E7D9 /* HomeEmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2CC6D921215B220091E7D9 /* HomeEmptyStateView.swift */; };
 		AD3164D02114F0A1001F5DA7 /* CommentsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3164CF2114F0A1001F5DA7 /* CommentsController.swift */; };
 		AD3164D221152935001F5DA7 /* CommentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3164D121152935001F5DA7 /* CommentCell.swift */; };
 		AD3164D421152D00001F5DA7 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3164D321152D00001F5DA7 /* Comment.swift */; };
@@ -51,7 +52,6 @@
 		AD1F3157211B98D100262BF1 /* HomePostHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePostHeader.swift; sourceTree = "<group>"; };
 		AD1F315A211BA2A500262BF1 /* UserProfileStatsLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileStatsLabel.swift; sourceTree = "<group>"; };
 		AD215F15205DA9B6000E42AD /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		AD215F17205DCC59000E42AD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		AD2A2CAD205C88DE0023D5C8 /* InstagramClone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InstagramClone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD2A2CB0205C88DE0023D5C8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AD2A2CB2205C88DE0023D5C8 /* SignUpController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpController.swift; sourceTree = "<group>"; };
@@ -60,6 +60,8 @@
 		AD2A2CBC205C88DE0023D5C8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AD2CC6D3211F577E0091E7D9 /* UserProfileFollowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileFollowButton.swift; sourceTree = "<group>"; };
 		AD2CC6D5211FA0C40091E7D9 /* UserProfileEmptyStateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileEmptyStateCell.swift; sourceTree = "<group>"; };
+		AD2CC6D7211FEF2B0091E7D9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		AD2CC6D921215B220091E7D9 /* HomeEmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeEmptyStateView.swift; sourceTree = "<group>"; };
 		AD3164CF2114F0A1001F5DA7 /* CommentsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsController.swift; sourceTree = "<group>"; };
 		AD3164D121152935001F5DA7 /* CommentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCell.swift; sourceTree = "<group>"; };
 		AD3164D321152D00001F5DA7 /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
@@ -163,14 +165,14 @@
 			children = (
 				AD2A2CB0205C88DE0023D5C8 /* AppDelegate.swift */,
 				AD4D8CEB2060634600A49BA4 /* MainTabBarController.swift */,
-				AD32EF712114188100BB7B56 /* Camera */,
-				ADAC080921102E7E00615E62 /* Search */,
-				ADE95AFA210D6DF0003D9A54 /* Home */,
-				AD1F3159211B9F0800262BF1 /* Comment */,
-				ADE95AF3210D1B83003D9A54 /* Models */,
-				AD32DEC3210BEF59002F4973 /* Post */,
 				AD4D8CF22060A70000A49BA4 /* Login */,
+				ADE95AFA210D6DF0003D9A54 /* Home */,
+				AD32EF712114188100BB7B56 /* Camera */,
+				AD32DEC3210BEF59002F4973 /* Post */,
+				AD1F3159211B9F0800262BF1 /* Comment */,
+				ADAC080921102E7E00615E62 /* Search */,
 				AD4D8CEF2060826800A49BA4 /* UserProfile */,
+				ADE95AF3210D1B83003D9A54 /* Models */,
 				AD215F14205DA991000E42AD /* Utilities */,
 				AD2A2CB7205C88DE0023D5C8 /* Assets.xcassets */,
 				AD2A2CB9205C88DE0023D5C8 /* LaunchScreen.storyboard */,
@@ -183,7 +185,7 @@
 			isa = PBXGroup;
 			children = (
 				AD2A2CBC205C88DE0023D5C8 /* Info.plist */,
-				AD215F17205DCC59000E42AD /* GoogleService-Info.plist */,
+				AD2CC6D7211FEF2B0091E7D9 /* GoogleService-Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -257,6 +259,7 @@
 				ADE95AFB210D6DFF003D9A54 /* HomeController.swift */,
 				ADE95AFD210D6F34003D9A54 /* HomePostCell.swift */,
 				AD1F3157211B98D100262BF1 /* HomePostHeader.swift */,
+				AD2CC6D921215B220091E7D9 /* HomeEmptyStateView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -324,7 +327,7 @@
 			files = (
 				AD2A2CBB205C88DE0023D5C8 /* LaunchScreen.storyboard in Resources */,
 				AD2A2CB8205C88DE0023D5C8 /* Assets.xcassets in Resources */,
-				AD215F18205DCC59000E42AD /* GoogleService-Info.plist in Resources */,
+				AD2CC6D8211FEF2B0091E7D9 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -412,6 +415,7 @@
 				AD3164D02114F0A1001F5DA7 /* CommentsController.swift in Sources */,
 				AD32DEC5210BEF6F002F4973 /* PhotoSelectorController.swift in Sources */,
 				AD3164D421152D00001F5DA7 /* Comment.swift in Sources */,
+				AD2CC6DA21215B220091E7D9 /* HomeEmptyStateView.swift in Sources */,
 				ADE95AFC210D6DFF003D9A54 /* HomeController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

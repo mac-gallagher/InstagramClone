@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class CommentsController: UICollectionViewController, UICollectionViewDelegateFlowLayout, CommentInputAccessoryViewDelegate, CommentCellDelegate {
+class CommentsController: UICollectionViewController {
     
     var post: Post? {
         didSet {
@@ -19,7 +19,7 @@ class CommentsController: UICollectionViewController, UICollectionViewDelegateFl
     
     private var comments = [Comment]()
     
-    private lazy var containerView: CommentInputAccessoryView = {
+    private lazy var commentInputAccessoryView: CommentInputAccessoryView = {
         let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50)
         let commentInputAccessoryView = CommentInputAccessoryView(frame: frame)
         commentInputAccessoryView.delegate = self
@@ -28,23 +28,22 @@ class CommentsController: UICollectionViewController, UICollectionViewDelegateFl
     
     override var canBecomeFirstResponder: Bool { return true }
     
-    override var inputAccessoryView: UIView? { return containerView }
+    override var inputAccessoryView: UIView? { return commentInputAccessoryView }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Comments"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "send2").withRenderingMode(.alwaysOriginal), style: .plain, target: nil, action: nil)
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationItem.backBarButtonItem?.tintColor = .black
         
         collectionView?.backgroundColor = .white
         collectionView?.alwaysBounceVertical = true
         collectionView?.keyboardDismissMode = .interactive
-        collectionView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         collectionView?.register(CommentCell.self, forCellWithReuseIdentifier: CommentCell.cellId)
         
         let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        refreshControl.addTarget(self, action: #selector(fetchComments), for: .valueChanged)
         collectionView?.refreshControl = refreshControl
     }
     
@@ -60,30 +59,14 @@ class CommentsController: UICollectionViewController, UICollectionViewDelegateFl
     
     @objc private func fetchComments() {
         guard let postId = post?.id else { return }
-        
-        let ref = Database.database().reference().child("comments").child(postId)
-        
-        collectionView?.refreshControl?.endRefreshing()
-        
-        ref.observe(.childAdded, with: { (snapshot) in
-            guard let dictionary = snapshot.value as? [String: Any] else { return }
-            guard let uid = dictionary["uid"] as? String else { return }
-            
-            Database.database().fetchUser(withUID: uid) { (user) in
-                let comment = Comment(user: user, dictionary: dictionary)
-                self.comments.append(comment)
-                self.collectionView?.reloadData()
-            }
-            
-        }) { (err) in
-            print("Failed to fetch comments:", err)
-        }
-    }
-    
-    @objc private func handleRefresh() {
-        comments.removeAll()
         collectionView?.refreshControl?.beginRefreshing()
-        fetchComments()
+        Database.database().fetchCommentsForPost(withId: postId, completion: { (comments) in
+            self.comments = comments
+            self.collectionView?.reloadData()
+            self.collectionView?.refreshControl?.endRefreshing()
+        }) { (err) in
+            self.collectionView?.refreshControl?.endRefreshing()
+        }
     }
         
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -96,8 +79,11 @@ class CommentsController: UICollectionViewController, UICollectionViewDelegateFl
         cell.delegate = self
         return cell
     }
-    
-    //MARK: - UICollectionViewDelegateFlowLayout
+}
+
+//MARK: - UICollectionViewDelegateFlowLayout
+
+extension CommentsController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
@@ -114,66 +100,29 @@ class CommentsController: UICollectionViewController, UICollectionViewDelegateFl
         
         return CGSize(width: view.frame.width, height: height)
     }
-    
-    //MARK: - CommentInputAccessoryViewDelegate
-    
-    func didSubmit(for comment: String) {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        
-        let postId = post?.id ?? ""
-        let values = ["text": comment, "creationDate": Date().timeIntervalSince1970, "uid": uid] as [String: Any]
-        
-        Database.database().reference().child("comments").child(postId).childByAutoId().updateChildValues(values) { (err, _) in
-            if let err = err {
-                print("Failed to insert comment:", err)
-                return
-            }
-            print("Successfully inserted comment")
-            self.containerView.clearCommentTextField()
-        }
-    }
-    
-    //MARK: - CommentCellDelegate
-    
-    func didTapUsername(comment: Comment) {
-        let userProfileController = UserProfileController(collectionViewLayout: UICollectionViewFlowLayout())
-        userProfileController.user = comment.user
-        navigationController?.pushViewController(userProfileController, animated: true)
-    }
-    
 }
 
+//MARK: - CommentInputAccessoryViewDelegate
 
+extension CommentsController: CommentInputAccessoryViewDelegate {
+    func didSubmit(comment: String) {
+        guard let postId = post?.id else { return }
+        Database.database().addCommentToPost(withId: postId, text: comment) { (err) in
+            if err != nil {
+                return
+            }
+            self.commentInputAccessoryView.clearCommentTextField()
+            self.fetchComments()
+        }
+    }
+}
 
+//MARK: - CommentCellDelegate
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+extension CommentsController: CommentCellDelegate {
+    func didTapUser(user: User) {
+        let userProfileController = UserProfileController(collectionViewLayout: UICollectionViewFlowLayout())
+        userProfileController.user = user
+        navigationController?.pushViewController(userProfileController, animated: true)
+    }
+}

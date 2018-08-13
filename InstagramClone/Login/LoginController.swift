@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class LoginController: UIViewController, UITextFieldDelegate {
+class LoginController: UIViewController {
     
     private let logoContainerView: UIView = {
         let container = UIView()
@@ -77,7 +77,7 @@ class LoginController: UIViewController, UITextFieldDelegate {
         super.viewDidLoad()
         navigationController?.isNavigationBarHidden = true
         view.backgroundColor = .white
-        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap)))
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapOnView)))
         
         view.addSubview(logoContainerView)
         logoContainerView.anchor(top: view.topAnchor, left: view.safeAreaLayoutGuide.leftAnchor, right: view.safeAreaLayoutGuide.rightAnchor, height: 130 + UIApplication.shared.statusBarFrame.height)
@@ -94,10 +94,28 @@ class LoginController: UIViewController, UITextFieldDelegate {
         stackView.spacing = 10
         stackView.distribution = .fillEqually
         view.addSubview(stackView)
-        stackView.anchor(top: logoContainerView.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 40, paddingLeft: 40, paddingBottom: 0, paddingRight: 40, width: 0, height: 140)
+        stackView.anchor(top: logoContainerView.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 40, paddingLeft: 40, paddingRight: 40, height: 140)
     }
     
-    @objc private func handleTap() {
+    @objc private func handleLogin() {
+        guard let email = emailTextField.text, let password = passwordTextField.text else { return }
+        Auth.auth().signIn(withEmail: email, password: password, completion: { (user, err) in
+            if let err = err {
+                print("Failed to sign in with email:", err)
+                self.emailTextField.text = ""
+                self.passwordTextField.text = ""
+                return
+            }
+            
+            if let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController {
+                mainTabBarController.setupViewControllers()
+                mainTabBarController.selectedIndex = 0
+                self.dismiss(animated: true, completion: nil)
+            }
+        })
+    }
+    
+    @objc private func handleTapOnView() {
         emailTextField.resignFirstResponder()
         passwordTextField.resignFirstResponder()
     }
@@ -113,35 +131,18 @@ class LoginController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    @objc private func handleLogin() {
-        guard let email = emailTextField.text, let password = passwordTextField.text else { return }
-        Auth.auth().signIn(withEmail: email, password: password, completion: { (user, err) in
-            if let err = err {
-                print("Failed to sign in with email:", err)
-                self.emailTextField.text = ""
-                self.passwordTextField.text = ""
-                return
-            }
-            print("Successfully logged back in user with uid:", user?.user.uid ?? "")
-            if let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController {
-                mainTabBarController.setupViewControllers()
-                mainTabBarController.selectedIndex = 0
-                self.dismiss(animated: true, completion: nil)
-            }
-        })
-    }
-    
     @objc private func handleShowSignUp() {
         navigationController?.pushViewController(SignUpController(), animated: true)
     }
-    
-    //MARK: - UITextFieldDelegate
-    
+}
+
+//MARK: - UITextFieldDelegate
+
+extension LoginController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
-    
 }
 
 

@@ -10,11 +10,11 @@ import UIKit
 
 protocol HomePostCellDelegate {
     func didTapComment(post: Post)
-    func didTapUsername(post: Post)
+    func didTapUser(user: User)
     func didLike(for cell: HomePostCell)
 }
 
-class HomePostCell: UICollectionViewCell, HomePostHeaderDelegate {
+class HomePostCell: UICollectionViewCell {
     
     var delegate: HomePostCellDelegate?
     
@@ -24,13 +24,15 @@ class HomePostCell: UICollectionViewCell, HomePostHeaderDelegate {
         }
     }
     
-    internal let header = HomePostHeader()
+    let header = HomePostHeader()
     
-    internal let captionLabel: UILabel = {
+    let captionLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         return label
     }()
+    
+    let padding: CGFloat = 12
     
     private let photoImageView: CustomImageView = {
         let iv = CustomImageView()
@@ -90,7 +92,7 @@ class HomePostCell: UICollectionViewCell, HomePostHeaderDelegate {
         setupActionButtons()
 
         addSubview(captionLabel)
-        captionLabel.anchor(top: bookmarkButton.bottomAnchor, left: leftAnchor, right: rightAnchor, paddingTop: 4, paddingLeft: 8, paddingRight: 8)
+        captionLabel.anchor(top: likeButton.bottomAnchor, left: leftAnchor, right: rightAnchor, paddingTop: padding, paddingLeft: padding, paddingRight: padding)
     }
     
     private func setupActionButtons() {
@@ -99,10 +101,10 @@ class HomePostCell: UICollectionViewCell, HomePostHeaderDelegate {
         stackView.alignment = .top
         stackView.spacing = 16
         addSubview(stackView)
-        stackView.anchor(top: photoImageView.bottomAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 8, paddingLeft: 8, paddingBottom: 0, paddingRight: 0)
+        stackView.anchor(top: photoImageView.bottomAnchor, left: leftAnchor, paddingTop: padding, paddingLeft: padding)
         
         addSubview(bookmarkButton)
-        bookmarkButton.anchor(top: photoImageView.bottomAnchor, left: nil, bottom: nil, right: rightAnchor, paddingTop: 8, paddingLeft: 0, paddingBottom: 0, paddingRight: 8)
+        bookmarkButton.anchor(top: photoImageView.bottomAnchor, right: rightAnchor, paddingTop: padding, paddingRight: padding)
     }
     
     private func configurePost() {
@@ -133,14 +135,15 @@ class HomePostCell: UICollectionViewCell, HomePostHeaderDelegate {
         guard let post = post else { return }
         delegate?.didTapComment(post: post)
     }
-    
-    //MARK: - HomePostHeaderDelegate
-    
-    func didTapUsername() {
-        guard let post = post else { return }
-        delegate?.didTapUsername(post: post)
+}
+
+//MARK: - HomePostHeaderDelegate
+
+extension HomePostCell: HomePostHeaderDelegate {
+    func didTapUser() {
+        guard let user = post?.user else { return }
+        delegate?.didTapUser(user: user)
     }
-    
 }
 
 

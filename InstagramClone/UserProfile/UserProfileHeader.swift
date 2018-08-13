@@ -20,13 +20,12 @@ class UserProfileHeader: UICollectionViewCell {
     
     var user: User? {
         didSet {
-            configureUser()
+            reloadData()
         }
     }
     
     private let profileImageView: CustomImageView = {
         let iv = CustomImageView()
-        iv.layer.cornerRadius = 80 / 2
         iv.clipsToBounds = true
         iv.contentMode = .scaleAspectFill
         iv.image = #imageLiteral(resourceName: "user")
@@ -72,6 +71,8 @@ class UserProfileHeader: UICollectionViewCell {
         return label
     }()
     
+    private let padding: CGFloat = 12
+    
     static var headerId = "userProfileHeaderId"
     
     override init(frame: CGRect) {
@@ -86,24 +87,25 @@ class UserProfileHeader: UICollectionViewCell {
     
     private func sharedInit() {
         addSubview(profileImageView)
-        profileImageView.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 12, paddingLeft: 12, paddingBottom: 0, paddingRight: 0, width: 80, height: 80)
+        profileImageView.anchor(top: topAnchor, left: leftAnchor, paddingTop: padding, paddingLeft: padding, width: 80, height: 80)
+        profileImageView.layer.cornerRadius = 80 / 2
         
         layoutBottomToolbar()
         
         addSubview(usernameLabel)
-        usernameLabel.anchor(top: profileImageView.bottomAnchor, left: leftAnchor, bottom: gridButton.topAnchor, right: rightAnchor, paddingTop: 4, paddingLeft: 12, paddingBottom: 0, paddingRight: 12, width: 0, height: 0)
+        usernameLabel.anchor(top: profileImageView.bottomAnchor, left: leftAnchor, bottom: gridButton.topAnchor, right: rightAnchor, paddingTop: 4, paddingLeft: padding, paddingRight: padding)
         
         layoutUserStatsView()
         
         addSubview(followButton)
-        followButton.anchor(top: postsLabel.bottomAnchor, left: postsLabel.leftAnchor, bottom: nil, right: followingLabel.rightAnchor, paddingTop: 2, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 34)
+        followButton.anchor(top: postsLabel.bottomAnchor, left: postsLabel.leftAnchor, right: followingLabel.rightAnchor, paddingTop: 2, height: 34)
     }
     
     private func layoutUserStatsView() {
         let stackView = UIStackView(arrangedSubviews: [postsLabel, followersLabel, followingLabel])
         stackView.distribution = .fillEqually
         addSubview(stackView)
-        stackView.anchor(top: topAnchor, left: profileImageView.rightAnchor, bottom: nil, right: rightAnchor, paddingTop: 12, paddingLeft: 12, paddingBottom: 0, paddingRight: 12, width: 0, height: 50)
+        stackView.anchor(top: topAnchor, left: profileImageView.rightAnchor, right: rightAnchor, paddingTop: padding, paddingLeft: padding, paddingRight: padding, height: 50)
     }
     
     private func layoutBottomToolbar() {
@@ -120,12 +122,12 @@ class UserProfileHeader: UICollectionViewCell {
         addSubview(topDividerView)
         addSubview(bottomDividerView)
         
-        topDividerView.anchor(top: stackView.topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0.5)
-        bottomDividerView.anchor(top: stackView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0.5)
-        stackView.anchor(top: nil, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 44)
+        topDividerView.anchor(top: stackView.topAnchor, left: leftAnchor, right: rightAnchor, height: 0.5)
+        bottomDividerView.anchor(top: stackView.bottomAnchor, left: leftAnchor, right: rightAnchor, height: 0.5)
+        stackView.anchor(left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, height: 44)
     }
     
-    private func configureUser() {
+    func reloadData() {
         guard let user = user else { return }
         usernameLabel.text = user.username
         reloadFollowButton()
@@ -136,30 +138,24 @@ class UserProfileHeader: UICollectionViewCell {
     }
     
     private func reloadFollowButton() {
+        guard let currentLoggedInUserId = Auth.auth().currentUser?.uid else { return }
         guard let userId = user?.uid else { return }
-        
-        let previousButtonType = followButton.type
-        followButton.type = .loading
-        
-        guard let currentLoggedInUserId = Auth.auth().currentUser?.uid else {
-            followButton.type = previousButtonType
-            return
-        }
         
         if currentLoggedInUserId == userId {
             followButton.type = .edit
             return
         }
         
-        Database.database().reference().child("following").child(currentLoggedInUserId).child(userId).observeSingleEvent(of: .value, with: { (snapshot) in
-            if let isFollowing = snapshot.value as? Int, isFollowing == 1 {
+        let previousButtonType = followButton.type
+        followButton.type = .loading
+        
+        Database.database().isFollowingUser(withUID: userId, completion: { (following) in
+            if following {
                 self.followButton.type = .unfollow
             } else {
                 self.followButton.type = .follow
             }
-            
         }) { (err) in
-            print("Failed to check if following:", err)
             self.followButton.type = previousButtonType
         }
     }
@@ -167,33 +163,17 @@ class UserProfileHeader: UICollectionViewCell {
     private func reloadUserStats() {
         guard let uid = user?.uid else { return }
         
-        Database.database().reference().child("posts").child(uid).observeSingleEvent(of: .value) { (snapshot) in
-            if let dictionaries = snapshot.value as? [String: Any] {
-                self.postsLabel.setValue(value: dictionaries.count)
-            } else {
-                self.postsLabel.setValue(value: 0)
-            }
+        Database.database().numberOfPostsForUser(withUID: uid) { (count) in
+            self.postsLabel.setValue(count)
         }
         
-        Database.database().reference().child("following").child(uid).observeSingleEvent(of: .value) { (snapshot) in
-            if let dictionaries = snapshot.value as? [String: Any] {
-                self.followingLabel.setValue(value: dictionaries.count)
-            } else {
-                self.followingLabel.setValue(value: 0)
-            }
+        Database.database().numberOfFollowersForUser(withUID: uid) { (count) in
+            self.followersLabel.setValue(count)
         }
         
-        Database.database().reference().child("followers").child(uid).observeSingleEvent(of: .value) { (snapshot) in
-            if let dictionaries = snapshot.value as? [String: Any] {
-                self.followersLabel.setValue(value: dictionaries.count)
-            } else {
-                self.followersLabel.setValue(value: 0)
-            }
+        Database.database().numberOfFollowingForUser(withUID: uid) { (count) in
+            self.followingLabel.setValue(count)
         }
-    }
-    
-    func reloadData() {
-        configureUser()
     }
     
     @objc private func handleTap() {
@@ -205,8 +185,7 @@ class UserProfileHeader: UICollectionViewCell {
         
         if previousButtonType == .follow {
             Database.database().followUser(withUID: userId) { (err) in
-                if let err = err {
-                    print("Failed to follow user:", err)
+                if err != nil {
                     self.followButton.type = previousButtonType
                     return
                 }
@@ -216,8 +195,7 @@ class UserProfileHeader: UICollectionViewCell {
             
         } else if previousButtonType == .unfollow {
             Database.database().unfollowUser(withUID: userId) { (err) in
-                if let err = err {
-                    print("Failed to unfollow user:", err)
+                if err != nil {
                     self.followButton.type = previousButtonType
                     return
                 }
@@ -225,6 +203,8 @@ class UserProfileHeader: UICollectionViewCell {
                 self.reloadUserStats()
             }
         }
+        
+        NotificationCenter.default.post(name: SharePhotoController.updateFeedNotificationName, object: nil)
     }
     
     @objc private func handleChangeToGridView() {
@@ -238,7 +218,6 @@ class UserProfileHeader: UICollectionViewCell {
         gridButton.tintColor = UIColor(white: 0, alpha: 0.2)
         delegate?.didChangeToListView()
     }
-    
 }
 
 

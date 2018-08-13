@@ -10,7 +10,7 @@ import UIKit
 
 class PhotoSelectorHeader: UICollectionViewCell {
     
-    internal let photoImageView: UIImageView = {
+    let photoImageView: UIImageView = {
         let iv = UIImageView()
         iv.backgroundColor = .darkGray
         iv.contentMode = .scaleAspectFill
@@ -34,5 +34,4 @@ class PhotoSelectorHeader: UICollectionViewCell {
         addSubview(photoImageView)
         photoImageView.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
     }
-    
 }

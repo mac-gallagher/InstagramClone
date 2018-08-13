@@ -36,13 +36,8 @@ class UserProfileStatsLabel: UILabel {
         setAttributedText()
     }
     
-    func setValue(value: Int) {
+    func setValue(_ value: Int) {
         self.value = value
-        setAttributedText()
-    }
-    
-    func setTitle(title: String) {
-        self.title = title
         setAttributedText()
     }
     
@@ -51,5 +46,4 @@ class UserProfileStatsLabel: UILabel {
     attributedText.append(NSAttributedString(string: title, attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray, NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14)]))
         self.attributedText = attributedText
     }
-    
 }

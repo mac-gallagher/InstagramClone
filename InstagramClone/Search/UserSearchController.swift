@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class UserSearchController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UISearchBarDelegate {
+class UserSearchController: UICollectionViewController {
     
     private let searchBar: UISearchBar = {
         let sb = UISearchBar()
@@ -35,13 +35,31 @@ class UserSearchController: UICollectionViewController, UICollectionViewDelegate
         collectionView?.keyboardDismissMode = .onDrag
         collectionView?.register(UserSearchCell.self, forCellWithReuseIdentifier: UserSearchCell.cellId)
         
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        collectionView?.refreshControl = refreshControl
+        
         searchBar.delegate = self
         
-        Database.database().fetchAllUsers(includeCurrentUser: false) { (users) in
+        fetchAllUsers()
+    }
+    
+    private func fetchAllUsers() {
+        collectionView?.refreshControl?.beginRefreshing()
+        
+        Database.database().fetchAllUsers(includeCurrentUser: false, completion: { (users) in
             self.users = users
             self.filteredUsers = users
+            self.searchBar.text = ""
             self.collectionView?.reloadData()
+            self.collectionView?.refreshControl?.endRefreshing()
+        }) { (_) in
+            self.collectionView?.refreshControl?.endRefreshing()
         }
+    }
+    
+    @objc private func handleRefresh() {
+        fetchAllUsers()
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -60,14 +78,19 @@ class UserSearchController: UICollectionViewController, UICollectionViewDelegate
         cell.user = filteredUsers[indexPath.item]
         return cell
     }
-    
-    //MARK: - UICollectionViewDelegateFlowLayout
-    
+}
+
+//MARK: - UICollectionViewDelegateFlowLayout
+
+extension UserSearchController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: view.frame.width, height: 66)
     }
-    
-    //MARK: - UISearchBarDelegate
+}
+
+//MARK: - UISearchBarDelegate
+
+extension UserSearchController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.isEmpty {
@@ -83,5 +106,4 @@ class UserSearchController: UICollectionViewController, UICollectionViewDelegate
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
     }
-    
 }

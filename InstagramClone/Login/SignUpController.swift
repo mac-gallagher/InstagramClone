@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class SignUpController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
+class SignUpController: UIViewController, UINavigationControllerDelegate {
 
     private let plusPhotoButton: UIButton = {
         let button = UIButton(type: .system)
@@ -85,13 +85,13 @@ class SignUpController: UIViewController, UIImagePickerControllerDelegate, UINav
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap)))
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapOnView)))
         
         view.addSubview(alreadyHaveAccountButton)
-        alreadyHaveAccountButton.anchor(top: nil, left: view.safeAreaLayoutGuide.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.safeAreaLayoutGuide.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 50)
+        alreadyHaveAccountButton.anchor(top: nil, left: view.safeAreaLayoutGuide.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.safeAreaLayoutGuide.rightAnchor, height: 50)
         
         view.addSubview(plusPhotoButton)
-        plusPhotoButton.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: nil, bottom: nil, right: nil, paddingTop: 40, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 140, height: 140)
+        plusPhotoButton.anchor(top: view.safeAreaLayoutGuide.topAnchor, paddingTop: 40, width: 140, height: 140)
         plusPhotoButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         plusPhotoButton.layer.cornerRadius = 140 / 2
         
@@ -105,10 +105,10 @@ class SignUpController: UIViewController, UIImagePickerControllerDelegate, UINav
         stackView.spacing = 10
         
         view.addSubview(stackView)
-        stackView.anchor(top: plusPhotoButton.bottomAnchor, left: view.safeAreaLayoutGuide.leftAnchor, bottom: nil, right: view.safeAreaLayoutGuide.rightAnchor, paddingTop: 20, paddingLeft: 40, paddingBottom: 0, paddingRight: 40, width: 0, height: 200)
+        stackView.anchor(top: plusPhotoButton.bottomAnchor, left: view.safeAreaLayoutGuide.leftAnchor, right: view.safeAreaLayoutGuide.rightAnchor, paddingTop: 20, paddingLeft: 40, paddingRight: 40, width: 0, height: 200)
     }
     
-    @objc private func handleTap(_ sender: UITextField) {
+    @objc private func handleTapOnView(_ sender: UITextField) {
         usernameTextField.resignFirstResponder()
         emailTextField.resignFirstResponder()
         passwordTextField.resignFirstResponder()
@@ -137,27 +137,29 @@ class SignUpController: UIViewController, UIImagePickerControllerDelegate, UINav
     }
     
     @objc private func handleSignUp() {
-        guard let email = emailTextField.text, !email.isEmpty else { return }
-        guard let username = usernameTextField.text, !username.isEmpty else { return }
-        guard let password = passwordTextField.text, !password.isEmpty else { return }
+        guard let email = emailTextField.text else { return }
+        guard let username = usernameTextField.text else { return }
+        guard let password = passwordTextField.text else { return }
         
-        Auth.auth().createUser(withEmail: email, username: username, password: password, image: profileImage) { (user, err) in
-            if let err = err {
-                print("Failed to sign up user:", err)
+        Auth.auth().createUser(withEmail: email, username: username, password: password, image: profileImage) { (err) in
+            if err != nil {
                 self.emailTextField.text = ""
                 self.usernameTextField.text = ""
                 self.passwordTextField.text = ""
                 return
             }
-            print("Sucessfully signed up user with uid:", user?.uid ?? "")
+            
             guard let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController else { return }
             mainTabBarController.setupViewControllers()
+            mainTabBarController.selectedIndex = 0
             self.dismiss(animated: true, completion: nil)
         }
     }
-    
-    //MARK: UIImagePickerControllerDelegate
-    
+}
+
+//MARK: UIImagePickerControllerDelegate
+
+extension SignUpController: UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let editedImage = info["UIImagePickerControllerEditedImage"] as? UIImage {
             plusPhotoButton.setImage(editedImage.withRenderingMode(.alwaysOriginal), for: .normal)
@@ -168,20 +170,14 @@ class SignUpController: UIViewController, UIImagePickerControllerDelegate, UINav
         }
         dismiss(animated: true, completion: nil)
     }
-    
-    //MARK: - UITextFieldDelegate
-    
+}
+
+//MARK: - UITextFieldDelegate
+
+extension SignUpController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
-    
 }
-
-
-
-
-
-
-
 

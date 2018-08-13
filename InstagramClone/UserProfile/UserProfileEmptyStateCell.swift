@@ -35,5 +35,4 @@ class UserProfileEmptyStateCell: UICollectionViewCell {
         addSubview(noPostsLabel)
         noPostsLabel.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor)
     }
-    
 }

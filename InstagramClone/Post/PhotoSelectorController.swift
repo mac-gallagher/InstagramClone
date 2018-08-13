@@ -9,7 +9,7 @@
 import UIKit
 import Photos
 
-class PhotoSelectorController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class PhotoSelectorController: UICollectionViewController {
     
     private var selectedImage : UIImage?
     private var images = [UIImage]()
@@ -27,15 +27,17 @@ class PhotoSelectorController: UICollectionViewController, UICollectionViewDeleg
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Next", style: .plain, target: self, action: #selector(handleNext))
         
         collectionView?.register(PhotoSelectorCell.self, forCellWithReuseIdentifier: PhotoSelectorCell.cellId)
-        
         collectionView?.register(PhotoSelectorHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: PhotoSelectorHeader.headerId)
     
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        collectionView?.refreshControl = refreshControl
+        
         fetchPhotos()
     }
     
     private func assetFetchOptions() -> PHFetchOptions {
         let fetchOptions = PHFetchOptions()
-        fetchOptions.fetchLimit = 30
         let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
         fetchOptions.sortDescriptors = [sortDescriptor]
         return fetchOptions
@@ -44,6 +46,7 @@ class PhotoSelectorController: UICollectionViewController, UICollectionViewDeleg
     private func fetchPhotos() {
         let allPhotos = PHAsset.fetchAssets(with: .image, options: assetFetchOptions())
         
+        collectionView?.refreshControl?.beginRefreshing()
         DispatchQueue.global().async {
             allPhotos.enumerateObjects { (asset, count, stop) in
                 let imageManager = PHImageManager.default()
@@ -55,7 +58,6 @@ class PhotoSelectorController: UICollectionViewController, UICollectionViewDeleg
                     if let image = image {
                         self.images.append(image)
                         self.assets.append(asset)
-                        
                         if self.selectedImage == nil {
                             self.selectedImage = image
                         }
@@ -64,9 +66,9 @@ class PhotoSelectorController: UICollectionViewController, UICollectionViewDeleg
                     if count == allPhotos.count - 1 {
                         DispatchQueue.main.async {
                             self.collectionView?.reloadData()
+                            self.collectionView?.refreshControl?.endRefreshing()
                         }
                     }
-                    
                 })
             }
         }
@@ -80,6 +82,13 @@ class PhotoSelectorController: UICollectionViewController, UICollectionViewDeleg
         let sharePhotoController = SharePhotoController()
         sharePhotoController.selectedImage = header?.photoImageView.image
         navigationController?.pushViewController(sharePhotoController, animated: true)
+    }
+    
+    @objc private func handleRefresh() {
+        selectedImage = nil
+        images.removeAll()
+        assets.removeAll()
+        fetchPhotos()
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -104,13 +113,10 @@ class PhotoSelectorController: UICollectionViewController, UICollectionViewDeleg
                 let imageManager = PHImageManager.default()
                 let targetSize = CGSize(width: 600, height: 600)
                 imageManager.requestImage(for: selectedAsset, targetSize: targetSize, contentMode: .default, options: nil) { (image, info) in
-                    
                     header.photoImageView.image = image
                 }
-                
             }
         }
-        
         return header
     }
     
@@ -123,8 +129,11 @@ class PhotoSelectorController: UICollectionViewController, UICollectionViewDeleg
         cell.photoImageView.image = images[indexPath.item]
         return cell
     }
-    
-    //MARK: - UICollectionViewDelegateFlowLayout
+}
+
+//MARK: - UICollectionViewDelegateFlowLayout
+
+extension PhotoSelectorController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 1, left: 0, bottom: 0, right: 0)
@@ -147,5 +156,4 @@ class PhotoSelectorController: UICollectionViewController, UICollectionViewDeleg
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 1
     }
-    
 }

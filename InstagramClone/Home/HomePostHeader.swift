@@ -9,7 +9,7 @@
 import UIKit
 
 protocol HomePostHeaderDelegate {
-    func didTapUsername()
+    func didTapUser()
 }
 
 class HomePostHeader: UIView {
@@ -84,9 +84,8 @@ class HomePostHeader: UIView {
     }
     
     @objc private func handleTap() {
-        delegate?.didTapUsername()
+        delegate?.didTapUser()
     }
-    
 }
 
 

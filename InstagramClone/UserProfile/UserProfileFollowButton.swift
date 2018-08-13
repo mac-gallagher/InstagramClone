@@ -79,12 +79,5 @@ class UserProfileFollowButton: UIButton {
         backgroundColor = .white
         isUserInteractionEnabled = true
     }
-    
-    
 }
-
-
-
-
-
 

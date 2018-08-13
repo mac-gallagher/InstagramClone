@@ -9,7 +9,11 @@
 import UIKit
 import Firebase
 
-class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
+///////////////////////
+let demoId: String? = "demo-1D2CD18C-E965-4E29-9250-78FC2BDD4788"
+///////////////////////
+
+class MainTabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -17,10 +21,60 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
         tabBar.isTranslucent = false
         delegate = self
         
-        if Auth.auth().currentUser == nil {
+        let currentDemoId = UserDefaults.standard.currentDemoId()
+        
+        if demoId == nil {
+            presentAlertController()
+        } else if demoId != currentDemoId {
+            setupNewDemo()
+        } else if Auth.auth().currentUser == nil {
             presentLoginController()
         } else {
             setupViewControllers()
+        }
+    }
+    
+    private func setupNewDemo() {
+        UserDefaults.standard.setCurrentDemoId(value: demoId)
+        do {
+            try Auth.auth().signOut()
+        } catch let err {
+            print("Failed to sign out user from previous demo:", err)
+            return
+        }
+        presentLoginController()
+    }
+    
+    func setupViewControllers() {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let homeNavController = self.templateNavController(unselectedImage: #imageLiteral(resourceName: "home_unselected"), selectedImage: #imageLiteral(resourceName: "home_selected"), rootViewController: HomeController(collectionViewLayout: UICollectionViewFlowLayout()))
+        let searchNavController = self.templateNavController(unselectedImage: #imageLiteral(resourceName: "search_unselected"), selectedImage: #imageLiteral(resourceName: "search_selected"), rootViewController: UserSearchController(collectionViewLayout: UICollectionViewFlowLayout()))
+        let plusNavController = self.templateNavController(unselectedImage: #imageLiteral(resourceName: "plus_unselected"), selectedImage: #imageLiteral(resourceName: "plus_unselected"))
+        let likeNavController = self.templateNavController(unselectedImage: #imageLiteral(resourceName: "like_unselected"), selectedImage: #imageLiteral(resourceName: "like_selected").withRenderingMode(.alwaysTemplate))
+
+        let userProfileController = UserProfileController(collectionViewLayout: UICollectionViewFlowLayout())
+        let userProfileNavController = self.templateNavController(unselectedImage: #imageLiteral(resourceName: "profile_unselected"), selectedImage: #imageLiteral(resourceName: "profile_selected"), rootViewController: userProfileController)
+        Database.database().fetchUser(withUID: uid) { (user) in
+            userProfileController.user = user
+        }
+        
+        viewControllers = [homeNavController, searchNavController, plusNavController, likeNavController, userProfileNavController]
+    }
+    
+    private func presentAlertController() {
+        let message = "To run the demo, use the following key as your Demo ID (select Edit -> \"Automatically Sync Pasteboard\" in the simulator)."
+        let alertController = UIAlertController(title: "Invalid Demo ID", message: message, preferredStyle: .alert)
+        alertController.addTextField(configurationHandler: { (textField) in
+            textField.text = "demo-\(NSUUID().uuidString)"
+            textField.delegate = self
+        })
+        
+        DispatchQueue.main.async {
+            let loginController = LoginController()
+            let navController = UINavigationController(rootViewController: loginController)
+            self.present(navController, animated: true) {
+                loginController.present(alertController, animated: true)
+            }
         }
     }
     
@@ -32,23 +86,6 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
         }
     }
     
-    internal func setupViewControllers() {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        let homeNavController = self.templateNavController(unselectedImage: #imageLiteral(resourceName: "home_unselected"), selectedImage: #imageLiteral(resourceName: "home_selected"), rootViewController: HomeController(collectionViewLayout: UICollectionViewFlowLayout()))
-        let searchNavController = self.templateNavController(unselectedImage: #imageLiteral(resourceName: "search_unselected"), selectedImage: #imageLiteral(resourceName: "search_selected"), rootViewController: UserSearchController(collectionViewLayout: UICollectionViewFlowLayout()))
-        let plusNavController = self.templateNavController(unselectedImage: #imageLiteral(resourceName: "plus_unselected"), selectedImage: #imageLiteral(resourceName: "plus_unselected"))
-        let likeNavController = self.templateNavController(unselectedImage: #imageLiteral(resourceName: "like_unselected"), selectedImage: #imageLiteral(resourceName: "like_selected"))
-
-        let userProfileController = UserProfileController(collectionViewLayout: UICollectionViewFlowLayout())
-        let userProfileNavController = self.templateNavController(unselectedImage: #imageLiteral(resourceName: "profile_unselected"), selectedImage: #imageLiteral(resourceName: "profile_selected"), rootViewController: userProfileController)
-
-        Database.database().fetchUser(withUID: uid) { (user) in
-            userProfileController.user = user
-        }
-        
-        viewControllers = [homeNavController, searchNavController, plusNavController, likeNavController, userProfileNavController]
-    }
-    
     private func templateNavController(unselectedImage: UIImage, selectedImage: UIImage, rootViewController: UIViewController = UIViewController()) -> UINavigationController {
         let viewController = rootViewController
         let navController = UINavigationController(rootViewController: viewController)
@@ -58,9 +95,11 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
         navController.tabBarItem.imageInsets = UIEdgeInsets(top: 4, left: 0, bottom: -4, right: 0)
         return navController
     }
-    
-    //MARK: UITabBarControllerDelegate
-    
+}
+
+//MARK: - UITabBarControllerDelegate
+
+extension MainTabBarController: UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
         let index = viewControllers?.index(of: viewController)
         if index == 2 {
@@ -72,13 +111,31 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
         }
         return true
     }
+}
+
+//MARK: - UITextFieldDelegate
+
+extension MainTabBarController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        return false
+    }
+}
+
+extension UserDefaults {
     
-    //implement double-tap scroll to top feature
-    private var previousViewController: UIViewController?
-    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-//        let currentIndex = tabBarController.selectedIndex
-//        let collectionViewController = navController?.viewControllers[currentIndex] as? UICollectionViewController
-//        collectionViewController?.collectionView?.scrollToItem(at: indexPath, at: .bottom, animated: true)
+    enum UserDefaultsKeys: String {
+        case demoId
+    }
+    
+    func setCurrentDemoId(value: String?) {
+        set(value, forKey: UserDefaultsKeys.demoId.rawValue)
+    }
+    
+    func currentDemoId() -> String? {
+        return string(forKey: UserDefaultsKeys.demoId.rawValue)
     }
     
 }
+
+
+

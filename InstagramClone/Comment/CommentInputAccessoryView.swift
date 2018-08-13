@@ -9,7 +9,7 @@
 import UIKit
 
 protocol CommentInputAccessoryViewDelegate {
-    func didSubmit(for comment: String)
+    func didSubmit(comment: String)
 }
 
 class CommentInputAccessoryView: UIView, UITextViewDelegate {
@@ -51,16 +51,17 @@ class CommentInputAccessoryView: UIView, UITextViewDelegate {
         autoresizingMask = .flexibleHeight
         
         addSubview(submitButton)
-        submitButton.anchor(top: safeAreaLayoutGuide.topAnchor, left: nil, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 12, width: 50, height: 50)
+        submitButton.anchor(top: safeAreaLayoutGuide.topAnchor, right: rightAnchor, paddingRight: 12, width: 50, height: 50)
         
         addSubview(commentTextView)
-        commentTextView.anchor(top: safeAreaLayoutGuide.topAnchor, left: safeAreaLayoutGuide.leftAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, right: submitButton.leftAnchor, paddingTop: 8, paddingLeft: 12, paddingBottom: 8, paddingRight: 0, width: 0, height: 0)
-        NotificationCenter.default.addObserver(self, selector: #selector(handleTextChange), name: .UITextViewTextDidChange, object: nil)
+        commentTextView.anchor(top: safeAreaLayoutGuide.topAnchor, left: safeAreaLayoutGuide.leftAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, right: submitButton.leftAnchor, paddingTop: 8, paddingLeft: 12, paddingBottom: 8)
         
         let lineSeparatorView = UIView()
         lineSeparatorView.backgroundColor = UIColor.rgb(red: 230, green: 230, blue: 230)
         addSubview(lineSeparatorView)
-        lineSeparatorView.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0.5)
+        lineSeparatorView.anchor(top: topAnchor, left: leftAnchor, right: rightAnchor, height: 0.5)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(handleTextChange), name: .UITextViewTextDidChange, object: nil)
     }
     
     func clearCommentTextField() {
@@ -72,8 +73,8 @@ class CommentInputAccessoryView: UIView, UITextViewDelegate {
     
     @objc private func handleSubmit() {
         guard let commentText = commentTextView.text else { return }
-        delegate?.didSubmit(for: commentText)
         commentTextView.resignFirstResponder()
+        delegate?.didSubmit(comment: commentText)
     }
     
     @objc private func handleTextChange() {
@@ -86,24 +87,4 @@ class CommentInputAccessoryView: UIView, UITextViewDelegate {
             submitButton.setTitleColor(.black, for: .normal)
         }
     }
-    
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

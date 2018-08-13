@@ -11,7 +11,7 @@ import Photos
 
 class PreviewPhotoContainerView: UIView {
     
-    internal let previewImageView: UIImageView = {
+    let previewImageView: UIImageView = {
         let iv = UIImageView()
         return iv
     }()
@@ -61,53 +61,46 @@ class PreviewPhotoContainerView: UIView {
         let library = PHPhotoLibrary.shared()
         
         library.performChanges({
-            
             PHAssetChangeRequest.creationRequestForAsset(from: previewImage)
-            
         }) { (success, err) in
             if let err = err {
                 print("Failed to save image to photo library:", err)
                 return
             }
-            
-            print("Successfully saved image to library")
-            
             DispatchQueue.main.async {
-                let savedLabel = UILabel()
-                savedLabel.text = "Saved Successfully"
-                savedLabel.font = UIFont.boldSystemFont(ofSize: 18)
-                savedLabel.textColor = .white
-                savedLabel.numberOfLines = 0
-                savedLabel.backgroundColor = UIColor(white: 0, alpha: 0.3)
-                savedLabel.textAlignment = .center
-                savedLabel.frame = CGRect(x: 0, y: 0, width: 150, height: 80)
-                savedLabel.center = self.center
-                
-                self.addSubview(savedLabel)
-                
-                savedLabel.layer.transform = CATransform3DMakeScale(0, 0, 0)
-                
-                UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: {
-                    
-                    savedLabel.layer.transform = CATransform3DMakeScale(1, 1, 1)
-                    
-                }, completion: { (completed) in
-                    
-                    UIView.animate(withDuration: 0.5, delay: 0.75, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: {
-                        
-                        savedLabel.layer.transform = CATransform3DMakeScale(0.1, 0.1, 0.1)
-                        savedLabel.alpha = 0
-                        
-                    }, completion: { (_) in
-                        
-                        savedLabel.removeFromSuperview()
-                        
-                    })
-                    
-                })
+                self.presentSavedLabel()
             }
-            
         }
+    }
+    
+    private func presentSavedLabel()  {
+        let savedLabel = UILabel()
+        savedLabel.text = "Saved Successfully"
+        savedLabel.font = UIFont.boldSystemFont(ofSize: 18)
+        savedLabel.textColor = .white
+        savedLabel.numberOfLines = 0
+        savedLabel.backgroundColor = UIColor(white: 0, alpha: 0.3)
+        savedLabel.textAlignment = .center
+        savedLabel.frame = CGRect(x: 0, y: 0, width: 150, height: 80)
+        savedLabel.center = self.center
+        
+        self.addSubview(savedLabel)
+        
+        savedLabel.layer.transform = CATransform3DMakeScale(0, 0, 0)
+        
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: {
+            savedLabel.layer.transform = CATransform3DMakeScale(1, 1, 1)
+        }, completion: { (completed) in
+            
+            UIView.animate(withDuration: 0.5, delay: 0.75, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: {
+                savedLabel.layer.transform = CATransform3DMakeScale(0.1, 0.1, 0.1)
+                savedLabel.alpha = 0
+            }, completion: { (_) in
+                
+                savedLabel.removeFromSuperview()
+            })
+            
+        })
     }
 }
 

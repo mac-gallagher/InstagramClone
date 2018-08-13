@@ -9,7 +9,7 @@
 import UIKit
 
 protocol CommentCellDelegate {
-    func didTapUsername(comment: Comment)
+    func didTapUser(user: User)
 }
 
 class CommentCell: UICollectionViewCell {
@@ -53,17 +53,17 @@ class CommentCell: UICollectionViewCell {
     
     private func sharedInit() {
         addSubview(profileImageView)
-        profileImageView.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 8, paddingLeft: 8, paddingBottom: 0, paddingRight: 0, width: 40, height: 40)
+        profileImageView.anchor(top: topAnchor, left: leftAnchor, paddingTop: 8, paddingLeft: 8, width: 40, height: 40)
         profileImageView.layer.cornerRadius = 40 / 2
         profileImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap)))
         
         addSubview(textView)
-        textView.anchor(top: topAnchor, left: profileImageView.rightAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 4, paddingLeft: 4, paddingBottom: 04, paddingRight: 4, width: 0, height: 0)
+        textView.anchor(top: topAnchor, left: profileImageView.rightAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 4, paddingLeft: 4, paddingBottom: 04, paddingRight: 4)
         
         let separatorView = UIView()
         separatorView.backgroundColor = UIColor(white: 0, alpha: 0.2)
         addSubview(separatorView)
-        separatorView.anchor(top: nil, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0.5)
+        separatorView.anchor(top: nil, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, height: 0.5)
     }
     
     private func configureComment() {
@@ -86,8 +86,7 @@ class CommentCell: UICollectionViewCell {
     }
     
     @objc private func handleTap() {
-        guard let comment = comment else { return }
-        delegate?.didTapUsername(comment: comment)
+        guard let user = comment?.user else { return }
+        delegate?.didTapUser(user: user)
     }
-    
 }

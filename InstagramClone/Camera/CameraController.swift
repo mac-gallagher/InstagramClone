@@ -9,7 +9,7 @@
 import UIKit
 import AVFoundation
 
-class CameraController: UIViewController, AVCapturePhotoCaptureDelegate, UIViewControllerTransitioningDelegate {
+class CameraController: UIViewController {
     
     private let dismissButton: UIButton = {
         let button = UIButton(type: .system)
@@ -92,8 +92,11 @@ class CameraController: UIViewController, AVCapturePhotoCaptureDelegate, UIViewC
         #endif
     }
     
-    //MARK: - AVCapturePhotoCaptureDelegate
-    
+}
+
+//MARK: - AVCapturePhotoCaptureDelegate
+
+extension CameraController: AVCapturePhotoCaptureDelegate {
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         guard let imageData = photo.fileDataRepresentation() else { return }
         
@@ -104,8 +107,11 @@ class CameraController: UIViewController, AVCapturePhotoCaptureDelegate, UIViewC
         view.addSubview(containerView)
         containerView.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
     }
-    
-    //MARK: - UIViewControllerTransitioningDelegate
+}
+
+//MARK: - UIViewControllerTransitioningDelegate
+
+extension CameraController: UIViewControllerTransitioningDelegate {
     
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return customAnimationPresentor
@@ -114,7 +120,6 @@ class CameraController: UIViewController, AVCapturePhotoCaptureDelegate, UIViewC
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return customAnimationDismissor
     }
-    
 }
 
 

@@ -10,22 +10,23 @@ import Foundation
 import Firebase
 
 extension Auth {
-    func createUser(withEmail email: String, username: String, password: String, image: UIImage?, completion: @escaping (Firebase.User?, Error?) -> ()) {
+    func createUser(withEmail email: String, username: String, password: String, image: UIImage?, completion: @escaping (Error?) -> ()) {
         Auth.auth().createUser(withEmail: email, password: password, completion: { (user, err) in
             if let err = err {
-                completion(nil, err)
+                print("Failed to create user:", err)
+                completion(err)
                 return
             }
             guard let uid = user?.user.uid else { return }
             if let image = image {
                 Storage.storage().uploadUserProfileImage(image: image, completion: { (profileImageUrl) in
                     Database.database().uploadUser(withUID: uid, username: username, profileImageUrl: profileImageUrl) {
-                        completion(user?.user, nil)
+                        completion(nil)
                     }
                 })
             } else {
                 Database.database().uploadUser(withUID: uid, username: username) {
-                    completion(user?.user, nil)
+                    completion(nil)
                 }
             }
         })
@@ -33,11 +34,11 @@ extension Auth {
 }
 
 extension Storage {
+    
     fileprivate func uploadUserProfileImage(image: UIImage, completion: @escaping (String) -> ()) {
         guard let uploadData = UIImageJPEGRepresentation(image, 0.3) else { return }
         
-        let filename = NSUUID().uuidString
-        let storageRef = Storage.storage().reference().child("profile_images").child(filename)
+        let storageRef = Storage.storage().reference().child("profile_images").child(NSUUID().uuidString)
         
         storageRef.putData(uploadData, metadata: nil, completion: { (_, err) in
             if let err = err {
@@ -55,12 +56,33 @@ extension Storage {
             })
         })
     }
+    
+    fileprivate func uploadPostImage(image: UIImage, completion: @escaping (String) -> ()) {
+        guard let uploadData = UIImageJPEGRepresentation(image, 0.5) else { return }
+        
+        let storageRef = Storage.storage().reference().child("post_images").child(NSUUID().uuidString)
+        storageRef.putData(uploadData, metadata: nil, completion: { (_, err) in
+            if let err = err {
+                print("Failed to upload post image:", err)
+                return
+            }
+            
+            storageRef.downloadURL(completion: { (downloadURL, err) in
+                if let err = err {
+                    print("Failed to obtain download url for post image:", err)
+                    return
+                }
+                guard let postImageUrl = downloadURL?.absoluteString else { return }
+                completion(postImageUrl)
+            })
+        })
+    }
 }
 
 extension Database {
 
     func fetchUser(withUID uid: String, completion: @escaping (User) -> ()) {
-        Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+        Database.database().reference().child("demos").child(demoId!).child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
             guard let userDictionary = snapshot.value as? [String: Any] else { return }
             let user = User(uid: uid, dictionary: userDictionary)
             completion(user)
@@ -69,16 +91,21 @@ extension Database {
         }
     }
     
-    func fetchAllUsers(includeCurrentUser: Bool = true, completion: @escaping ([User]) -> ()) {
-        let ref = Database.database().reference().child("users")
+    func fetchAllUsers(includeCurrentUser: Bool = true, completion: @escaping ([User]) -> (), withCancel cancel: ((Error) -> ())?) {
+        let ref = Database.database().reference().child("demos").child(demoId!).child("users")
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
-            guard let dictionaries = snapshot.value as? [String: Any] else { return }
+            guard let dictionaries = snapshot.value as? [String: Any] else {
+                completion([])
+                return
+            }
             
             var users = [User]()
             
             dictionaries.forEach({ (key, value) in
-                if !includeCurrentUser, key == Auth.auth().currentUser?.uid { return }
-                
+                if !includeCurrentUser, key == Auth.auth().currentUser?.uid {
+                    completion([])
+                    return
+                }
                 guard let userDictionary = value as? [String: Any] else { return }
                 let user = User(uid: key, dictionary: userDictionary)
                 users.append(user)
@@ -91,58 +118,58 @@ extension Database {
             
         }) { (err) in
             print("Failed to fetch all users from database:", (err))
+            cancel?(err)
         }
     }
     
-    fileprivate func uploadUser(withUID uid: String, username: String, profileImageUrl: String? = nil, completion: (() -> ())?) {
-        var dictionaryValues = ["username": username]
-        if profileImageUrl != nil {
-            dictionaryValues["profileImageUrl"] = profileImageUrl
-        }
+    func isFollowingUser(withUID uid: String, completion: @escaping (Bool) -> (), withCancel cancel: ((Error) -> ())?) {
+        guard let currentLoggedInUserId = Auth.auth().currentUser?.uid else { return }
         
-        let values = [uid: dictionaryValues]
-        Database.database().reference().child("users").updateChildValues(values, withCompletionBlock: { (err, ref) in
-            if let err = err {
-                print("Failed to upload user to database:", err)
-                return
+        Database.database().reference().child("demos").child(demoId!).child("following").child(currentLoggedInUserId).child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+            if let isFollowing = snapshot.value as? Int, isFollowing == 1 {
+                completion(true)
+            } else {
+                completion(false)
             }
-            completion?()
-        })
+            
+        }) { (err) in
+            print("Failed to check if following:", err)
+            cancel?(err)
+        }
     }
     
     func followUser(withUID uid: String, completion: @escaping (Error?) -> ()) {
         guard let currentLoggedInUserId = Auth.auth().currentUser?.uid else { return }
         
         let values = [uid: 1]
-        Database.database().reference().child("following").child(currentLoggedInUserId).updateChildValues(values) { (err, ref) in
+        Database.database().reference().child("demos").child(demoId!).child("following").child(currentLoggedInUserId).updateChildValues(values) { (err, ref) in
             if let err = err {
                 completion(err)
                 return
             }
             
             let values = [currentLoggedInUserId: 1]
-            Database.database().reference().child("followers").child(uid).updateChildValues(values) { (err, ref) in
+            Database.database().reference().child("demos").child(demoId!).child("followers").child(uid).updateChildValues(values) { (err, ref) in
                 if let err = err {
                     completion(err)
                     return
                 }
                 completion(nil)
             }
-            
         }
     }
     
     func unfollowUser(withUID uid: String, completion: @escaping (Error?) -> ()) {
         guard let currentLoggedInUserId = Auth.auth().currentUser?.uid else { return }
         
-        Database.database().reference().child("following").child(currentLoggedInUserId).child(uid).removeValue { (err, _) in
+        Database.database().reference().child("demos").child(demoId!).child("following").child(currentLoggedInUserId).child(uid).removeValue { (err, _) in
             if let err = err {
                 print("Failed to remove user from following:", err)
                 completion(err)
                 return
             }
             
-            Database.database().reference().child("followers").child(uid).child(currentLoggedInUserId).removeValue(completionBlock: { (err, _) in
+            Database.database().reference().child("demos").child(demoId!).child("followers").child(uid).child(currentLoggedInUserId).removeValue(completionBlock: { (err, _) in
                 if let err = err {
                     print("Failed to remove user from followers:", err)
                     completion(err)
@@ -153,9 +180,164 @@ extension Database {
         }
     }
     
+    func createPost(withImage image: UIImage, caption: String, completion: @escaping (Error?) -> ()) {
+        Storage.storage().uploadPostImage(image: image) { (postImageUrl) in
+            guard let uid = Auth.auth().currentUser?.uid else { return }
+            
+            let values = ["imageUrl": postImageUrl, "caption": caption, "imageWidth": image.size.width, "imageHeight": image.size.height, "creationDate": Date().timeIntervalSince1970] as [String : Any]
+            
+            let userPostRef = Database.database().reference().child("demos").child(demoId!).child("posts").child(uid).childByAutoId()
+            userPostRef.updateChildValues(values) { (err, ref) in
+                if let err = err {
+                    print("Failed to save post to database", err)
+                    completion(err)
+                    return
+                }
+                completion(nil)
+            }
+        }
+    }
     
+    func fetchPostsForUser(withUID uid: String, completion: @escaping ([Post]) -> (), withCancel cancel: ((Error) -> ())?) {
+        guard let currentLoggedInUser = Auth.auth().currentUser?.uid else { return }
+        
+        let ref = Database.database().reference().child("demos").child(demoId!).child("posts").child(uid)
+        
+        ref.observeSingleEvent(of: .value, with: { (snapshot) in
+            
+            guard let dictionaries = snapshot.value as? [String: Any] else {
+                completion([])
+                return
+            }
+
+            var posts = [Post]()
+
+            dictionaries.forEach({ (postId, value) in
+                guard let postDictionary = value as? [String: Any] else { return }
+                
+                Database.database().fetchUser(withUID: uid, completion: { (user) in
+                    var post = Post(user: user, dictionary: postDictionary)
+                    post.id = postId
+
+                    //check likes
+                    Database.database().reference().child("demos").child(demoId!).child("likes").child(postId).child(currentLoggedInUser).observeSingleEvent(of: .value, with: { (snapshot) in
+                        if let value = snapshot.value as? Int, value == 1 {
+                            post.hasLiked = true
+                        } else {
+                            post.hasLiked = false
+                        }
+                        
+                        posts.append(post)
+                        
+                        if posts.count == dictionaries.count {
+                            completion(posts)
+                        }
+                        
+                    }, withCancel: { (err) in
+                        print("Failed to fetch like info for post:", err)
+                    })
+                })
+            })
+        }) { (err) in
+            print("Failed to fetch posts:", err)
+        }
+    }
     
+    func addCommentToPost(withId postId: String, text: String, completion: @escaping (Error?) -> ()) {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        
+        let values = ["text": text, "creationDate": Date().timeIntervalSince1970, "uid": uid] as [String: Any]
+        
+        let commentsRef = Database.database().reference().child("demos").child(demoId!).child("comments").child(postId).childByAutoId()
+        commentsRef.updateChildValues(values) { (err, _) in
+            if let err = err {
+                print("Failed to add comment:", err)
+                completion(err)
+                return
+            }
+            completion(nil)
+        }
+    }
     
+    func fetchCommentsForPost(withId postId: String, completion: @escaping ([Comment]) -> (), withCancel cancel: ((Error) -> ())?) {
+        let commentsReference = Database.database().reference().child("demos").child(demoId!).child("comments").child(postId)
+        
+        commentsReference.observeSingleEvent(of: .value, with: { (snapshot) in
+            guard let dictionaries = snapshot.value as? [String: Any] else {
+                completion([])
+                return
+            }
+            
+            var comments = [Comment]()
+            
+            dictionaries.forEach({ (key, value) in
+                guard let commentDictionary = value as? [String: Any] else { return }
+                guard let uid = commentDictionary["uid"] as? String else { return }
+                
+                Database.database().fetchUser(withUID: uid) { (user) in
+                    let comment = Comment(user: user, dictionary: commentDictionary)
+                    comments.append(comment)
+                    
+                    if comments.count == dictionaries.count {
+                        comments.sort(by: { (comment1, comment2) -> Bool in
+                            return comment1.creationDate.compare(comment2.creationDate) == .orderedAscending
+                        })
+                        completion(comments)
+                    }
+                }
+            })
+            
+        }) { (err) in
+            print("Failed to fetch comments:", err)
+            cancel?(err)
+        }
+    }
+    
+    func numberOfPostsForUser(withUID uid: String, completion: @escaping (Int) -> ()) {
+        Database.database().reference().child("demos").child(demoId!).child("posts").child(uid).observeSingleEvent(of: .value) { (snapshot) in
+            if let dictionaries = snapshot.value as? [String: Any] {
+                completion(dictionaries.count)
+            } else {
+                completion(0)
+            }
+        }
+    }
+    
+    func numberOfFollowersForUser(withUID uid: String, completion: @escaping (Int) -> ()) {
+        Database.database().reference().child("demos").child(demoId!).child("followers").child(uid).observeSingleEvent(of: .value) { (snapshot) in
+            if let dictionaries = snapshot.value as? [String: Any] {
+                completion(dictionaries.count)
+            } else {
+                completion(0)
+            }
+        }
+    }
+    
+    func numberOfFollowingForUser(withUID uid: String, completion: @escaping (Int) -> ()) {
+        Database.database().reference().child("demos").child(demoId!).child("following").child(uid).observeSingleEvent(of: .value) { (snapshot) in
+            if let dictionaries = snapshot.value as? [String: Any] {
+                completion(dictionaries.count)
+            } else {
+                completion(0)
+            }
+        }
+    }
+    
+    fileprivate func uploadUser(withUID uid: String, username: String, profileImageUrl: String? = nil, completion: @escaping (() -> ())) {
+        var dictionaryValues = ["username": username]
+        if profileImageUrl != nil {
+            dictionaryValues["profileImageUrl"] = profileImageUrl
+        }
+        
+        let values = [uid: dictionaryValues]
+        Database.database().reference().child("demos").child(demoId!).child("users").updateChildValues(values, withCompletionBlock: { (err, ref) in
+            if let err = err {
+                print("Failed to upload user to database:", err)
+                return
+            }
+            completion()
+        })
+    }
 }
 
 
