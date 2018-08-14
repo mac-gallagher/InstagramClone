@@ -61,7 +61,7 @@ class HomeController: UICollectionViewController {
         
         collectionView?.refreshControl?.beginRefreshing()
         
-        Database.database().reference().child("demos").child(demoId!).child("following").child(currentLoggedInUserId).observeSingleEvent(of: .value, with: { (snapshot) in
+        Database.database().reference().child("following").child(currentLoggedInUserId).observeSingleEvent(of: .value, with: { (snapshot) in
             guard let userIdsDictionary = snapshot.value as? [String: Any] else { return }
             
             userIdsDictionary.forEach({ (uid, value) in
@@ -163,7 +163,7 @@ extension HomeController: HomePostCellDelegate {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
         if post.hasLiked {
-            Database.database().reference().child("demos").child(demoId!).child("likes").child(postId).removeValue { (err, _) in
+            Database.database().reference().child("likes").child(postId).removeValue { (err, _) in
                 if let err = err {
                     print("Failed to unlike post:", err)
                     return
@@ -174,7 +174,7 @@ extension HomeController: HomePostCellDelegate {
             }
         } else {
             let values = [uid : 1]
-            Database.database().reference().child("demos").child(demoId!).child("likes").child(postId).updateChildValues(values) { (err, _) in
+            Database.database().reference().child("likes").child(postId).updateChildValues(values) { (err, _) in
                 if let err = err {
                     print("Failed to like post:", err)
                     return

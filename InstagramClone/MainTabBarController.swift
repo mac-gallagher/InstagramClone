@@ -9,10 +9,6 @@
 import UIKit
 import Firebase
 
-///////////////////////
-let demoId: String? = "demo-1D2CD18C-E965-4E29-9250-78FC2BDD4788"
-///////////////////////
-
 class MainTabBarController: UITabBarController {
     
     override func viewDidLoad() {
@@ -21,28 +17,11 @@ class MainTabBarController: UITabBarController {
         tabBar.isTranslucent = false
         delegate = self
         
-        let currentDemoId = UserDefaults.standard.currentDemoId()
-        
-        if demoId == nil {
-            presentAlertController()
-        } else if demoId != currentDemoId {
-            setupNewDemo()
-        } else if Auth.auth().currentUser == nil {
+        if Auth.auth().currentUser == nil {
             presentLoginController()
         } else {
             setupViewControllers()
         }
-    }
-    
-    private func setupNewDemo() {
-        UserDefaults.standard.setCurrentDemoId(value: demoId)
-        do {
-            try Auth.auth().signOut()
-        } catch let err {
-            print("Failed to sign out user from previous demo:", err)
-            return
-        }
-        presentLoginController()
     }
     
     func setupViewControllers() {
@@ -54,6 +33,7 @@ class MainTabBarController: UITabBarController {
 
         let userProfileController = UserProfileController(collectionViewLayout: UICollectionViewFlowLayout())
         let userProfileNavController = self.templateNavController(unselectedImage: #imageLiteral(resourceName: "profile_unselected"), selectedImage: #imageLiteral(resourceName: "profile_selected"), rootViewController: userProfileController)
+        
         Database.database().fetchUser(withUID: uid) { (user) in
             userProfileController.user = user
         }
@@ -62,12 +42,10 @@ class MainTabBarController: UITabBarController {
     }
     
     private func presentAlertController() {
-        let message = "To run the demo, use the following key as your Demo ID (select Edit -> \"Automatically Sync Pasteboard\" in the simulator)."
+        let message = "To run the demo, use the key printed in the console as your unique Demo ID."
         let alertController = UIAlertController(title: "Invalid Demo ID", message: message, preferredStyle: .alert)
-        alertController.addTextField(configurationHandler: { (textField) in
-            textField.text = "demo-\(NSUUID().uuidString)"
-            textField.delegate = self
-        })
+        
+        print("\n\n\nSet the demoId variable in MainTabBarController to the following string: demo-\(NSUUID().uuidString)\n\n\n")
         
         DispatchQueue.main.async {
             let loginController = LoginController()
@@ -110,14 +88,6 @@ extension MainTabBarController: UITabBarControllerDelegate {
             return false
         }
         return true
-    }
-}
-
-//MARK: - UITextFieldDelegate
-
-extension MainTabBarController: UITextFieldDelegate {
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        return false
     }
 }
 

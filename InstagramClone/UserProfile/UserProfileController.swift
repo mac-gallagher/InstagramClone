@@ -85,7 +85,7 @@ class UserProfileController: UICollectionViewController {
     private func paginatePosts() {
         guard let uid = self.user?.uid else { return }
 
-        var query = Database.database().reference().child("demos").child(demoId!).child("posts").child(uid).queryOrdered(byChild: "creationDate")
+        var query = Database.database().reference().child("posts").child(uid).queryOrdered(byChild: "creationDate")
         
         if posts.count > 0 {
             let value = posts.last?.creationDate.timeIntervalSince1970
@@ -248,7 +248,7 @@ extension UserProfileController: HomePostCellDelegate {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
         let values = [uid: post.hasLiked ? 0 : 1]
-        Database.database().reference().child("demos").child(demoId!).child("likes").child(postId).updateChildValues(values) { (err, _) in
+        Database.database().reference().child("likes").child(postId).updateChildValues(values) { (err, _) in
             if let err = err {
                 print("Failed to liked/unlike post:", err)
                 return

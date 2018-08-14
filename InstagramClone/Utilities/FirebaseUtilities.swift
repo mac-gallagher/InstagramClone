@@ -82,7 +82,7 @@ extension Storage {
 extension Database {
 
     func fetchUser(withUID uid: String, completion: @escaping (User) -> ()) {
-        Database.database().reference().child("demos").child(demoId!).child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+        Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
             guard let userDictionary = snapshot.value as? [String: Any] else { return }
             let user = User(uid: uid, dictionary: userDictionary)
             completion(user)
@@ -92,7 +92,7 @@ extension Database {
     }
     
     func fetchAllUsers(includeCurrentUser: Bool = true, completion: @escaping ([User]) -> (), withCancel cancel: ((Error) -> ())?) {
-        let ref = Database.database().reference().child("demos").child(demoId!).child("users")
+        let ref = Database.database().reference().child("users")
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
             guard let dictionaries = snapshot.value as? [String: Any] else {
                 completion([])
@@ -125,7 +125,7 @@ extension Database {
     func isFollowingUser(withUID uid: String, completion: @escaping (Bool) -> (), withCancel cancel: ((Error) -> ())?) {
         guard let currentLoggedInUserId = Auth.auth().currentUser?.uid else { return }
         
-        Database.database().reference().child("demos").child(demoId!).child("following").child(currentLoggedInUserId).child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+        Database.database().reference().child("following").child(currentLoggedInUserId).child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
             if let isFollowing = snapshot.value as? Int, isFollowing == 1 {
                 completion(true)
             } else {
@@ -142,14 +142,14 @@ extension Database {
         guard let currentLoggedInUserId = Auth.auth().currentUser?.uid else { return }
         
         let values = [uid: 1]
-        Database.database().reference().child("demos").child(demoId!).child("following").child(currentLoggedInUserId).updateChildValues(values) { (err, ref) in
+        Database.database().reference().child("following").child(currentLoggedInUserId).updateChildValues(values) { (err, ref) in
             if let err = err {
                 completion(err)
                 return
             }
             
             let values = [currentLoggedInUserId: 1]
-            Database.database().reference().child("demos").child(demoId!).child("followers").child(uid).updateChildValues(values) { (err, ref) in
+            Database.database().reference().child("followers").child(uid).updateChildValues(values) { (err, ref) in
                 if let err = err {
                     completion(err)
                     return
@@ -162,14 +162,14 @@ extension Database {
     func unfollowUser(withUID uid: String, completion: @escaping (Error?) -> ()) {
         guard let currentLoggedInUserId = Auth.auth().currentUser?.uid else { return }
         
-        Database.database().reference().child("demos").child(demoId!).child("following").child(currentLoggedInUserId).child(uid).removeValue { (err, _) in
+        Database.database().reference().child("following").child(currentLoggedInUserId).child(uid).removeValue { (err, _) in
             if let err = err {
                 print("Failed to remove user from following:", err)
                 completion(err)
                 return
             }
             
-            Database.database().reference().child("demos").child(demoId!).child("followers").child(uid).child(currentLoggedInUserId).removeValue(completionBlock: { (err, _) in
+            Database.database().reference().child("followers").child(uid).child(currentLoggedInUserId).removeValue(completionBlock: { (err, _) in
                 if let err = err {
                     print("Failed to remove user from followers:", err)
                     completion(err)
@@ -186,7 +186,7 @@ extension Database {
             
             let values = ["imageUrl": postImageUrl, "caption": caption, "imageWidth": image.size.width, "imageHeight": image.size.height, "creationDate": Date().timeIntervalSince1970] as [String : Any]
             
-            let userPostRef = Database.database().reference().child("demos").child(demoId!).child("posts").child(uid).childByAutoId()
+            let userPostRef = Database.database().reference().child("posts").child(uid).childByAutoId()
             userPostRef.updateChildValues(values) { (err, ref) in
                 if let err = err {
                     print("Failed to save post to database", err)
@@ -201,7 +201,7 @@ extension Database {
     func fetchPostsForUser(withUID uid: String, completion: @escaping ([Post]) -> (), withCancel cancel: ((Error) -> ())?) {
         guard let currentLoggedInUser = Auth.auth().currentUser?.uid else { return }
         
-        let ref = Database.database().reference().child("demos").child(demoId!).child("posts").child(uid)
+        let ref = Database.database().reference().child("posts").child(uid)
         
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
             
@@ -220,7 +220,7 @@ extension Database {
                     post.id = postId
 
                     //check likes
-                    Database.database().reference().child("demos").child(demoId!).child("likes").child(postId).child(currentLoggedInUser).observeSingleEvent(of: .value, with: { (snapshot) in
+                    Database.database().reference().child("likes").child(postId).child(currentLoggedInUser).observeSingleEvent(of: .value, with: { (snapshot) in
                         if let value = snapshot.value as? Int, value == 1 {
                             post.hasLiked = true
                         } else {
@@ -248,7 +248,7 @@ extension Database {
         
         let values = ["text": text, "creationDate": Date().timeIntervalSince1970, "uid": uid] as [String: Any]
         
-        let commentsRef = Database.database().reference().child("demos").child(demoId!).child("comments").child(postId).childByAutoId()
+        let commentsRef = Database.database().reference().child("comments").child(postId).childByAutoId()
         commentsRef.updateChildValues(values) { (err, _) in
             if let err = err {
                 print("Failed to add comment:", err)
@@ -260,7 +260,7 @@ extension Database {
     }
     
     func fetchCommentsForPost(withId postId: String, completion: @escaping ([Comment]) -> (), withCancel cancel: ((Error) -> ())?) {
-        let commentsReference = Database.database().reference().child("demos").child(demoId!).child("comments").child(postId)
+        let commentsReference = Database.database().reference().child("comments").child(postId)
         
         commentsReference.observeSingleEvent(of: .value, with: { (snapshot) in
             guard let dictionaries = snapshot.value as? [String: Any] else {
@@ -294,7 +294,7 @@ extension Database {
     }
     
     func numberOfPostsForUser(withUID uid: String, completion: @escaping (Int) -> ()) {
-        Database.database().reference().child("demos").child(demoId!).child("posts").child(uid).observeSingleEvent(of: .value) { (snapshot) in
+        Database.database().reference().child("posts").child(uid).observeSingleEvent(of: .value) { (snapshot) in
             if let dictionaries = snapshot.value as? [String: Any] {
                 completion(dictionaries.count)
             } else {
@@ -304,7 +304,7 @@ extension Database {
     }
     
     func numberOfFollowersForUser(withUID uid: String, completion: @escaping (Int) -> ()) {
-        Database.database().reference().child("demos").child(demoId!).child("followers").child(uid).observeSingleEvent(of: .value) { (snapshot) in
+        Database.database().reference().child("followers").child(uid).observeSingleEvent(of: .value) { (snapshot) in
             if let dictionaries = snapshot.value as? [String: Any] {
                 completion(dictionaries.count)
             } else {
@@ -314,7 +314,7 @@ extension Database {
     }
     
     func numberOfFollowingForUser(withUID uid: String, completion: @escaping (Int) -> ()) {
-        Database.database().reference().child("demos").child(demoId!).child("following").child(uid).observeSingleEvent(of: .value) { (snapshot) in
+        Database.database().reference().child("following").child(uid).observeSingleEvent(of: .value) { (snapshot) in
             if let dictionaries = snapshot.value as? [String: Any] {
                 completion(dictionaries.count)
             } else {
@@ -330,7 +330,7 @@ extension Database {
         }
         
         let values = [uid: dictionaryValues]
-        Database.database().reference().child("demos").child(demoId!).child("users").updateChildValues(values, withCompletionBlock: { (err, ref) in
+        Database.database().reference().child("users").updateChildValues(values, withCompletionBlock: { (err, ref) in
             if let err = err {
                 print("Failed to upload user to database:", err)
                 return

@@ -17,7 +17,7 @@ class HomeEmptyStateView: UIView {
         
         let attributedText = NSMutableAttributedString(string: "Welcome to Instagram\n", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 16)])
         attributedText.append(NSAttributedString(string: "\n\n", attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 4)]))
-        attributedText.append(NSMutableAttributedString(string: "When you follow people, you'll see the photos and videos they share here", attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray, NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14)]))
+        attributedText.append(NSMutableAttributedString(string: "When you follow people, you'll see the photos and videos they share here.", attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray, NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14)]))
         
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineBreakMode = .byTruncatingTail
