@@ -23,7 +23,7 @@
 		AD3164D221152935001F5DA7 /* CommentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3164D121152935001F5DA7 /* CommentCell.swift */; };
 		AD3164D421152D00001F5DA7 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3164D321152D00001F5DA7 /* Comment.swift */; };
 		AD3164D621167401001F5DA7 /* CommentInputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3164D521167401001F5DA7 /* CommentInputAccessoryView.swift */; };
-		AD3164D821167E4E001F5DA7 /* CommentInputTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3164D721167E4E001F5DA7 /* CommentInputTextView.swift */; };
+		AD3164D821167E4E001F5DA7 /* PlaceholderTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3164D721167E4E001F5DA7 /* PlaceholderTextView.swift */; };
 		AD32DEC5210BEF6F002F4973 /* PhotoSelectorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD32DEC4210BEF6F002F4973 /* PhotoSelectorController.swift */; };
 		AD32DEC7210C0995002F4973 /* PhotoSelectorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD32DEC6210C0995002F4973 /* PhotoSelectorCell.swift */; };
 		AD32DEC9210C10A0002F4973 /* PhotoSelectorHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD32DEC8210C10A0002F4973 /* PhotoSelectorHeader.swift */; };
@@ -66,7 +66,7 @@
 		AD3164D121152935001F5DA7 /* CommentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCell.swift; sourceTree = "<group>"; };
 		AD3164D321152D00001F5DA7 /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		AD3164D521167401001F5DA7 /* CommentInputAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentInputAccessoryView.swift; sourceTree = "<group>"; };
-		AD3164D721167E4E001F5DA7 /* CommentInputTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentInputTextView.swift; sourceTree = "<group>"; };
+		AD3164D721167E4E001F5DA7 /* PlaceholderTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderTextView.swift; sourceTree = "<group>"; };
 		AD32DEC4210BEF6F002F4973 /* PhotoSelectorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSelectorController.swift; sourceTree = "<group>"; };
 		AD32DEC6210C0995002F4973 /* PhotoSelectorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSelectorCell.swift; sourceTree = "<group>"; };
 		AD32DEC8210C10A0002F4973 /* PhotoSelectorHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSelectorHeader.swift; sourceTree = "<group>"; };
@@ -127,7 +127,6 @@
 				AD3164CF2114F0A1001F5DA7 /* CommentsController.swift */,
 				AD3164D121152935001F5DA7 /* CommentCell.swift */,
 				AD3164D521167401001F5DA7 /* CommentInputAccessoryView.swift */,
-				AD3164D721167E4E001F5DA7 /* CommentInputTextView.swift */,
 			);
 			path = Comment;
 			sourceTree = "<group>";
@@ -137,6 +136,7 @@
 			children = (
 				AD215F15205DA9B6000E42AD /* Extensions.swift */,
 				ADE95AF8210D4539003D9A54 /* CustomImageView.swift */,
+				AD3164D721167E4E001F5DA7 /* PlaceholderTextView.swift */,
 				ADAC0807210FD4C900615E62 /* FirebaseUtilities.swift */,
 			);
 			path = Utilities;
@@ -400,7 +400,7 @@
 				AD3164D221152935001F5DA7 /* CommentCell.swift in Sources */,
 				ADAC0806210FCB6C00615E62 /* User.swift in Sources */,
 				AD4D8CEC2060634600A49BA4 /* MainTabBarController.swift in Sources */,
-				AD3164D821167E4E001F5DA7 /* CommentInputTextView.swift in Sources */,
+				AD3164D821167E4E001F5DA7 /* PlaceholderTextView.swift in Sources */,
 				AD4D8CF12060827500A49BA4 /* UserProfileHeader.swift in Sources */,
 				AD4D8CEE2060648B00A49BA4 /* UserProfileController.swift in Sources */,
 				AD2A2CB1205C88DE0023D5C8 /* AppDelegate.swift in Sources */,

@@ -16,8 +16,9 @@ class CommentInputAccessoryView: UIView, UITextViewDelegate {
     
     var delegate: CommentInputAccessoryViewDelegate?
     
-    private let commentTextView: CommentInputTextView = {
-        let tv = CommentInputTextView()
+    private let commentTextView: PlaceholderTextView = {
+        let tv = PlaceholderTextView()
+        tv.placeholderLabel.text = "Add a comment..."
         tv.isScrollEnabled = false
         tv.font = UIFont.systemFont(ofSize: 18)
         tv.autocorrectionType = .no

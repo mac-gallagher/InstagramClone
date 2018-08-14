@@ -25,9 +25,12 @@ class SharePhotoController: UIViewController {
         return iv
     }()
     
-    private let textView: UITextView = {
-        let tv = UITextView()
+    private let textView: PlaceholderTextView = {
+        let tv = PlaceholderTextView()
+        tv.placeholderLabel.text = "Add a caption..."
+        tv.placeholderLabel.font = UIFont.systemFont(ofSize: 14)
         tv.font = UIFont.systemFont(ofSize: 14)
+        tv.autocorrectionType = .no
         return tv
     }()
     
