@@ -41,21 +41,6 @@ class MainTabBarController: UITabBarController {
         viewControllers = [homeNavController, searchNavController, plusNavController, likeNavController, userProfileNavController]
     }
     
-    private func presentAlertController() {
-        let message = "To run the demo, use the key printed in the console as your unique Demo ID."
-        let alertController = UIAlertController(title: "Invalid Demo ID", message: message, preferredStyle: .alert)
-        
-        print("\n\n\nSet the demoId variable in MainTabBarController to the following string: demo-\(NSUUID().uuidString)\n\n\n")
-        
-        DispatchQueue.main.async {
-            let loginController = LoginController()
-            let navController = UINavigationController(rootViewController: loginController)
-            self.present(navController, animated: true) {
-                loginController.present(alertController, animated: true)
-            }
-        }
-    }
-    
     private func presentLoginController() {
         DispatchQueue.main.async { // wait until MainTabBarController is inside UI
             let loginController = LoginController()

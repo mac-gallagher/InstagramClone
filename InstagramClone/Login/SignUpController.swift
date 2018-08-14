@@ -88,7 +88,7 @@ class SignUpController: UIViewController, UINavigationControllerDelegate {
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapOnView)))
         
         view.addSubview(alreadyHaveAccountButton)
-        alreadyHaveAccountButton.anchor(top: nil, left: view.safeAreaLayoutGuide.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.safeAreaLayoutGuide.rightAnchor, height: 50)
+        alreadyHaveAccountButton.anchor(left: view.safeAreaLayoutGuide.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.safeAreaLayoutGuide.rightAnchor, height: 50)
         
         view.addSubview(plusPhotoButton)
         plusPhotoButton.anchor(top: view.safeAreaLayoutGuide.topAnchor, paddingTop: 40, width: 140, height: 140)
@@ -105,7 +105,17 @@ class SignUpController: UIViewController, UINavigationControllerDelegate {
         stackView.spacing = 10
         
         view.addSubview(stackView)
-        stackView.anchor(top: plusPhotoButton.bottomAnchor, left: view.safeAreaLayoutGuide.leftAnchor, right: view.safeAreaLayoutGuide.rightAnchor, paddingTop: 20, paddingLeft: 40, paddingRight: 40, width: 0, height: 200)
+        stackView.anchor(top: plusPhotoButton.bottomAnchor, left: view.safeAreaLayoutGuide.leftAnchor, right: view.safeAreaLayoutGuide.rightAnchor, paddingTop: 20, paddingLeft: 40, paddingRight: 40, height: 200)
+    }
+    
+    private func resetInputFields() {
+        emailTextField.text = ""
+        usernameTextField.text = ""
+        passwordTextField.text = ""
+        
+        emailTextField.isUserInteractionEnabled = true
+        usernameTextField.isUserInteractionEnabled = true
+        passwordTextField.isUserInteractionEnabled = true
     }
     
     @objc private func handleTapOnView(_ sender: UITextField) {
@@ -141,11 +151,13 @@ class SignUpController: UIViewController, UINavigationControllerDelegate {
         guard let username = usernameTextField.text else { return }
         guard let password = passwordTextField.text else { return }
         
+        emailTextField.isUserInteractionEnabled = false
+        usernameTextField.isUserInteractionEnabled = false
+        passwordTextField.isUserInteractionEnabled = false
+        
         Auth.auth().createUser(withEmail: email, username: username, password: password, image: profileImage) { (err) in
             if err != nil {
-                self.emailTextField.text = ""
-                self.usernameTextField.text = ""
-                self.passwordTextField.text = ""
+                self.resetInputFields()
                 return
             }
             

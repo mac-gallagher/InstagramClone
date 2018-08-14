@@ -97,13 +97,25 @@ class LoginController: UIViewController {
         stackView.anchor(top: logoContainerView.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 40, paddingLeft: 40, paddingRight: 40, height: 140)
     }
     
+    private func resetInputFields() {
+        emailTextField.text = ""
+        passwordTextField.text = ""
+        emailTextField.isUserInteractionEnabled = true
+        passwordTextField.isUserInteractionEnabled = true
+    }
+    
     @objc private func handleLogin() {
         guard let email = emailTextField.text, let password = passwordTextField.text else { return }
+        
+        emailTextField.isUserInteractionEnabled = false
+        passwordTextField.isUserInteractionEnabled = false
+        loginButton.isEnabled = false
+        loginButton.backgroundColor = UIColor.rgb(red: 149, green: 204, blue: 244)
+        
         Auth.auth().signIn(withEmail: email, password: password, completion: { (user, err) in
             if let err = err {
                 print("Failed to sign in with email:", err)
-                self.emailTextField.text = ""
-                self.passwordTextField.text = ""
+                self.resetInputFields()
                 return
             }
             
