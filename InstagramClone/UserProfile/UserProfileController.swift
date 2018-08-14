@@ -115,12 +115,23 @@ class UserProfileController: UICollectionViewController {
                 
                 var post = Post(user: user, dictionary: dictionary)
                 post.id = snapshot.key
-                self.posts.append(post)
+                
+                //check likes
+                Database.database().reference().child("likes").child(snapshot.key).child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+                    if let value = snapshot.value as? Int, value == 1 {
+                        post.hasLiked = true
+                    } else {
+                        post.hasLiked = false
+                    }
+                    
+                    self.posts.append(post)
+                    self.collectionView?.reloadData()
+                    self.collectionView?.refreshControl?.endRefreshing()
+                    
+                }, withCancel: { (err) in
+                    print("Failed to fetch like info for post:", err)
+                })
             })
-            
-            self.collectionView?.reloadData()
-            self.collectionView?.refreshControl?.endRefreshing()
-            
         }) { (err) in
             print("Failed to paginate posts:", err)
         }
@@ -250,15 +261,27 @@ extension UserProfileController: HomePostCellDelegate {
         guard let postId = post.id else { return }
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
-        let values = [uid: post.hasLiked ? 0 : 1]
-        Database.database().reference().child("likes").child(postId).updateChildValues(values) { (err, _) in
-            if let err = err {
-                print("Failed to liked/unlike post:", err)
-                return
+        if post.hasLiked {
+            Database.database().reference().child("likes").child(postId).removeValue { (err, _) in
+                if let err = err {
+                    print("Failed to unlike post:", err)
+                    return
+                }
+                post.hasLiked = false
+                self.posts[indexPath.item] = post
+                self.collectionView?.reloadItems(at: [indexPath])
             }
-            post.hasLiked = !post.hasLiked
-            self.posts[indexPath.item] = post
-            self.collectionView?.reloadItems(at: [indexPath])
+        } else {
+            let values = [uid : 1]
+            Database.database().reference().child("likes").child(postId).updateChildValues(values) { (err, _) in
+                if let err = err {
+                    print("Failed to like post:", err)
+                    return
+                }
+                post.hasLiked = true
+                self.posts[indexPath.item] = post
+                self.collectionView?.reloadItems(at: [indexPath])
+            }
         }
     }
     
@@ -267,7 +290,6 @@ extension UserProfileController: HomePostCellDelegate {
         userProfileController.user = user
         navigationController?.pushViewController(userProfileController, animated: true)
     }
-    
 }
 
 
