@@ -36,8 +36,6 @@ class SharePhotoController: UIViewController {
     
     override var prefersStatusBarHidden: Bool { return true }
     
-    static let updateFeedNotificationName = NSNotification.Name(rawValue: "UpdateFeed")
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.rgb(red: 240, green: 240, blue: 240)
@@ -68,8 +66,9 @@ class SharePhotoController: UIViewController {
                 return
             }
             
+            NotificationCenter.default.post(name: NSNotification.Name.updateHomeFeed, object: nil)
+            NotificationCenter.default.post(name: NSNotification.Name.updateUserProfileFeed, object: nil)
             self.dismiss(animated: true, completion: nil)
-            NotificationCenter.default.post(name: SharePhotoController.updateFeedNotificationName, object: nil)
         }
     }
 }

@@ -206,7 +206,7 @@ class UserProfileHeader: UICollectionViewCell {
             }
         }
         
-        NotificationCenter.default.post(name: SharePhotoController.updateFeedNotificationName, object: nil)
+        NotificationCenter.default.post(name: NSNotification.Name.updateHomeFeed, object: nil)
     }
     
     @objc private func handleChangeToGridView() {

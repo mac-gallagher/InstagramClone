@@ -113,3 +113,15 @@ extension Date {
         return "\(secondsAgo / week)wk"
     }
 }
+
+extension NSNotification.Name {
+
+    static var updateHomeFeed = NSNotification.Name(rawValue: "updateFeed")
+    
+    static var updateUserProfileFeed = NSNotification.Name(rawValue: "updateUserProfileFeed")
+}
+
+
+
+
+

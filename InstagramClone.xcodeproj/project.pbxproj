@@ -136,11 +136,11 @@
 		AD215F14205DA991000E42AD /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				AD215F15205DA9B6000E42AD /* Extensions.swift */,
 				ADE95AF8210D4539003D9A54 /* CustomImageView.swift */,
-				AD3164D721167E4E001F5DA7 /* PlaceholderTextView.swift */,
+				AD215F15205DA9B6000E42AD /* Extensions.swift */,
 				ADAC0807210FD4C900615E62 /* FirebaseUtilities.swift */,
 				AD392752212526DC00D99FE1 /* HomePostCellViewController.swift */,
+				AD3164D721167E4E001F5DA7 /* PlaceholderTextView.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";

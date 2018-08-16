@@ -26,7 +26,6 @@ class UserProfileController: HomePostCellViewController {
     
     private var isFinishedPaging = false
     private var pagingCount: Int = 4
-//    private var posts = [Post]()
     
     private var isGridView: Bool = true
     
@@ -34,6 +33,8 @@ class UserProfileController: HomePostCellViewController {
         super.viewDidLoad()
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationItem.backBarButtonItem?.tintColor = .black
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(handleRefresh), name: NSNotification.Name.updateUserProfileFeed, object: nil)
         
         collectionView?.backgroundColor = .white
         collectionView?.register(UserProfileHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: UserProfileHeader.headerId)
@@ -96,7 +97,10 @@ class UserProfileController: HomePostCellViewController {
         }
         
         query.queryLimited(toLast: UInt(pagingCount)).observeSingleEvent(of: .value, with: { (snapshot) in
-            guard var allObjects = snapshot.children.allObjects as? [DataSnapshot] else { return }
+            guard var allObjects = snapshot.children.allObjects as? [DataSnapshot] else {
+                self.collectionView?.refreshControl?.endRefreshing()
+                return
+            }
             
             allObjects.reverse()
             
@@ -110,8 +114,15 @@ class UserProfileController: HomePostCellViewController {
             
             guard let user = self.user else { return }
             
+            if allObjects.count == 0 {
+                self.collectionView?.refreshControl?.endRefreshing()
+            }
+            
             allObjects.forEach({ (snapshot) in
-                guard let dictionary = snapshot.value as? [String: Any] else { return }
+                guard let dictionary = snapshot.value as? [String: Any] else {
+                    self.collectionView?.refreshControl?.endRefreshing()
+                    return
+                }
                 
                 var post = Post(user: user, dictionary: dictionary)
                 post.id = snapshot.key

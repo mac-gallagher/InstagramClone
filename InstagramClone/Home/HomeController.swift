@@ -11,8 +11,6 @@ import Firebase
 
 class HomeController: HomePostCellViewController {
    
-//    private var posts = [Post]()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigationBar()
@@ -22,7 +20,7 @@ class HomeController: HomePostCellViewController {
         collectionView?.backgroundView = HomeEmptyStateView()
         collectionView?.backgroundView?.alpha = 0
         
-        NotificationCenter.default.addObserver(self, selector: #selector(handleRefresh), name: SharePhotoController.updateFeedNotificationName, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleRefresh), name: NSNotification.Name.updateHomeFeed, object: nil)
         
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)

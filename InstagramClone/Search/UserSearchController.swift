@@ -44,6 +44,12 @@ class UserSearchController: UICollectionViewController {
         fetchAllUsers()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.view.setNeedsLayout()
+        navigationController?.view.layoutIfNeeded()
+    }
+    
     private func fetchAllUsers() {
         collectionView?.refreshControl?.beginRefreshing()
         
