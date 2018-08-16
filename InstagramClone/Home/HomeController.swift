@@ -156,7 +156,6 @@ extension HomeController: HomePostCellDelegate {
     
     func didTapOptions(post: Post) {
         guard let currentLoggedInUserId = Auth.auth().currentUser?.uid else { return }
-        guard let postId = post.id else { return }
         
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
@@ -174,8 +173,8 @@ extension HomeController: HomePostCellDelegate {
                 }))
                 alert.addAction(UIAlertAction(title: "Delete", style: .default, handler: { (_) in
                     
-                    Database.database().deletePost(withUID: currentLoggedInUserId, postId: postId) { (_) in
-                        if let postIndex = self.posts.index(where: {$0.id == postId}) {
+                    Database.database().deletePost(withUID: currentLoggedInUserId, postId: post.id) { (_) in
+                        if let postIndex = self.posts.index(where: {$0.id == post.id}) {
                             self.posts.remove(at: postIndex)
                             self.collectionView?.reloadData()
                             self.showEmptyStateViewIfNeeded()
@@ -211,11 +210,10 @@ extension HomeController: HomePostCellDelegate {
         
         var post = posts[indexPath.item]
         
-        guard let postId = post.id else { return }
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
         if post.hasLiked {
-            Database.database().reference().child("likes").child(postId).removeValue { (err, _) in
+            Database.database().reference().child("likes").child(post.id).removeValue { (err, _) in
                 if let err = err {
                     print("Failed to unlike post:", err)
                     return
@@ -226,7 +224,7 @@ extension HomeController: HomePostCellDelegate {
             }
         } else {
             let values = [uid : 1]
-            Database.database().reference().child("likes").child(postId).updateChildValues(values) { (err, _) in
+            Database.database().reference().child("likes").child(post.id).updateChildValues(values) { (err, _) in
                 if let err = err {
                     print("Failed to like post:", err)
                     return

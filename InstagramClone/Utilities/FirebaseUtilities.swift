@@ -184,9 +184,10 @@ extension Database {
         Storage.storage().uploadPostImage(image: image) { (postImageUrl) in
             guard let uid = Auth.auth().currentUser?.uid else { return }
             
-            let values = ["imageUrl": postImageUrl, "caption": caption, "imageWidth": image.size.width, "imageHeight": image.size.height, "creationDate": Date().timeIntervalSince1970] as [String : Any]
-            
             let userPostRef = Database.database().reference().child("posts").child(uid).childByAutoId()
+            
+            let values = ["imageUrl": postImageUrl, "caption": caption, "imageWidth": image.size.width, "imageHeight": image.size.height, "creationDate": Date().timeIntervalSince1970, "id": userPostRef.key] as [String : Any]
+            
             userPostRef.updateChildValues(values) { (err, ref) in
                 if let err = err {
                     print("Failed to save post to database", err)
