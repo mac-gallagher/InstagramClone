@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class UserProfileController: UICollectionViewController {
+class UserProfileController: HomePostCellViewController {
     
     var user: User? {
         didSet {
@@ -26,7 +26,7 @@ class UserProfileController: UICollectionViewController {
     
     private var isFinishedPaging = false
     private var pagingCount: Int = 4
-    private var posts = [Post]()
+//    private var posts = [Post]()
     
     private var isGridView: Bool = true
     
@@ -242,104 +242,4 @@ extension UserProfileController: UserProfileHeaderDelegate {
         collectionView?.reloadData()
     }
 }
-
-//MARK: - HomePostCellDelegate
-
-extension UserProfileController: HomePostCellDelegate {
-    
-    func didTapComment(post: Post) {
-        let commentsController = CommentsController(collectionViewLayout: UICollectionViewFlowLayout())
-        commentsController.post = post
-        navigationController?.pushViewController(commentsController, animated: true)
-    }
-    
-    func didTapOptions(post: Post) {
-        guard let currentLoggedInUserId = Auth.auth().currentUser?.uid else { return }
-        
-        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        alertController.addAction(cancelAction)
-        
-        if currentLoggedInUserId == post.user.uid {
-            
-            let deleteAction = UIAlertAction(title: "Delete", style: .destructive, handler: { (_) in
-                
-                let alert = UIAlertController(title: "Delete Post?", message: nil, preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
-                    
-                    self.dismiss(animated: true, completion: nil)
-                }))
-                alert.addAction(UIAlertAction(title: "Delete", style: .default, handler: { (_) in
-                    
-                    Database.database().deletePost(withUID: currentLoggedInUserId, postId: post.id) { (_) in
-                        if let postIndex = self.posts.index(where: {$0.id == post.id}) {
-                            self.posts.remove(at: postIndex)
-                            self.collectionView?.reloadData()
-                        }
-                    }
-                }))
-                
-                self.present(alert, animated: true, completion: nil)
-            })
-            
-            alertController.addAction(deleteAction)
-            
-        } else {
-            let unfollowAction = UIAlertAction(title: "Unfollow", style: .destructive) { (_) in
-                
-                let uid = post.user.uid
-                Database.database().unfollowUser(withUID: uid, completion: { (_) in
-                    let filteredPosts = self.posts.filter({$0.user.uid != uid})
-                    self.posts = filteredPosts
-                    self.collectionView?.reloadData()
-                })
-            }
-            
-            alertController.addAction(unfollowAction)
-        }
-        
-        present(alertController, animated: true, completion: nil)
-    }
-    
-    func didLike(for cell: HomePostCell) {
-        guard let indexPath = collectionView?.indexPath(for: cell) else { return }
-        
-        var post = posts[indexPath.item]
-        
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        
-        if post.hasLiked {
-            Database.database().reference().child("likes").child(post.id).removeValue { (err, _) in
-                if let err = err {
-                    print("Failed to unlike post:", err)
-                    return
-                }
-                post.hasLiked = false
-                self.posts[indexPath.item] = post
-                self.collectionView?.reloadItems(at: [indexPath])
-            }
-        } else {
-            let values = [uid : 1]
-            Database.database().reference().child("likes").child(post.id).updateChildValues(values) { (err, _) in
-                if let err = err {
-                    print("Failed to like post:", err)
-                    return
-                }
-                post.hasLiked = true
-                self.posts[indexPath.item] = post
-                self.collectionView?.reloadItems(at: [indexPath])
-            }
-        }
-    }
-    
-    func didTapUser(user: User) {
-        let userProfileController = UserProfileController(collectionViewLayout: UICollectionViewFlowLayout())
-        userProfileController.user = user
-        navigationController?.pushViewController(userProfileController, animated: true)
-    }
-}
-
-
-
 
