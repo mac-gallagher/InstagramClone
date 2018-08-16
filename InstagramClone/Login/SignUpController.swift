@@ -15,6 +15,7 @@ class SignUpController: UIViewController, UINavigationControllerDelegate {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "plus_photo").withRenderingMode(.alwaysOriginal), for: .normal)
         button.layer.masksToBounds = true
+        button.imageView?.contentMode = .scaleAspectFill
         button.addTarget(self, action: #selector(handlePlusPhoto), for: .touchUpInside)
         return button
     }()
@@ -116,6 +117,9 @@ class SignUpController: UIViewController, UINavigationControllerDelegate {
         emailTextField.isUserInteractionEnabled = true
         usernameTextField.isUserInteractionEnabled = true
         passwordTextField.isUserInteractionEnabled = true
+        
+        signUpButton.isEnabled = false
+        signUpButton.backgroundColor = UIColor.rgb(red: 149, green: 204, blue: 244)
     }
     
     @objc private func handleTapOnView(_ sender: UITextField) {
@@ -155,6 +159,9 @@ class SignUpController: UIViewController, UINavigationControllerDelegate {
         usernameTextField.isUserInteractionEnabled = false
         passwordTextField.isUserInteractionEnabled = false
         
+        signUpButton.isEnabled = false
+        signUpButton.backgroundColor = UIColor.rgb(red: 149, green: 204, blue: 244)
+        
         Auth.auth().createUser(withEmail: email, username: username, password: password, image: profileImage) { (err) in
             if err != nil {
                 self.resetInputFields()
@@ -180,6 +187,8 @@ extension SignUpController: UIImagePickerControllerDelegate {
             plusPhotoButton.setImage(originalImage.withRenderingMode(.alwaysOriginal), for: .normal)
             profileImage = originalImage
         }
+        plusPhotoButton.layer.borderColor = UIColor(white: 0, alpha: 0.2).cgColor
+        plusPhotoButton.layer.borderWidth = 0.5
         dismiss(animated: true, completion: nil)
     }
 }

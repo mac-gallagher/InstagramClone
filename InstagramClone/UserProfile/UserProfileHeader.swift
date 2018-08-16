@@ -29,6 +29,8 @@ class UserProfileHeader: UICollectionViewCell {
         iv.clipsToBounds = true
         iv.contentMode = .scaleAspectFill
         iv.image = #imageLiteral(resourceName: "user")
+        iv.layer.borderColor = UIColor(white: 0, alpha: 0.2).cgColor
+        iv.layer.borderWidth = 0.5
         return iv
     }()
     

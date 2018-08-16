@@ -11,6 +11,7 @@ import UIKit
 protocol HomePostCellDelegate {
     func didTapComment(post: Post)
     func didTapUser(user: User)
+    func didTapOptions(post: Post)
     func didLike(for cell: HomePostCell)
 }
 
@@ -140,9 +141,15 @@ class HomePostCell: UICollectionViewCell {
 //MARK: - HomePostHeaderDelegate
 
 extension HomePostCell: HomePostHeaderDelegate {
+    
     func didTapUser() {
         guard let user = post?.user else { return }
         delegate?.didTapUser(user: user)
+    }
+    
+    func didTapOptions() {
+        guard let post = post else { return }
+        delegate?.didTapOptions(post: post)
     }
 }
 

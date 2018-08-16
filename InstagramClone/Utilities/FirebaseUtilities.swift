@@ -36,7 +36,7 @@ extension Auth {
 extension Storage {
     
     fileprivate func uploadUserProfileImage(image: UIImage, completion: @escaping (String) -> ()) {
-        guard let uploadData = UIImageJPEGRepresentation(image, 0.3) else { return }
+        guard let uploadData = UIImageJPEGRepresentation(image, 1) else { return } //changed from 0.3
         
         let storageRef = Storage.storage().reference().child("profile_images").child(NSUUID().uuidString)
         
@@ -58,7 +58,7 @@ extension Storage {
     }
     
     fileprivate func uploadPostImage(image: UIImage, completion: @escaping (String) -> ()) {
-        guard let uploadData = UIImageJPEGRepresentation(image, 0.5) else { return }
+        guard let uploadData = UIImageJPEGRepresentation(image, 1) else { return } //changed from 0.5
         
         let storageRef = Storage.storage().reference().child("post_images").child(NSUUID().uuidString)
         storageRef.putData(uploadData, metadata: nil, completion: { (_, err) in
@@ -240,6 +240,30 @@ extension Database {
             })
         }) { (err) in
             print("Failed to fetch posts:", err)
+        }
+    }
+    
+    func deletePost(withUID uid: String, postId: String, completion: ((Error?) -> ())? = nil) {
+        Database.database().reference().child("posts").child(uid).child(postId).removeValue { (err, _) in
+            if let err = err {
+                print("Failed to delete post:", err)
+                completion?(err)
+            }
+            
+            Database.database().reference().child("comments").child(postId).removeValue(completionBlock: { (err, _) in
+                if let err = err {
+                    print("Failed to delete comments on post:", err)
+                    completion?(err)
+                }
+            })
+            
+            Database.database().reference().child("likes").child(postId).removeValue(completionBlock: { (err, _) in
+                if let err = err {
+                    print("Failed to delete likes on post:", err)
+                    completion?(err)
+                }
+                completion?(nil)
+            })
         }
     }
     

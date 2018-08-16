@@ -102,6 +102,9 @@ class LoginController: UIViewController {
         passwordTextField.text = ""
         emailTextField.isUserInteractionEnabled = true
         passwordTextField.isUserInteractionEnabled = true
+        
+        loginButton.isEnabled = false
+        loginButton.backgroundColor = UIColor.rgb(red: 149, green: 204, blue: 244)
     }
     
     @objc private func handleLogin() {
@@ -109,6 +112,7 @@ class LoginController: UIViewController {
         
         emailTextField.isUserInteractionEnabled = false
         passwordTextField.isUserInteractionEnabled = false
+        
         loginButton.isEnabled = false
         loginButton.backgroundColor = UIColor.rgb(red: 149, green: 204, blue: 244)
         

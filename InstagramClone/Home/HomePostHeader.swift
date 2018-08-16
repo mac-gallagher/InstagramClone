@@ -10,6 +10,7 @@ import UIKit
 
 protocol HomePostHeaderDelegate {
     func didTapUser()
+    func didTapOptions()
 }
 
 class HomePostHeader: UIView {
@@ -29,6 +30,8 @@ class HomePostHeader: UIView {
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
         iv.image = #imageLiteral(resourceName: "user")
+        iv.layer.borderColor = UIColor(white: 0, alpha: 0.2).cgColor
+        iv.layer.borderWidth = 0.5
         iv.isUserInteractionEnabled  = true
         return iv
     }()
@@ -38,7 +41,7 @@ class HomePostHeader: UIView {
         label.setTitleColor(.black, for: .normal)
         label.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
         label.contentHorizontalAlignment = .left
-        label.addTarget(self, action: #selector(handleTap), for: .touchUpInside)
+        label.addTarget(self, action: #selector(handleUserTap), for: .touchUpInside)
         return label
     }()
     
@@ -47,6 +50,7 @@ class HomePostHeader: UIView {
         button.setTitle("•••", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
+        button.addTarget(self, action: #selector(handleOptionsTap), for: .touchUpInside)
         return button
     }()
     
@@ -64,7 +68,7 @@ class HomePostHeader: UIView {
         addSubview(userProfileImageView)
         userProfileImageView.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, paddingTop: padding, paddingLeft: padding, paddingBottom: padding, width: 40, height: 40)
         userProfileImageView.layer.cornerRadius = 40 / 2
-        userProfileImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap)))
+        userProfileImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleUserTap)))
         
         addSubview(optionsButton)
         optionsButton.anchor(top: topAnchor, bottom: bottomAnchor, right: rightAnchor, paddingRight: padding, width: 44)
@@ -83,8 +87,12 @@ class HomePostHeader: UIView {
         }
     }
     
-    @objc private func handleTap() {
+    @objc private func handleUserTap() {
         delegate?.didTapUser()
+    }
+    
+    @objc private func handleOptionsTap() {
+        delegate?.didTapOptions()
     }
 }
 

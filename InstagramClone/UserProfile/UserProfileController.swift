@@ -253,6 +253,10 @@ extension UserProfileController: HomePostCellDelegate {
         navigationController?.pushViewController(commentsController, animated: true)
     }
     
+    func didTapOptions(post: Post) {
+        print("Tapped options")
+    }
+    
     func didLike(for cell: HomePostCell) {
         guard let indexPath = collectionView?.indexPath(for: cell) else { return }
         

@@ -42,7 +42,7 @@ class HomeController: UICollectionViewController {
     private func fetchPosts() {
         guard let currentLoggedInUserId = Auth.auth().currentUser?.uid else { return }
         
-        toggleEmptyStateView()
+        showEmptyStateViewIfNeeded()
         
         collectionView?.refreshControl?.beginRefreshing()
         
@@ -86,7 +86,7 @@ class HomeController: UICollectionViewController {
         }
     }
     
-    private func toggleEmptyStateView() {
+    private func showEmptyStateViewIfNeeded() {
         guard let currentLoggedInUserId = Auth.auth().currentUser?.uid else { return }
         Database.database().numberOfFollowingForUser(withUID: currentLoggedInUserId) { (followingCount) in
             Database.database().numberOfPostsForUser(withUID: currentLoggedInUserId, completion: { (postCount) in
@@ -152,6 +152,58 @@ extension HomeController: HomePostCellDelegate {
         let commentsController = CommentsController(collectionViewLayout: UICollectionViewFlowLayout())
         commentsController.post = post
         navigationController?.pushViewController(commentsController, animated: true)
+    }
+    
+    func didTapOptions(post: Post) {
+        guard let currentLoggedInUserId = Auth.auth().currentUser?.uid else { return }
+        guard let postId = post.id else { return }
+        
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alertController.addAction(cancelAction)
+        
+        if currentLoggedInUserId == post.user.uid {
+            
+            let deleteAction = UIAlertAction(title: "Delete", style: .destructive, handler: { (_) in
+                
+                let alert = UIAlertController(title: "Delete Post?", message: nil, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
+                    
+                    self.dismiss(animated: true, completion: nil)
+                }))
+                alert.addAction(UIAlertAction(title: "Delete", style: .default, handler: { (_) in
+                    
+                    Database.database().deletePost(withUID: currentLoggedInUserId, postId: postId) { (_) in
+                        if let postIndex = self.posts.index(where: {$0.id == postId}) {
+                            self.posts.remove(at: postIndex)
+                            self.collectionView?.reloadData()
+                            self.showEmptyStateViewIfNeeded()
+                        }
+                    }
+                }))
+                
+                self.present(alert, animated: true, completion: nil)
+            })
+            
+            alertController.addAction(deleteAction)
+            
+        } else {
+            let unfollowAction = UIAlertAction(title: "Unfollow", style: .destructive) { (_) in
+                
+                let uid = post.user.uid
+                Database.database().unfollowUser(withUID: uid, completion: { (_) in
+                    let filteredPosts = self.posts.filter({$0.user.uid != uid})
+                    self.posts = filteredPosts
+                    self.collectionView?.reloadData()
+                    self.showEmptyStateViewIfNeeded()
+                })
+            }
+            
+            alertController.addAction(unfollowAction)
+        }
+        
+        present(alertController, animated: true, completion: nil)
     }
     
     func didLike(for cell: HomePostCell) {
