@@ -1,24 +1,23 @@
 # InstagramClone
-A clone of the iOS 10?? Instagram app using the Firebase framework
+A detailed clone of the Instagram app built with Firebase.
 
-## Highlights
-
-* Custom tab bar
-* UIRefreshControl
+# Features
 * Firebase 5
-* AVFoundation
 * Swift 4.1
-  * List
-  * Things
-  * Image caching
-  * UISearchBar + searching for users
-* Custom photo picker using CollectionView
-* Photos SDK
 
-## Screenshots
+# Installation
+To install the app on your device/simulator, clone the repo and run the `InstagramClone ` target. 
 
-### Login/Sign-up
+> **Note:** This project is still in the development phase, so all writes to Firebase have been temporarily disabled.
 
-### Home 
+# Screenshots
+| ![SignUp](Images/sign_up.gif) | ![SignIn](Images/sign_in.gif) | 
+|:---:|:---:|
 
-### Search 
+More screenshots coming soon :)
+
+# Author
+Mac Gallagher, jmgallagher36@gmail.com
+
+# License
+InstagramClone is available under the [MIT License](LICENSE), see LICENSE for more infomation.
