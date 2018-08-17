@@ -13,7 +13,9 @@ class CameraController: UIViewController {
     
     private let dismissButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(#imageLiteral(resourceName: "right_arrow_shadow"), for: .normal)
+        button.setImage(#imageLiteral(resourceName: "forward_arrow_shadow").withRenderingMode(.alwaysOriginal), for: .normal)
+        button.imageEdgeInsets = UIEdgeInsets(top: 11, left: 0, bottom: 11, right: 0)
+        button.imageView?.contentMode = .scaleAspectFit
         button.addTarget(self, action: #selector(handleDismiss), for: .touchUpInside)
         return button
     }()
@@ -45,7 +47,7 @@ class CameraController: UIViewController {
         capturePhotoButton.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         
         view.addSubview(dismissButton)
-        dismissButton.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: nil, bottom: nil, right: view.safeAreaLayoutGuide.rightAnchor, paddingTop: 12, paddingLeft: 0, paddingBottom: 0, paddingRight: 12, width: 50, height: 50)
+        dismissButton.anchor(top: view.safeAreaLayoutGuide.topAnchor, right: view.safeAreaLayoutGuide.rightAnchor, paddingTop: 8, paddingLeft: 0, paddingBottom: 0, paddingRight: 8, width: 44, height: 44)
     }
     
     private func setupCaptureSession() {
@@ -70,7 +72,7 @@ class CameraController: UIViewController {
         
         //setup output preview
         let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewLayer.frame = view.frame
+        previewLayer.frame = view.safeAreaLayoutGuide.layoutFrame
         previewLayer.videoGravity = .resizeAspectFill
         view.layer.addSublayer(previewLayer)
         
