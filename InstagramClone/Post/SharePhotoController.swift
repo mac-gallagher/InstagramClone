@@ -60,9 +60,14 @@ class SharePhotoController: UIViewController {
         guard let postImage = selectedImage else { return }
         guard let caption = textView.text else { return }
         
+        navigationItem.rightBarButtonItem?.isEnabled = false
+        textView.isUserInteractionEnabled = false
+        
+        
         Database.database().createPost(withImage: postImage, caption: caption) { (err) in
             if err != nil {
                 self.navigationItem.rightBarButtonItem?.isEnabled = true
+                self.textView.isUserInteractionEnabled = true
                 return
             }
             

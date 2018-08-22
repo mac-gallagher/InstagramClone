@@ -139,7 +139,6 @@
 				ADE95AF8210D4539003D9A54 /* CustomImageView.swift */,
 				AD215F15205DA9B6000E42AD /* Extensions.swift */,
 				ADAC0807210FD4C900615E62 /* FirebaseUtilities.swift */,
-				AD392752212526DC00D99FE1 /* HomePostCellViewController.swift */,
 				AD3164D721167E4E001F5DA7 /* PlaceholderTextView.swift */,
 			);
 			path = Utilities;
@@ -259,6 +258,7 @@
 		ADE95AFA210D6DF0003D9A54 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				AD392752212526DC00D99FE1 /* HomePostCellViewController.swift */,
 				ADE95AFB210D6DFF003D9A54 /* HomeController.swift */,
 				ADE95AFD210D6F34003D9A54 /* HomePostCell.swift */,
 				AD1F3157211B98D100262BF1 /* HomePostHeader.swift */,

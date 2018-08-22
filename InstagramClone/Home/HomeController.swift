@@ -26,7 +26,7 @@ class HomeController: HomePostCellViewController {
         refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         collectionView?.refreshControl = refreshControl
         
-        fetchPosts()
+        fetchAllPosts()
     }
     
     private func configureNavigationBar() {
@@ -37,10 +37,14 @@ class HomeController: HomePostCellViewController {
         navigationItem.backBarButtonItem?.tintColor = .black
     }
     
-    private func fetchPosts() {
-        guard let currentLoggedInUserId = Auth.auth().currentUser?.uid else { return }
-        
+    private func fetchAllPosts() {
         showEmptyStateViewIfNeeded()
+        fetchPostsForCurrentUser()
+        fetchFollowingUserPosts()
+    }
+    
+    private func fetchPostsForCurrentUser() {
+        guard let currentLoggedInUserId = Auth.auth().currentUser?.uid else { return }
         
         collectionView?.refreshControl?.beginRefreshing()
         
@@ -56,6 +60,10 @@ class HomeController: HomePostCellViewController {
         }) { (err) in
             self.collectionView?.refreshControl?.endRefreshing()
         }
+    }
+    
+    private func fetchFollowingUserPosts() {
+        guard let currentLoggedInUserId = Auth.auth().currentUser?.uid else { return }
         
         collectionView?.refreshControl?.beginRefreshing()
         
@@ -103,7 +111,7 @@ class HomeController: HomePostCellViewController {
     
     @objc private func handleRefresh() {
         posts.removeAll()
-        fetchPosts()
+        fetchAllPosts()
     }
     
     @objc private func handleCamera() {

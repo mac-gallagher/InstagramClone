@@ -90,15 +90,18 @@ class HomePostCellViewController: UICollectionViewController, HomePostCellDelega
         
         var post = posts[indexPath.item]
         
-        if post.hasLiked {
-            Database.database().reference().child("likes").child(post.id).removeValue { (err, _) in
+        if post.likedByCurrentUser {
+            Database.database().reference().child("likes").child(post.id).child(uid).removeValue { (err, _) in
                 if let err = err {
                     print("Failed to unlike post:", err)
                     return
                 }
-                post.hasLiked = false
+                post.likedByCurrentUser = false
+                post.likes = post.likes - 1
                 self.posts[indexPath.item] = post
-                self.collectionView?.reloadItems(at: [indexPath])
+                UIView.performWithoutAnimation {
+                    self.collectionView?.reloadItems(at: [indexPath])
+                }
             }
         } else {
             let values = [uid : 1]
@@ -107,11 +110,13 @@ class HomePostCellViewController: UICollectionViewController, HomePostCellDelega
                     print("Failed to like post:", err)
                     return
                 }
-                post.hasLiked = true
+                post.likedByCurrentUser = true
+                post.likes = post.likes + 1
                 self.posts[indexPath.item] = post
-                self.collectionView?.reloadItems(at: [indexPath])
+                UIView.performWithoutAnimation {
+                    self.collectionView?.reloadItems(at: [indexPath])
+                }
             }
         }
-    }
-    
+    }  
 }

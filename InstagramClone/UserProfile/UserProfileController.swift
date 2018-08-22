@@ -130,9 +130,9 @@ class UserProfileController: HomePostCellViewController {
                 //check likes
                 Database.database().reference().child("likes").child(snapshot.key).child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
                     if let value = snapshot.value as? Int, value == 1 {
-                        post.hasLiked = true
+                        post.likedByCurrentUser = true
                     } else {
-                        post.hasLiked = false
+                        post.likedByCurrentUser = false
                     }
                     
                     self.posts.append(post)

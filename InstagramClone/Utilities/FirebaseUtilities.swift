@@ -81,6 +81,8 @@ extension Storage {
 
 extension Database {
 
+    //MARK: Users
+    
     func fetchUser(withUID uid: String, completion: @escaping (User) -> ()) {
         Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
             guard let userDictionary = snapshot.value as? [String: Any] else { return }
@@ -180,6 +182,24 @@ extension Database {
         }
     }
     
+    fileprivate func uploadUser(withUID uid: String, username: String, profileImageUrl: String? = nil, completion: @escaping (() -> ())) {
+        var dictionaryValues = ["username": username]
+        if profileImageUrl != nil {
+            dictionaryValues["profileImageUrl"] = profileImageUrl
+        }
+        
+        let values = [uid: dictionaryValues]
+        Database.database().reference().child("users").updateChildValues(values, withCompletionBlock: { (err, ref) in
+            if let err = err {
+                print("Failed to upload user to database:", err)
+                return
+            }
+            completion()
+        })
+    }
+    
+    //MARK: Posts
+    
     func createPost(withImage image: UIImage, caption: String, completion: @escaping (Error?) -> ()) {
         Storage.storage().uploadPostImage(image: image) { (postImageUrl) in
             guard let uid = Auth.auth().currentUser?.uid else { return }
@@ -223,17 +243,20 @@ extension Database {
                     //check likes
                     Database.database().reference().child("likes").child(postId).child(currentLoggedInUser).observeSingleEvent(of: .value, with: { (snapshot) in
                         if let value = snapshot.value as? Int, value == 1 {
-                            post.hasLiked = true
+                            post.likedByCurrentUser = true
                         } else {
-                            post.hasLiked = false
+                            post.likedByCurrentUser = false
                         }
-                        
-                        posts.append(post)
-                        
-                        if posts.count == dictionaries.count {
-                            completion(posts)
-                        }
-                        
+                   
+                        Database.database().numberOfLikesForPost(withPostId: postId, completion: { (count) in
+                            post.likes = count
+                            
+                            posts.append(post)
+                            
+                            if posts.count == dictionaries.count {
+                                completion(posts)
+                            }
+                        })
                     }, withCancel: { (err) in
                         print("Failed to fetch like info for post:", err)
                     })
@@ -318,6 +341,8 @@ extension Database {
         }
     }
     
+    //MARK: Utilities
+    
     func numberOfPostsForUser(withUID uid: String, completion: @escaping (Int) -> ()) {
         Database.database().reference().child("posts").child(uid).observeSingleEvent(of: .value) { (snapshot) in
             if let dictionaries = snapshot.value as? [String: Any] {
@@ -348,25 +373,13 @@ extension Database {
         }
     }
     
-    fileprivate func uploadUser(withUID uid: String, username: String, profileImageUrl: String? = nil, completion: @escaping (() -> ())) {
-        var dictionaryValues = ["username": username]
-        if profileImageUrl != nil {
-            dictionaryValues["profileImageUrl"] = profileImageUrl
-        }
-        
-        let values = [uid: dictionaryValues]
-        Database.database().reference().child("users").updateChildValues(values, withCompletionBlock: { (err, ref) in
-            if let err = err {
-                print("Failed to upload user to database:", err)
-                return
+    func numberOfLikesForPost(withPostId postId: String, completion: @escaping (Int) -> ()) {
+        Database.database().reference().child("likes").child(postId).observeSingleEvent(of: .value) { (snapshot) in
+            if let dictionaries = snapshot.value as? [String: Any] {
+                completion(dictionaries.count)
+            } else {
+                completion(0)
             }
-            completion()
-        })
+        }
     }
 }
-
-
-
-
-
-

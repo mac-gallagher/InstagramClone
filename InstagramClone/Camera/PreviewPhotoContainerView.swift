@@ -27,6 +27,7 @@ class PreviewPhotoContainerView: UIView {
     private let saveButton: UIButton = {
         let button = UIButton()
         button.setImage(#imageLiteral(resourceName: "save_shadow").withRenderingMode(.alwaysOriginal), for: .normal)
+        button.contentMode = .scaleAspectFill
         button.addTarget(self, action: #selector(handleSave), for: .touchUpInside)
         button.imageEdgeInsets = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
         return button
