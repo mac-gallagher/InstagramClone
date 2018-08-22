@@ -57,10 +57,10 @@ extension Storage {
         })
     }
     
-    fileprivate func uploadPostImage(image: UIImage, completion: @escaping (String) -> ()) {
+    fileprivate func uploadPostImage(image: UIImage, filename: String, completion: @escaping (String) -> ()) {
         guard let uploadData = UIImageJPEGRepresentation(image, 1) else { return } //changed from 0.5
         
-        let storageRef = Storage.storage().reference().child("post_images").child(NSUUID().uuidString)
+        let storageRef = Storage.storage().reference().child("post_images").child(filename)
         storageRef.putData(uploadData, metadata: nil, completion: { (_, err) in
             if let err = err {
                 print("Failed to upload post image:", err)
@@ -201,12 +201,13 @@ extension Database {
     //MARK: Posts
     
     func createPost(withImage image: UIImage, caption: String, completion: @escaping (Error?) -> ()) {
-        Storage.storage().uploadPostImage(image: image) { (postImageUrl) in
-            guard let uid = Auth.auth().currentUser?.uid else { return }
-            
-            let userPostRef = Database.database().reference().child("posts").child(uid).childByAutoId()
-            
-            let values = ["imageUrl": postImageUrl, "caption": caption, "imageWidth": image.size.width, "imageHeight": image.size.height, "creationDate": Date().timeIntervalSince1970, "id": userPostRef.key] as [String : Any]
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let userPostRef = Database.database().reference().child("posts").child(uid).childByAutoId()
+        
+        let postId = userPostRef.key
+        
+        Storage.storage().uploadPostImage(image: image, filename: postId) { (postImageUrl) in
+            let values = ["imageUrl": postImageUrl, "caption": caption, "imageWidth": image.size.width, "imageHeight": image.size.height, "creationDate": Date().timeIntervalSince1970, "id": postId] as [String : Any]
             
             userPostRef.updateChildValues(values) { (err, ref) in
                 if let err = err {
@@ -272,21 +273,33 @@ extension Database {
             if let err = err {
                 print("Failed to delete post:", err)
                 completion?(err)
+                return
             }
             
             Database.database().reference().child("comments").child(postId).removeValue(completionBlock: { (err, _) in
                 if let err = err {
                     print("Failed to delete comments on post:", err)
                     completion?(err)
+                    return
                 }
-            })
-            
-            Database.database().reference().child("likes").child(postId).removeValue(completionBlock: { (err, _) in
-                if let err = err {
-                    print("Failed to delete likes on post:", err)
-                    completion?(err)
-                }
-                completion?(nil)
+                
+                Database.database().reference().child("likes").child(postId).removeValue(completionBlock: { (err, _) in
+                    if let err = err {
+                        print("Failed to delete likes on post:", err)
+                        completion?(err)
+                        return
+                    }
+                    
+                    Storage.storage().reference().child("post_images").child(postId).delete(completion: { (err) in
+                        if let err = err {
+                            print("Failed to delete post image from storage:", err)
+                            completion?(err)
+                            return
+                        }
+                    })
+                    
+                    completion?(nil)
+                })
             })
         }
     }
