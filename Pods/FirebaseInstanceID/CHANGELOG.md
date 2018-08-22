@@ -1,3 +1,6 @@
+# 2018-08-14 -- v3.2.1
+- Fixed an issue that checkin is not cached properly when app first started. (#1561)
+
 # 2018-07-31 -- v3.2.0
 - Added support for global Firebase data collection flag. (#1219)
 - Improved message tracking sent by server API.
