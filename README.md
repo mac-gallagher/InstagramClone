@@ -11,7 +11,13 @@ To install the app on your device/simulator, clone the repo and run the `Instagr
 > **Note:** This project is still in the development phase, so all writes to Firebase have been temporarily disabled.
 
 # Screenshots
+
+##Sign Up / Login
 | ![SignUp](Images/sign_up.gif) | ![SignIn](Images/sign_in.gif) | 
+|:---:|:---:|
+
+## Home Feed
+| ![HomeFeed](Images/home_feed.gif) | ![SignIn](Images/comment.gif) | 
 |:---:|:---:|
 
 More screenshots coming soon :)
