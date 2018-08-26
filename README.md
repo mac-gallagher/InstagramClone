@@ -12,7 +12,7 @@ To install the app on your device/simulator, clone the repo and run the `Instagr
 
 # Screenshots
 
-##Sign Up / Login
+## Sign Up / Login
 | ![SignUp](Images/sign_up.gif) | ![SignIn](Images/sign_in.gif) | 
 |:---:|:---:|
 
