@@ -106,6 +106,8 @@ class UserProfileController: HomePostCellViewController {
             
             if allObjects.count < self.pagingCount {
                 self.isFinishedPaging = true
+            } else {
+                self.isFinishedPaging = false
             }
             
             if self.posts.count > 0 && allObjects.count > 0 {

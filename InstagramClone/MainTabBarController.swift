@@ -76,21 +76,3 @@ extension MainTabBarController: UITabBarControllerDelegate {
     }
 }
 
-extension UserDefaults {
-    
-    enum UserDefaultsKeys: String {
-        case demoId
-    }
-    
-    func setCurrentDemoId(value: String?) {
-        set(value, forKey: UserDefaultsKeys.demoId.rawValue)
-    }
-    
-    func currentDemoId() -> String? {
-        return string(forKey: UserDefaultsKeys.demoId.rawValue)
-    }
-    
-}
-
-
-
