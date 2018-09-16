@@ -6,9 +6,10 @@ A detailed clone of the Instagram app built with Firebase.
 * Swift 4.1
 
 # Installation
-To install the app on your device/simulator, clone the repo and run the `InstagramClone ` target. 
-
-> **Note:** This project is still in the development phase, so all writes to Firebase have been temporarily disabled.
+1. Clone the repository
+2. Create a new Firebase project in your Firebase [console](https://console.firebase.google.com/) by clicking "Add project"
+3. Add the `GoogleService-Info.plist` file downloaded from Step 2 to the `InstagramClone` directory
+4. Run the `InstagramClone` target on your device/simulator
 
 # Screenshots
 
