@@ -331,7 +331,9 @@ static NSMutableDictionary *sLibraryVersions;
   if ([self.name isEqualToString:kFIRDefaultAppName]) {
     Class firAnalyticsClass = NSClassFromString(@"FIRAnalytics");
     if (!firAnalyticsClass) {
-      FIRLogError(kFIRLoggerCore, @"I-COR000022", @"Firebase Analytics is not available.");
+      FIRLogWarning(kFIRLoggerCore, @"I-COR000022",
+                    @"Firebase Analytics is not available. To add it, include Firebase/Core in the "
+                    @"Podfile or add FirebaseAnalytics.framework to the Link Build Phase");
     } else {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"
@@ -382,7 +384,7 @@ static NSMutableDictionary *sLibraryVersions;
 - (BOOL)isDataCollectionDefaultEnabled {
   // Check if it's been manually set before in code, and use that as the higher priority value.
   NSNumber *defaultsObject = [[self class] readDataCollectionSwitchFromUserDefaultsForApp:self];
-  if (defaultsObject) {
+  if (defaultsObject != nil) {
     return [defaultsObject boolValue];
   }
 
@@ -390,7 +392,7 @@ static NSMutableDictionary *sLibraryVersions;
   // As per the implementation of `readDataCollectionSwitchFromPlist`, it's a cached value and has
   // no performance impact calling multiple times.
   NSNumber *collectionEnabledPlistValue = [[self class] readDataCollectionSwitchFromPlist];
-  if (collectionEnabledPlistValue) {
+  if (collectionEnabledPlistValue != nil) {
     return [collectionEnabledPlistValue boolValue];
   }
 

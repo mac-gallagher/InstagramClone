@@ -693,7 +693,8 @@ static NSString *const FIRAuthErrorCodeString(FIRAuthErrorCode code) {
   return [self errorWithCode:code userInfo:errorUserInfo];
 }
 
-+ (NSError *)errorWithCode:(FIRAuthInternalErrorCode)code userInfo:(NSDictionary *)userInfo {
++ (NSError *)errorWithCode:(FIRAuthInternalErrorCode)code
+                  userInfo:(nullable NSDictionary *)userInfo {
   BOOL isPublic = (code & FIRAuthPublicErrorCodeFlag) == FIRAuthPublicErrorCodeFlag;
   if (isPublic) {
     // This is a public error. Return it as a public error and add a description.
@@ -875,7 +876,7 @@ static NSString *const FIRAuthErrorCodeString(FIRAuthErrorCode code) {
   return [self errorWithCode:FIRAuthInternalErrorCodeOperationNotAllowed message:message];
 }
 
-+ (NSError *)weakPasswordErrorWithServerResponseReason:(NSString *)reason {
++ (NSError *)weakPasswordErrorWithServerResponseReason:(nullable NSString *)reason {
   return [self errorWithCode:FIRAuthInternalErrorCodeWeakPassword userInfo:@{
     NSLocalizedFailureReasonErrorKey : reason
   }];
@@ -1001,7 +1002,7 @@ static NSString *const FIRAuthErrorCodeString(FIRAuthErrorCode code) {
   }];
 }
 
-+ (NSError *)URLResponseErrorWithCode:(NSString *)code message:(nullable NSString *)message {
++ (nullable NSError *)URLResponseErrorWithCode:(NSString *)code message:(nullable NSString *)message {
   if ([code isEqualToString:kURLResponseErrorCodeInvalidClientID]) {
     return [self errorWithCode:FIRAuthInternalErrorCodeInvalidClientID message:message];
   }
