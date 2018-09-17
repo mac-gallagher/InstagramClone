@@ -25,7 +25,7 @@ class HomePostCell: UICollectionViewCell {
         }
     }
     
-    let header = HomePostHeader()
+    let header = HomePostCellHeader()
     
     let captionLabel: UILabel = {
         let label = UILabel()
@@ -159,9 +159,9 @@ class HomePostCell: UICollectionViewCell {
     }
 }
 
-//MARK: - HomePostHeaderDelegate
+//MARK: - HomePostCellHeaderDelegate
 
-extension HomePostCell: HomePostHeaderDelegate {
+extension HomePostCell: HomePostCellHeaderDelegate {
     
     func didTapUser() {
         guard let user = post?.user else { return }

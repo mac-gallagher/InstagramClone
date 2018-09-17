@@ -48,7 +48,7 @@ class HomeController: HomePostCellViewController {
         
         collectionView?.refreshControl?.beginRefreshing()
         
-        Database.database().fetchPostsForUser(withUID: currentLoggedInUserId, completion: { (posts) in
+        Database.database().fetchAllPosts(withUID: currentLoggedInUserId, completion: { (posts) in
             self.posts.append(contentsOf: posts)
             
             self.posts.sort(by: { (p1, p2) -> Bool in
@@ -72,7 +72,7 @@ class HomeController: HomePostCellViewController {
             
             userIdsDictionary.forEach({ (uid, value) in
                 
-                Database.database().fetchPostsForUser(withUID: uid, completion: { (posts) in
+                Database.database().fetchAllPosts(withUID: uid, completion: { (posts) in
                     
                     self.posts.append(contentsOf: posts)
                     

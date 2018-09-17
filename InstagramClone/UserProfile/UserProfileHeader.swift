@@ -9,10 +9,14 @@
 import UIKit
 import Firebase
 
+//MARK: - UserProfileHeaderDelegate
+
 protocol UserProfileHeaderDelegate {
     func didChangeToListView()
     func didChangeToGridView()
 }
+
+//MARK: - UserProfileHeader
 
 class UserProfileHeader: UICollectionViewCell {
    
@@ -222,8 +226,123 @@ class UserProfileHeader: UICollectionViewCell {
     }
 }
 
+//MARK: - UserProfileStatsLabel
 
+private class UserProfileStatsLabel: UILabel {
+    
+    private var value: Int = 0
+    private var title: String = ""
+    
+    init(value: Int, title: String) {
+        super.init(frame: .zero)
+        self.value = value
+        self.title = title
+        sharedInit()
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        sharedInit()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        sharedInit()
+    }
+    
+    private func sharedInit() {
+        numberOfLines = 0
+        textAlignment = .center
+        setAttributedText()
+    }
+    
+    func setValue(_ value: Int) {
+        self.value = value
+        setAttributedText()
+    }
+    
+    private func setAttributedText() {
+        let attributedText = NSMutableAttributedString(string: "\(value)\n", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)])
+        attributedText.append(NSAttributedString(string: title, attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray, NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14)]))
+        self.attributedText = attributedText
+    }
+}
 
+//MARK: - FollowButtonType
 
+private enum FollowButtonType {
+    case loading, edit, follow, unfollow
+}
+
+//MARK: - UserProfileFollowButton
+
+private class UserProfileFollowButton: UIButton {
+    
+    var type: FollowButtonType = .loading {
+        didSet {
+            configureButton()
+        }
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        sharedInit()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        sharedInit()
+    }
+    
+    private func sharedInit() {
+        titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+        layer.borderColor = UIColor(white: 0, alpha: 0.2).cgColor
+        layer.borderWidth = 1
+        layer.cornerRadius = 3
+        configureButton()
+    }
+    
+    private func configureButton() {
+        switch type {
+        case .loading:
+            setupLoadingStyle()
+        case .edit:
+            setupEditStyle()
+        case .follow:
+            setupFollowStyle()
+        case .unfollow:
+            setupUnfollowStyle()
+        }
+    }
+    
+    private func setupLoadingStyle() {
+        setTitle("Loading", for: .normal)
+        setTitleColor(.black, for: .normal)
+        backgroundColor = .white
+        isUserInteractionEnabled = false
+    }
+    
+    private func setupEditStyle() {
+        setTitle("Edit Profile", for: .normal)
+        setTitleColor(.black, for: .normal)
+        backgroundColor = .white
+        isUserInteractionEnabled = true
+    }
+    
+    private func setupFollowStyle() {
+        setTitle("Follow", for: .normal)
+        setTitleColor(.white, for: .normal)
+        backgroundColor = UIColor.mainBlue
+        layer.borderColor = UIColor(white: 0, alpha: 0.2).cgColor
+        isUserInteractionEnabled = true
+    }
+    
+    private func setupUnfollowStyle() {
+        setTitle("Unfollow", for: .normal)
+        setTitleColor(.black, for: .normal)
+        backgroundColor = .white
+        isUserInteractionEnabled = true
+    }
+}
 
 

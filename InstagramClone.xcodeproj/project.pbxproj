@@ -8,14 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		93F17CE19E192A4D2123BAC4 /* Pods_InstagramClone.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F228D1F0B539C515EB0A6B8F /* Pods_InstagramClone.framework */; };
-		AD1F3158211B98D100262BF1 /* HomePostHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1F3157211B98D100262BF1 /* HomePostHeader.swift */; };
-		AD1F315B211BA2A500262BF1 /* UserProfileStatsLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1F315A211BA2A500262BF1 /* UserProfileStatsLabel.swift */; };
+		AD1F3158211B98D100262BF1 /* HomePostCellHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1F3157211B98D100262BF1 /* HomePostCellHeader.swift */; };
 		AD215F16205DA9B6000E42AD /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD215F15205DA9B6000E42AD /* Extensions.swift */; };
 		AD2A2CB1205C88DE0023D5C8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2A2CB0205C88DE0023D5C8 /* AppDelegate.swift */; };
 		AD2A2CB3205C88DE0023D5C8 /* SignUpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2A2CB2205C88DE0023D5C8 /* SignUpController.swift */; };
 		AD2A2CB8205C88DE0023D5C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD2A2CB7205C88DE0023D5C8 /* Assets.xcassets */; };
 		AD2A2CBB205C88DE0023D5C8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2A2CB9205C88DE0023D5C8 /* LaunchScreen.storyboard */; };
-		AD2CC6D4211F577E0091E7D9 /* UserProfileFollowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2CC6D3211F577E0091E7D9 /* UserProfileFollowButton.swift */; };
 		AD2CC6D6211FA0C40091E7D9 /* UserProfileEmptyStateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2CC6D5211FA0C40091E7D9 /* UserProfileEmptyStateCell.swift */; };
 		AD2CC6D8211FEF2B0091E7D9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AD2CC6D7211FEF2B0091E7D9 /* GoogleService-Info.plist */; };
 		AD2CC6DA21215B220091E7D9 /* HomeEmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2CC6D921215B220091E7D9 /* HomeEmptyStateView.swift */; };
@@ -50,8 +48,7 @@
 
 /* Begin PBXFileReference section */
 		09578B8F3D737CD5AC684ECA /* Pods-InstagramClone.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InstagramClone.release.xcconfig"; path = "Pods/Target Support Files/Pods-InstagramClone/Pods-InstagramClone.release.xcconfig"; sourceTree = "<group>"; };
-		AD1F3157211B98D100262BF1 /* HomePostHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePostHeader.swift; sourceTree = "<group>"; };
-		AD1F315A211BA2A500262BF1 /* UserProfileStatsLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileStatsLabel.swift; sourceTree = "<group>"; };
+		AD1F3157211B98D100262BF1 /* HomePostCellHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePostCellHeader.swift; sourceTree = "<group>"; };
 		AD215F15205DA9B6000E42AD /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		AD2A2CAD205C88DE0023D5C8 /* InstagramClone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InstagramClone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD2A2CB0205C88DE0023D5C8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -59,7 +56,6 @@
 		AD2A2CB7205C88DE0023D5C8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AD2A2CBA205C88DE0023D5C8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AD2A2CBC205C88DE0023D5C8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AD2CC6D3211F577E0091E7D9 /* UserProfileFollowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileFollowButton.swift; sourceTree = "<group>"; };
 		AD2CC6D5211FA0C40091E7D9 /* UserProfileEmptyStateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileEmptyStateCell.swift; sourceTree = "<group>"; };
 		AD2CC6D7211FEF2B0091E7D9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		AD2CC6D921215B220091E7D9 /* HomeEmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeEmptyStateView.swift; sourceTree = "<group>"; };
@@ -139,6 +135,7 @@
 				ADE95AF8210D4539003D9A54 /* CustomImageView.swift */,
 				AD215F15205DA9B6000E42AD /* Extensions.swift */,
 				ADAC0807210FD4C900615E62 /* FirebaseUtilities.swift */,
+				AD392752212526DC00D99FE1 /* HomePostCellViewController.swift */,
 				AD3164D721167E4E001F5DA7 /* PlaceholderTextView.swift */,
 			);
 			path = Utilities;
@@ -220,8 +217,6 @@
 				AD4D8CED2060648B00A49BA4 /* UserProfileController.swift */,
 				ADE95AF6210D1D6E003D9A54 /* UserProfilePhotoGridCell.swift */,
 				AD4D8CF02060827500A49BA4 /* UserProfileHeader.swift */,
-				AD2CC6D3211F577E0091E7D9 /* UserProfileFollowButton.swift */,
-				AD1F315A211BA2A500262BF1 /* UserProfileStatsLabel.swift */,
 				AD2CC6D5211FA0C40091E7D9 /* UserProfileEmptyStateCell.swift */,
 			);
 			path = UserProfile;
@@ -258,10 +253,9 @@
 		ADE95AFA210D6DF0003D9A54 /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				AD392752212526DC00D99FE1 /* HomePostCellViewController.swift */,
 				ADE95AFB210D6DFF003D9A54 /* HomeController.swift */,
 				ADE95AFD210D6F34003D9A54 /* HomePostCell.swift */,
-				AD1F3157211B98D100262BF1 /* HomePostHeader.swift */,
+				AD1F3157211B98D100262BF1 /* HomePostCellHeader.swift */,
 				AD2CC6D921215B220091E7D9 /* HomeEmptyStateView.swift */,
 			);
 			path = Home;
@@ -408,14 +402,12 @@
 				AD4D8CF12060827500A49BA4 /* UserProfileHeader.swift in Sources */,
 				AD4D8CEE2060648B00A49BA4 /* UserProfileController.swift in Sources */,
 				AD2A2CB1205C88DE0023D5C8 /* AppDelegate.swift in Sources */,
-				AD1F315B211BA2A500262BF1 /* UserProfileStatsLabel.swift in Sources */,
 				AD32EF752114D05000BB7B56 /* PreviewPhotoContainerView.swift in Sources */,
 				AD3164D621167401001F5DA7 /* CommentInputAccessoryView.swift in Sources */,
-				AD2CC6D4211F577E0091E7D9 /* UserProfileFollowButton.swift in Sources */,
 				AD4D8CF42060A70E00A49BA4 /* LoginController.swift in Sources */,
 				ADE95AFE210D6F34003D9A54 /* HomePostCell.swift in Sources */,
 				AD32DEC9210C10A0002F4973 /* PhotoSelectorHeader.swift in Sources */,
-				AD1F3158211B98D100262BF1 /* HomePostHeader.swift in Sources */,
+				AD1F3158211B98D100262BF1 /* HomePostCellHeader.swift in Sources */,
 				AD3164D02114F0A1001F5DA7 /* CommentsController.swift in Sources */,
 				AD32DEC5210BEF6F002F4973 /* PhotoSelectorController.swift in Sources */,
 				AD3164D421152D00001F5DA7 /* Comment.swift in Sources */,

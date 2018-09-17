@@ -24,8 +24,8 @@ class UserProfileController: HomePostCellViewController {
         return ac
     }()
     
-    private var isFinishedPaging = false
-    private var pagingCount: Int = 4
+//    private var isFinishedPaging = false
+//    private var pagingCount: Int = 4
     
     private var isGridView: Bool = true
     
@@ -86,83 +86,81 @@ class UserProfileController: HomePostCellViewController {
         handleRefresh()
     }
     
-    private func paginatePosts() {
-        guard let uid = self.user?.uid else { return }
-
-        var query = Database.database().reference().child("posts").child(uid).queryOrdered(byChild: "creationDate")
-        
-        if posts.count > 0 {
-            let value = posts.last?.creationDate.timeIntervalSince1970
-            query = query.queryEnding(atValue: value)
-        }
-        
-        query.queryLimited(toLast: UInt(pagingCount)).observeSingleEvent(of: .value, with: { (snapshot) in
-            guard var allObjects = snapshot.children.allObjects as? [DataSnapshot] else {
-                self.collectionView?.refreshControl?.endRefreshing()
-                return
-            }
-            
-            allObjects.reverse()
-            
-            if allObjects.count < self.pagingCount {
-                self.isFinishedPaging = true
-            } else {
-                self.isFinishedPaging = false
-            }
-            
-            if self.posts.count > 0 && allObjects.count > 0 {
-                allObjects.removeFirst()
-            }
-            
-            guard let user = self.user else { return }
-            
-            if allObjects.count == 0 {
-                self.collectionView?.refreshControl?.endRefreshing()
-            }
-            
-            allObjects.forEach({ (snapshot) in
-                guard let dictionary = snapshot.value as? [String: Any] else {
-                    self.collectionView?.refreshControl?.endRefreshing()
-                    return
-                }
-                
-                var post = Post(user: user, dictionary: dictionary)
-                post.id = snapshot.key
-                
-                //check likes
-                Database.database().reference().child("likes").child(snapshot.key).child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
-                    if let value = snapshot.value as? Int, value == 1 {
-                        post.likedByCurrentUser = true
-                    } else {
-                        post.likedByCurrentUser = false
-                    }
-                    
-                    self.posts.append(post)
-                    self.collectionView?.reloadData()
-                    self.collectionView?.refreshControl?.endRefreshing()
-                    
-                }, withCancel: { (err) in
-                    print("Failed to fetch like info for post:", err)
-                })
-            })
-        }) { (err) in
-            print("Failed to paginate posts:", err)
-        }
-    }
-    
     @objc private func handleSettings() {
         present(alertController, animated: true, completion: nil)
     }
     
     @objc private func handleRefresh() {
+        guard let uid = user?.uid else { return }
+        
         posts.removeAll()
-        isFinishedPaging = false
-        paginatePosts()
-        if !isGridView {
-            collectionView?.refreshControl?.endRefreshing()
+//        isFinishedPaging = false
+//        paginatePosts()
+        
+        //TODO: Replace this with pagination
+        Database.database().fetchAllPosts(withUID: uid, completion: { (posts) in
+            self.posts = posts
+            self.posts.sort(by: { (p1, p2) -> Bool in
+                return p1.creationDate.compare(p2.creationDate) == .orderedDescending
+            })
+            self.collectionView?.reloadData()
+            self.collectionView?.refreshControl?.endRefreshing()
+            
+        }) { (err) in
+            self.collectionView?.refreshControl?.endRefreshing()
         }
+        
         header?.reloadData()
     }
+    
+//    private func paginatePosts() {
+//        guard let uid = self.user?.uid else { return }
+//
+//        var query = Database.database().reference().child("posts").child(uid).queryOrdered(byChild: "creationDate")
+//
+//        if posts.count > 0 {
+//            let value = posts.last?.creationDate.timeIntervalSince1970
+//            query = query.queryEnding(atValue: value)
+//        }
+//
+//        query.queryLimited(toLast: UInt(pagingCount)).observeSingleEvent(of: .value, with: { (snapshot) in
+//            guard var allObjects = snapshot.children.allObjects as? [DataSnapshot] else {
+//                self.collectionView?.refreshControl?.endRefreshing()
+//                return
+//            }
+//
+//            allObjects.reverse()
+//
+//            if allObjects.count < self.pagingCount {
+//                self.isFinishedPaging = true
+//            } else {
+//                self.isFinishedPaging = false
+//            }
+//
+//            if self.posts.count > 0 && allObjects.count > 0 {
+//                allObjects.removeFirst()
+//            }
+//
+//            if allObjects.count == 0 {
+//                self.collectionView?.refreshControl?.endRefreshing()
+//            }
+//
+//            allObjects.forEach({ (snapshot) in
+//                let postId = snapshot.key
+//
+//                Database.database().fetchPost(withUID: uid, postId: postId, completion: { (post) in
+//                    self.posts.append(post)
+//                    self.collectionView?.reloadData()
+//                    self.collectionView?.refreshControl?.endRefreshing()
+//
+//                }, withCancel: { (err) in
+//                    self.collectionView?.refreshControl?.endRefreshing()
+//                })
+//            })
+//        }) { (err) in
+//            print("Failed to paginate posts:", err)
+//        }
+//    }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if posts.count == 0 {
@@ -177,9 +175,9 @@ class UserProfileController: HomePostCellViewController {
             return cell
         }
         
-        if indexPath.item == posts.count - 1, !isFinishedPaging {
-            paginatePosts()
-        }
+//        if indexPath.item == posts.count - 1, !isFinishedPaging {
+//            paginatePosts()
+//        }
         
         if isGridView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UserProfilePhotoGridCell.cellId, for: indexPath) as! UserProfilePhotoGridCell

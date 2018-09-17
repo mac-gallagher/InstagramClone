@@ -20,15 +20,31 @@ extension Auth {
             guard let uid = user?.user.uid else { return }
             if let image = image {
                 Storage.storage().uploadUserProfileImage(image: image, completion: { (profileImageUrl) in
-                    Database.database().uploadUser(withUID: uid, username: username, profileImageUrl: profileImageUrl) {
+                    self.uploadUser(withUID: uid, username: username, profileImageUrl: profileImageUrl) {
                         completion(nil)
                     }
                 })
             } else {
-                Database.database().uploadUser(withUID: uid, username: username) {
+                self.uploadUser(withUID: uid, username: username) {
                     completion(nil)
                 }
             }
+        })
+    }
+    
+    private func uploadUser(withUID uid: String, username: String, profileImageUrl: String? = nil, completion: @escaping (() -> ())) {
+        var dictionaryValues = ["username": username]
+        if profileImageUrl != nil {
+            dictionaryValues["profileImageUrl"] = profileImageUrl
+        }
+        
+        let values = [uid: dictionaryValues]
+        Database.database().reference().child("users").updateChildValues(values, withCompletionBlock: { (err, ref) in
+            if let err = err {
+                print("Failed to upload user to database:", err)
+                return
+            }
+            completion()
         })
     }
 }
@@ -182,29 +198,14 @@ extension Database {
         }
     }
     
-    fileprivate func uploadUser(withUID uid: String, username: String, profileImageUrl: String? = nil, completion: @escaping (() -> ())) {
-        var dictionaryValues = ["username": username]
-        if profileImageUrl != nil {
-            dictionaryValues["profileImageUrl"] = profileImageUrl
-        }
-        
-        let values = [uid: dictionaryValues]
-        Database.database().reference().child("users").updateChildValues(values, withCompletionBlock: { (err, ref) in
-            if let err = err {
-                print("Failed to upload user to database:", err)
-                return
-            }
-            completion()
-        })
-    }
-    
     //MARK: Posts
     
     func createPost(withImage image: UIImage, caption: String, completion: @escaping (Error?) -> ()) {
         guard let uid = Auth.auth().currentUser?.uid else { return }
+        
         let userPostRef = Database.database().reference().child("posts").child(uid).childByAutoId()
         
-        let postId = userPostRef.key
+        guard let postId = userPostRef.key else { return }
         
         Storage.storage().uploadPostImage(image: image, filename: postId) { (postImageUrl) in
             let values = ["imageUrl": postImageUrl, "caption": caption, "imageWidth": image.size.width, "imageHeight": image.size.height, "creationDate": Date().timeIntervalSince1970, "id": postId] as [String : Any]
@@ -220,13 +221,43 @@ extension Database {
         }
     }
     
-    func fetchPostsForUser(withUID uid: String, completion: @escaping ([Post]) -> (), withCancel cancel: ((Error) -> ())?) {
+    func fetchPost(withUID uid: String, postId: String, completion: @escaping (Post) -> (), withCancel cancel: ((Error) -> ())? = nil) {
         guard let currentLoggedInUser = Auth.auth().currentUser?.uid else { return }
         
-        let ref = Database.database().reference().child("posts").child(uid)
+        let ref = Database.database().reference().child("posts").child(uid).child(postId)
         
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
             
+            guard let postDictionary = snapshot.value as? [String: Any] else { return }
+            
+            Database.database().fetchUser(withUID: uid, completion: { (user) in
+                var post = Post(user: user, dictionary: postDictionary)
+                post.id = postId
+                
+                //check likes
+                Database.database().reference().child("likes").child(postId).child(currentLoggedInUser).observeSingleEvent(of: .value, with: { (snapshot) in
+                    if let value = snapshot.value as? Int, value == 1 {
+                        post.likedByCurrentUser = true
+                    } else {
+                        post.likedByCurrentUser = false
+                    }
+                    
+                    Database.database().numberOfLikesForPost(withPostId: postId, completion: { (count) in
+                        post.likes = count
+                        completion(post)
+                    })
+                }, withCancel: { (err) in
+                    print("Failed to fetch like info for post:", err)
+                    cancel?(err)
+                })
+            })
+        })
+    }
+    
+    func fetchAllPosts(withUID uid: String, completion: @escaping ([Post]) -> (), withCancel cancel: ((Error) -> ())?) {
+        let ref = Database.database().reference().child("posts").child(uid)
+        
+        ref.observeSingleEvent(of: .value, with: { (snapshot) in
             guard let dictionaries = snapshot.value as? [String: Any] else {
                 completion([])
                 return
@@ -235,36 +266,17 @@ extension Database {
             var posts = [Post]()
 
             dictionaries.forEach({ (postId, value) in
-                guard let postDictionary = value as? [String: Any] else { return }
-                
-                Database.database().fetchUser(withUID: uid, completion: { (user) in
-                    var post = Post(user: user, dictionary: postDictionary)
-                    post.id = postId
-
-                    //check likes
-                    Database.database().reference().child("likes").child(postId).child(currentLoggedInUser).observeSingleEvent(of: .value, with: { (snapshot) in
-                        if let value = snapshot.value as? Int, value == 1 {
-                            post.likedByCurrentUser = true
-                        } else {
-                            post.likedByCurrentUser = false
-                        }
-                   
-                        Database.database().numberOfLikesForPost(withPostId: postId, completion: { (count) in
-                            post.likes = count
-                            
-                            posts.append(post)
-                            
-                            if posts.count == dictionaries.count {
-                                completion(posts)
-                            }
-                        })
-                    }, withCancel: { (err) in
-                        print("Failed to fetch like info for post:", err)
-                    })
+                Database.database().fetchPost(withUID: uid, postId: postId, completion: { (post) in
+                    posts.append(post)
+                    
+                    if posts.count == dictionaries.count {
+                        completion(posts)
+                    }
                 })
             })
         }) { (err) in
             print("Failed to fetch posts:", err)
+            cancel?(err)
         }
     }
     

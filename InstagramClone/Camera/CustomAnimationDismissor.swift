@@ -31,7 +31,5 @@ class CustomAnimationDismissor: NSObject, UIViewControllerAnimatedTransitioning 
         }) { (_) in
             transitionContext.completeTransition(true)
         }
-        
     }
-    
 }

@@ -8,12 +8,12 @@
 
 import UIKit
 
-protocol HomePostHeaderDelegate {
+protocol HomePostCellHeaderDelegate {
     func didTapUser()
     func didTapOptions()
 }
 
-class HomePostHeader: UIView {
+class HomePostCellHeader: UIView {
     
     var user: User? {
         didSet {
@@ -21,7 +21,7 @@ class HomePostHeader: UIView {
         }
     }
     
-    var delegate: HomePostHeaderDelegate?
+    var delegate: HomePostCellHeaderDelegate?
     
     private var padding: CGFloat = 8
     
