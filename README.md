@@ -1,10 +1,6 @@
 # InstagramClone
 A detailed clone of the Instagram app built with Firebase.
 
-# Features
-* Firebase 5
-* Swift 4.1
-
 # Installation
 1. Clone the repository
 2. Create a new project in your Firebase [console](https://console.firebase.google.com/) by clicking "Add project"
@@ -21,7 +17,19 @@ A detailed clone of the Instagram app built with Firebase.
 | ![HomeFeed](Images/home_feed.gif) | ![SignIn](Images/comment.gif) | 
 |:---:|:---:|
 
+## Search + User Profile
+| ![HomeFeed](Images/search.gif) | ![SignIn](Images/user_profile.gif) | 
+|:---:|:---:|
+
+
+## Share + Camera
+
 More screenshots coming soon :)
+
+# Requirements
+* iOS 9.0+
+* Xcode 9.0+
+* Swift 4.0+
 
 # Author
 Mac Gallagher, jmgallagher36@gmail.com
