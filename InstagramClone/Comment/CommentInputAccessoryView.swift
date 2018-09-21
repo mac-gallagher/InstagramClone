@@ -62,7 +62,7 @@ class CommentInputAccessoryView: UIView, UITextViewDelegate {
         addSubview(lineSeparatorView)
         lineSeparatorView.anchor(top: topAnchor, left: leftAnchor, right: rightAnchor, height: 0.5)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(handleTextChange), name: .UITextViewTextDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleTextChange), name: UITextView.textDidChangeNotification, object: nil)
     }
     
     func clearCommentTextField() {
