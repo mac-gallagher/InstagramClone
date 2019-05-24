@@ -1,3 +1,5 @@
+#### [This repository is no longer being maintained]
+
 # InstagramClone
 A detailed clone of the Instagram app built with Firebase.
 
@@ -21,10 +23,6 @@ A detailed clone of the Instagram app built with Firebase.
 | ![HomeFeed](Images/search.gif) | ![SignIn](Images/user_profile.gif) | 
 |:---:|:---:|
 
-
-## Share + Camera
-
-More screenshots coming soon :)
 
 # Requirements
 * iOS 9.0+
